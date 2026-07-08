@@ -1,0 +1,1177 @@
+Design a complete high-fidelity responsive web application UI/UX for an AI-powered chatbot information service for Kerja Praktik (KP) and Magang at Dinas Kelautan dan Perikanan Provinsi Jawa Timur.
+
+PROJECT NAME:
+DKP Assistant
+
+SYSTEM PURPOSE:
+The website is a public information portal and AI chatbot service that helps students and vocational school students obtain accurate information about Kerja Praktik and Magang services.
+
+The chatbot uses Retrieval-Augmented Generation (RAG) and answers questions based only on official documents, SOPs, requirements, FAQs, guidelines, and knowledge base documents managed by administrators.
+
+The system must include:
+1. Public Landing Page
+2. Dedicated Chatbot Page
+3. Admin Authentication
+4. Admin Dashboard
+5. Knowledge Base Management
+6. Document Upload and Indexing
+7. Conversation Logs
+8. Unanswered Questions Management
+9. User Feedback Management
+10. Chatbot Analytics
+11. Chatbot Settings
+
+Create all required desktop screens and reusable components.
+
+==================================================
+DESIGN SYSTEM
+==================================================
+
+Create a professional, modern, trustworthy Indonesian government public service website.
+
+Visual identity:
+- Inspired by Dinas Kelautan dan Perikanan Provinsi Jawa Timur.
+- Marine, fisheries, government digital service identity.
+- Primary colors: dark navy blue, ocean blue, teal, cyan.
+- White and light gray backgrounds.
+- Soft blue gradient accents.
+- Avoid excessive gradients.
+- Use subtle marine-inspired visual elements.
+- Clean and modern government service appearance.
+
+Typography:
+Use a modern sans-serif font such as Inter.
+
+Design characteristics:
+- Clean.
+- Professional.
+- Minimal.
+- Modern.
+- Accessible.
+- Trustworthy.
+- Spacious layouts.
+- Consistent 8px spacing system.
+- Large border radius: 12px–20px.
+- Subtle shadows.
+- Clear information hierarchy.
+- WCAG-friendly color contrast.
+
+Create reusable components and variants for:
+- Buttons.
+- Input fields.
+- Dropdowns.
+- Search bars.
+- Navigation.
+- Sidebar.
+- Cards.
+- Tables.
+- Modals.
+- Toast notifications.
+- Status badges.
+- Empty states.
+- Loading states.
+- Pagination.
+- Tabs.
+- Tooltips.
+- File upload areas.
+- Chat bubbles.
+- Source citation cards.
+- Feedback controls.
+- Charts.
+- Metric cards.
+
+==================================================
+1. PUBLIC LANDING PAGE
+==================================================
+
+Create a responsive public landing page.
+
+NAVIGATION BAR:
+
+Left:
+Official logo placeholder.
+
+Text:
+"Dinas Kelautan dan Perikanan"
+"Provinsi Jawa Timur"
+
+Navigation:
+Beranda
+Layanan
+Informasi
+Cara Kerja
+FAQ
+Tentang
+
+Right:
+Button "Mulai Bertanya"
+
+Sticky navigation when scrolling.
+
+HERO SECTION:
+
+Badge:
+"Asisten Informasi KP & Magang Berbasis AI"
+
+Headline:
+"Temukan Informasi Kerja Praktik dan Magang Lebih Cepat"
+
+Highlight the words:
+"Lebih Cepat"
+
+Description:
+"Tanyakan informasi seputar persyaratan, alur pengajuan, dokumen, pelaksanaan, dan layanan Kerja Praktik serta Magang melalui chatbot berbasis informasi resmi Dinas Kelautan dan Perikanan Provinsi Jawa Timur."
+
+Primary CTA:
+"Mulai Bertanya"
+
+Secondary CTA:
+"Lihat Layanan"
+
+Right side:
+Create a modern chatbot service illustration or chatbot interface preview.
+
+Show a sample conversation:
+
+User:
+"Apa saja persyaratan untuk mengajukan magang?"
+
+DKP Assistant:
+"Berikut persyaratan pengajuan magang berdasarkan informasi resmi yang tersedia..."
+
+Display source citation:
+"SOP Pelayanan KP & Magang — Halaman 3"
+
+Below the hero section, display three feature cards:
+
+"24/7"
+Akses informasi kapan saja.
+
+"Berbasis RAG"
+Jawaban berdasarkan dokumen resmi.
+
+"Sumber Transparan"
+Pengguna dapat melihat sumber jawaban.
+
+==================================================
+2. INFORMATION CATEGORIES SECTION
+==================================================
+
+Badge:
+"Layanan Informasi"
+
+Headline:
+"Informasi yang Bisa Ditanyakan Melalui Chatbot"
+
+Description:
+"Pilih kategori informasi Kerja Praktik dan Magang yang paling sering dibutuhkan."
+
+Create six cards:
+
+1. Persyaratan KP & Magang
+2. Alur Pengajuan
+3. Dokumen Pengajuan
+4. Pelaksanaan KP & Magang
+5. Penyelesaian Kegiatan
+6. Sertifikat dan Administrasi Akhir
+
+Each card contains:
+- Icon.
+- Category title.
+- Short description.
+- Example question.
+- Button "Tanyakan ke Chatbot".
+
+Clicking the card opens the chatbot page with a suggested question.
+
+==================================================
+3. POPULAR QUESTIONS SECTION
+==================================================
+
+Create a section:
+"Pertanyaan yang Sering Ditanyakan"
+
+Display clickable question chips:
+
+"Apa saja persyaratan pengajuan magang?"
+
+"Bagaimana alur pengajuan KP?"
+
+"Apakah siswa SMK dapat mengajukan magang?"
+
+"Berapa lama proses pengajuan?"
+
+"Dokumen apa saja yang harus disiapkan?"
+
+"Bagaimana jika dokumen pengajuan perlu diperbaiki?"
+
+When clicked, redirect to the chatbot page and automatically insert the question.
+
+==================================================
+4. HOW THE CHATBOT WORKS
+==================================================
+
+Badge:
+"Cara Kerja"
+
+Headline:
+"Bagaimana DKP Assistant Menghasilkan Jawaban?"
+
+Create a modern horizontal process visualization.
+
+Step 1:
+"Pengguna Mengajukan Pertanyaan"
+
+Step 2:
+"Sistem Mencari Informasi Relevan"
+
+Step 3:
+"Dokumen Resmi Digunakan sebagai Konteks"
+
+Step 4:
+"AI Menyusun Jawaban"
+
+Step 5:
+"Jawaban dan Sumber Ditampilkan"
+
+Use simple icons and connecting arrows.
+
+Add a small information box:
+
+"DKP Assistant hanya memberikan jawaban berdasarkan knowledge base yang telah diverifikasi dan dikelola oleh administrator."
+
+==================================================
+5. SYSTEM BENEFITS SECTION
+==================================================
+
+Headline:
+"Layanan Informasi yang Lebih Cepat dan Terstruktur"
+
+Create four benefit cards:
+
+"Informasi Terpusat"
+Informasi KP dan Magang tersedia dalam satu layanan.
+
+"Jawaban Berbasis Dokumen"
+Jawaban dihasilkan berdasarkan sumber informasi resmi.
+
+"Mudah Diperbarui"
+Administrator dapat memperbarui knowledge base.
+
+"Evaluasi Layanan"
+Pertanyaan dan feedback pengguna membantu meningkatkan kualitas informasi.
+
+==================================================
+6. FAQ SECTION
+==================================================
+
+Create accordion FAQ component.
+
+Example questions:
+
+"Apa itu DKP Assistant?"
+
+"Apakah jawaban chatbot merupakan keputusan resmi Dinas?"
+
+"Informasi apa saja yang dapat ditanyakan?"
+
+"Dari mana chatbot mendapatkan informasi?"
+
+"Apa yang terjadi jika chatbot tidak menemukan jawaban?"
+
+"Bagaimana cara menghubungi petugas?"
+
+==================================================
+7. CALL TO ACTION
+==================================================
+
+Create a full-width CTA banner.
+
+Headline:
+"Masih Memiliki Pertanyaan tentang KP atau Magang?"
+
+Description:
+"Gunakan DKP Assistant untuk menemukan informasi berdasarkan dokumen resmi yang tersedia."
+
+Button:
+"Mulai Bertanya"
+
+Use dark navy blue to ocean blue gradient background.
+
+==================================================
+8. FOOTER
+==================================================
+
+Create footer with four columns.
+
+Column 1:
+DKP Assistant
+Short system description.
+
+Column 2:
+Navigasi
+Beranda
+Layanan
+Cara Kerja
+FAQ
+
+Column 3:
+Akses
+Chatbot
+Kontak Layanan
+
+Column 4:
+Instansi
+Dinas Kelautan dan Perikanan Provinsi Jawa Timur
+
+Add:
+Copyright information.
+Privacy Policy.
+Disclaimer.
+
+==================================================
+9. DEDICATED CHATBOT PAGE
+==================================================
+
+Create a full chatbot application interface similar to modern AI assistant applications.
+
+Layout:
+
+LEFT SIDEBAR:
+
+DKP Assistant logo.
+
+Button:
+"+ Percakapan Baru"
+
+Conversation history grouped by:
+
+Hari Ini
+Kemarin
+7 Hari Terakhir
+
+Sidebar navigation:
+Beranda
+Chatbot
+Bantuan
+
+Bottom:
+Disclaimer
+Privacy Policy
+
+MAIN CHAT AREA:
+
+Initial empty state:
+
+Icon or illustration.
+
+Headline:
+"Halo, ada yang bisa DKP Assistant bantu?"
+
+Description:
+"Tanyakan informasi seputar Kerja Praktik dan Magang."
+
+Suggested questions:
+
+"Apa saja persyaratan pengajuan magang?"
+
+"Bagaimana alur pengajuan KP?"
+
+"Berapa lama proses pengajuan?"
+
+"Dokumen apa saja yang harus disiapkan?"
+
+CHAT INTERFACE:
+
+User message aligned right.
+
+AI answer aligned left.
+
+Every AI answer contains:
+
+- DKP Assistant avatar.
+- Answer content.
+- Source citation.
+- Button "Lihat Sumber".
+- Copy button.
+- Regenerate button.
+- Helpful button.
+- Not Helpful button.
+- Timestamp.
+
+SOURCE CITATION:
+
+Display expandable source citation cards.
+
+Example:
+
+"SOP Pelayanan KP dan Magang"
+
+Category:
+Persyaratan
+
+Page:
+3
+
+Relevance:
+92%
+
+Button:
+"Lihat Dokumen"
+
+CHAT INPUT:
+
+Sticky input at bottom.
+
+Placeholder:
+"Tanyakan informasi tentang KP dan Magang..."
+
+Include:
+Send button.
+Character limit indicator.
+
+Add disclaimer:
+
+"DKP Assistant dapat menghasilkan jawaban yang kurang tepat. Pastikan kembali informasi penting melalui layanan resmi."
+
+CHATBOT STATES:
+
+Design:
+
+- Initial state.
+- Typing state.
+- Loading retrieval state.
+- Answer state.
+- No information found state.
+- API error state.
+- Rate limit state.
+
+NO INFORMATION FOUND:
+
+Message:
+
+"Maaf, saya belum menemukan informasi yang cukup untuk menjawab pertanyaan tersebut berdasarkan dokumen yang tersedia."
+
+Actions:
+
+"Coba Pertanyaan Lain"
+
+"Hubungi Petugas"
+
+==================================================
+10. ADMIN LOGIN
+==================================================
+
+Create a clean government service admin login page.
+
+Fields:
+
+Email
+Password
+
+Features:
+
+Show password.
+Remember me.
+Forgot password.
+Login button.
+
+Include security information:
+
+"Halaman ini hanya dapat diakses oleh administrator resmi."
+
+==================================================
+11. ADMIN DASHBOARD
+==================================================
+
+Create responsive admin dashboard.
+
+LEFT SIDEBAR:
+
+Dashboard
+Knowledge Base
+Dokumen
+Conversation Logs
+Pertanyaan Tidak Terjawab
+Feedback
+Analytics
+Pengaturan Chatbot
+Manajemen Admin
+
+Bottom:
+Logout
+
+TOP BAR:
+
+Page title.
+
+Global search.
+
+Notification icon.
+
+Admin profile.
+
+DASHBOARD OVERVIEW:
+
+Metric cards:
+
+Total Percakapan
+
+Total Pertanyaan
+
+Pertanyaan Hari Ini
+
+Knowledge Base Aktif
+
+Pertanyaan Tidak Terjawab
+
+Feedback Positif
+
+Average Response Time
+
+Create charts:
+
+"Tren Pertanyaan Chatbot"
+
+Line chart:
+Daily questions for the last 30 days.
+
+"Kategori Pertanyaan Terbanyak"
+
+Bar chart.
+
+"Status Jawaban"
+
+Donut chart:
+
+Berhasil Dijawab
+Tidak Ditemukan
+Error
+
+"Feedback Pengguna"
+
+Positive vs Negative feedback.
+
+Create section:
+
+"Pertanyaan Terbaru"
+
+Table columns:
+
+Pertanyaan
+Kategori
+Status
+Waktu
+Feedback
+Action
+
+Create section:
+
+"Pertanyaan Tidak Terjawab Terbaru"
+
+Display five recent knowledge gaps.
+
+Button:
+"Lihat Semua"
+
+==================================================
+12. KNOWLEDGE BASE MANAGEMENT
+==================================================
+
+Page title:
+"Knowledge Base"
+
+Description:
+"Kelola dokumen yang digunakan sebagai sumber informasi DKP Assistant."
+
+Metric cards:
+
+Total Dokumen
+Dokumen Aktif
+Total Chunks
+Gagal Diproses
+
+Controls:
+
+Search.
+
+Filter by category.
+
+Filter by status.
+
+Sort by upload date.
+
+Button:
+"+ Tambah Dokumen"
+
+TABLE:
+
+Columns:
+
+Document Name
+Category
+File Type
+Version
+Upload Date
+Indexing Status
+Chunks
+Status
+Actions
+
+INDEXING STATUS:
+
+Pending
+Processing
+Ready
+Failed
+
+ACTIONS:
+
+View.
+Edit Metadata.
+Re-index.
+Activate/Deactivate.
+Delete.
+
+==================================================
+13. UPLOAD KNOWLEDGE DOCUMENT
+==================================================
+
+Create document upload page or modal.
+
+Drag-and-drop upload area.
+
+Supported files:
+
+PDF
+DOCX
+XLSX
+
+Fields:
+
+Document Title.
+
+Category.
+
+Description.
+
+Document Version.
+
+Effective Date.
+
+Status.
+
+Button:
+"Upload dan Proses Dokumen"
+
+Show processing visualization:
+
+Uploading File
+Extracting Text
+Chunking Document
+Creating Embeddings
+Saving to Vector Database
+Ready
+
+Create success state and failed processing state.
+
+==================================================
+14. DOCUMENT DETAIL
+==================================================
+
+Display:
+
+Document information.
+
+File preview.
+
+Metadata.
+
+Indexing status.
+
+Number of chunks.
+
+Upload date.
+
+Last indexing date.
+
+Uploaded by.
+
+Tabs:
+
+Overview
+Document Preview
+Chunks
+Usage Statistics
+
+CHUNKS TABLE:
+
+Chunk ID
+Content Preview
+Page
+Token Count
+Actions
+
+Allow admin to preview retrieved chunks.
+
+==================================================
+15. CONVERSATION LOGS
+==================================================
+
+Create conversation monitoring page.
+
+Filters:
+
+Date range.
+
+Answer status.
+
+Category.
+
+Feedback.
+
+Search question.
+
+TABLE:
+
+Conversation ID
+Question
+Category
+Answer Status
+Sources Used
+Retrieval Score
+Response Time
+Feedback
+Date
+Action
+
+Clicking a conversation opens Conversation Detail.
+
+==================================================
+16. CONVERSATION DETAIL
+==================================================
+
+Display full conversation.
+
+User questions.
+
+Chatbot answers.
+
+Sources used.
+
+Retrieved document chunks.
+
+Retrieval score.
+
+Response time.
+
+User feedback.
+
+Prompt metadata.
+
+Model information.
+
+Create button:
+
+"Tandai untuk Evaluasi"
+
+==================================================
+17. UNANSWERED QUESTIONS MANAGEMENT
+==================================================
+
+Create page:
+
+"Pertanyaan Tidak Terjawab"
+
+Description:
+
+"Identifikasi pertanyaan pengguna yang belum dapat dijawab berdasarkan knowledge base."
+
+Metric cards:
+
+Total Unanswered Questions.
+
+Unresolved.
+
+Under Review.
+
+Resolved.
+
+TABLE:
+
+Question.
+
+Frequency.
+
+Detected Category.
+
+Highest Retrieval Score.
+
+First Asked.
+
+Last Asked.
+
+Status.
+
+Action.
+
+STATUS:
+
+Baru.
+
+Ditinjau.
+
+Perlu Pembaruan Knowledge Base.
+
+Selesai.
+
+QUESTION DETAIL DRAWER:
+
+Display:
+
+Full question.
+
+Similar questions.
+
+Frequency.
+
+Retrieved documents.
+
+Retrieval scores.
+
+Chatbot fallback response.
+
+Admin notes.
+
+Actions:
+
+"Tambahkan Knowledge Base"
+
+"Hubungkan ke Dokumen"
+
+"Tandai Selesai"
+
+==================================================
+18. USER FEEDBACK MANAGEMENT
+==================================================
+
+Create feedback dashboard.
+
+Metrics:
+
+Total Feedback.
+
+Positive Feedback.
+
+Negative Feedback.
+
+Satisfaction Rate.
+
+TABLE:
+
+Question.
+
+Answer Preview.
+
+Feedback.
+
+Feedback Reason.
+
+Date.
+
+Action.
+
+Negative feedback reasons:
+
+Tidak Sesuai Pertanyaan.
+
+Informasi Tidak Lengkap.
+
+Informasi Tidak Berlaku.
+
+Jawaban Sulit Dipahami.
+
+Lainnya.
+
+==================================================
+19. CHATBOT ANALYTICS
+==================================================
+
+Create comprehensive analytics page.
+
+Date range filter.
+
+Metrics:
+
+Total Conversations.
+
+Total Questions.
+
+Unique Sessions.
+
+Answer Rate.
+
+Fallback Rate.
+
+Positive Feedback Rate.
+
+Average Response Time.
+
+Charts:
+
+Questions Over Time.
+
+Most Asked Categories.
+
+Most Frequently Asked Questions.
+
+Answered vs Unanswered Questions.
+
+Feedback Trend.
+
+Average Retrieval Score.
+
+Knowledge Base Usage.
+
+Top Source Documents.
+
+==================================================
+20. CHATBOT SETTINGS
+==================================================
+
+Create settings page with tabs.
+
+GENERAL:
+
+Chatbot Name.
+
+Welcome Message.
+
+Chatbot Description.
+
+Enable/Disable Chatbot.
+
+SUGGESTED QUESTIONS:
+
+Add.
+
+Edit.
+
+Delete.
+
+Reorder.
+
+FALLBACK RESPONSE:
+
+Default fallback message.
+
+Contact service information.
+
+RAG CONFIGURATION:
+
+Retrieval Top-K.
+
+Similarity Threshold.
+
+Maximum Context Length.
+
+Show Source Citation toggle.
+
+PROMPT CONFIGURATION:
+
+System Instruction textarea.
+
+Preview prompt.
+
+Reset to default.
+
+Do not expose API keys.
+
+==================================================
+21. ADMIN MANAGEMENT
+==================================================
+
+Create admin user management page.
+
+TABLE:
+
+Admin Name.
+
+Email.
+
+Role.
+
+Status.
+
+Last Login.
+
+Created Date.
+
+Actions.
+
+Roles:
+
+Super Admin.
+
+Admin.
+
+Features:
+
+Add Admin.
+
+Edit Admin.
+
+Activate/Deactivate.
+
+Reset Password.
+
+==================================================
+22. ACTIVITY LOG
+==================================================
+
+Create admin activity log.
+
+TABLE:
+
+Administrator.
+
+Action.
+
+Module.
+
+Description.
+
+Date and Time.
+
+IP Address.
+
+Filters:
+
+Administrator.
+
+Module.
+
+Action.
+
+Date Range.
+
+==================================================
+RESPONSIVE DESIGN
+==================================================
+
+Create responsive layouts for:
+
+Desktop: 1440px.
+
+Tablet: 768px.
+
+Mobile: 390px.
+
+LANDING PAGE MOBILE:
+
+Responsive navigation.
+
+Hamburger menu.
+
+Stacked hero content.
+
+Touch-friendly buttons.
+
+Horizontally scrollable category cards when necessary.
+
+CHATBOT MOBILE:
+
+Collapsible conversation sidebar.
+
+Full-screen chat interface.
+
+Sticky chat input.
+
+Touch-friendly source cards.
+
+ADMIN MOBILE:
+
+Collapsible sidebar.
+
+Responsive metric cards.
+
+Scrollable data tables.
+
+Mobile-friendly filters.
+
+==================================================
+PROTOTYPE INTERACTIONS
+==================================================
+
+Create clickable prototype interactions:
+
+Landing Page → Chatbot.
+
+Information Category → Chatbot with suggested question.
+
+Popular Question → Chatbot with question inserted.
+
+Chatbot → Source Detail.
+
+Chatbot → Feedback Modal.
+
+Chatbot → New Conversation.
+
+Admin Login → Dashboard.
+
+Dashboard → Knowledge Base.
+
+Knowledge Base → Upload Document.
+
+Knowledge Base → Document Detail.
+
+Document Detail → Re-index Document.
+
+Dashboard → Conversation Logs.
+
+Conversation Logs → Conversation Detail.
+
+Dashboard → Unanswered Questions.
+
+Unanswered Question → Question Detail.
+
+Question Detail → Add Knowledge Base.
+
+Dashboard → Analytics.
+
+Dashboard → Chatbot Settings.
+
+==================================================
+IMPORTANT REQUIREMENTS
+==================================================
+
+Do not design this as a generic corporate website.
+
+The primary product is the AI chatbot information service.
+
+Make the chatbot interface one of the most visually important parts of the system.
+
+Make Knowledge Base Management, Conversation Monitoring, Unanswered Questions, User Feedback, and Analytics the core admin features.
+
+Do not add KP/Magang registration, application submission, document verification, participant monitoring, or internship administration features.
+
+The website only focuses on AI chatbot information services for Kerja Praktik and Magang.
+
+The chatbot must clearly communicate that answers are generated from official knowledge base documents.
+
+Prioritize transparency by displaying source citations.
+
+Create consistent reusable components and Auto Layout.
+
+Use proper Figma layer naming.
+
+Use component variants.
+
+Create desktop, tablet, and mobile responsive layouts.
+
+The final result should be suitable for:
+- Kerja Praktik project.
+- Academic presentation.
+- System demonstration.
+- Usability testing.
+- Implementation reference for Laravel and FastAPI development.
