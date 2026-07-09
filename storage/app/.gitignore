@@ -2,3 +2,10 @@
 !private/
 !public/
 !.gitignore
+
+# Track DKP Assistant knowledge base
+!knowledge-base/
+!knowledge-base/**/
+!knowledge-base/**/*.md
+!knowledge-base/**/*.json
+!knowledge-base/**/.gitkeep

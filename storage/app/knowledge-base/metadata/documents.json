@@ -1,0 +1,129 @@
+{
+  "schema_version": "1.0",
+  "knowledge_base": {
+    "name": "DKP Assistant Knowledge Base",
+    "issuer": "Dinas Kelautan dan Perikanan Provinsi Jawa Timur",
+    "description": "Knowledge base untuk layanan informasi Kerja Praktik, Magang, PKL, penelitian, permintaan data, dan administrasi terkait."
+  },
+  "priority_policy": {
+    "description": "Nilai priority yang lebih kecil menunjukkan otoritas sumber yang lebih tinggi.",
+    "levels": {
+      "1": "Surat edaran, regulasi, atau kebijakan resmi terbaru",
+      "2": "SOP, prosedur pelayanan, atau dokumen resmi operasional",
+      "3": "Panduan dan infografik resmi",
+      "4": "Contoh atau template dokumen"
+    }
+  },
+  "documents": [
+    {
+      "document_id": "KB-001",
+      "title": "Ketentuan Umum Peserta Magang dan PKL",
+      "category": "pelaksanaan",
+      "document_type": "official_infographic",
+      "effective_date": null,
+      "priority": 3,
+      "status": "active",
+      "source_file": null,
+      "processed_file": "KB-001-ketentuan-umum-peserta.md"
+    },
+    {
+      "document_id": "KB-002",
+      "title": "Alur Magang dan Praktik Kerja Lapangan",
+      "category": "prosedur",
+      "document_type": "official_infographic",
+      "effective_date": null,
+      "priority": 3,
+      "status": "active",
+      "source_file": null,
+      "processed_file": "KB-002-alur-magang-pkl.md"
+    },
+    {
+      "document_id": "KB-003",
+      "title": "Persyaratan Magang dan PKL",
+      "category": "persyaratan",
+      "document_type": "official_infographic",
+      "effective_date": null,
+      "priority": 3,
+      "status": "active",
+      "source_file": null,
+      "processed_file": "KB-003-persyaratan-magang-pkl.md"
+    },
+    {
+      "document_id": "KB-004",
+      "title": "Informasi Wajib Surat Permohonan",
+      "category": "pengajuan",
+      "document_type": "official_infographic",
+      "effective_date": null,
+      "priority": 3,
+      "status": "active",
+      "source_file": null,
+      "processed_file": "KB-004-informasi-surat-permohonan.md"
+    },
+    {
+      "document_id": "KB-005",
+      "title": "Prosedur Pelayanan Magang dan PKL",
+      "category": "prosedur",
+      "document_type": "official_procedure",
+      "effective_date": null,
+      "priority": 2,
+      "status": "active",
+      "source_file": null,
+      "processed_file": "KB-005-prosedur-pelayanan.md"
+    },
+    {
+      "document_id": "KB-006",
+      "title": "Penyelesaian Magang dan PKL",
+      "category": "penyelesaian",
+      "document_type": "official_infographic",
+      "effective_date": null,
+      "priority": 3,
+      "status": "active",
+      "source_file": null,
+      "processed_file": "KB-006-penyelesaian-magang-pkl.md"
+    },
+    {
+      "document_id": "KB-007",
+      "title": "Penerbitan Sertifikat Magang dan PKL",
+      "category": "sertifikat",
+      "document_type": "official_infographic",
+      "effective_date": null,
+      "priority": 3,
+      "status": "active",
+      "source_file": null,
+      "processed_file": "KB-007-penerbitan-sertifikat.md"
+    },
+    {
+      "document_id": "KB-008",
+      "title": "Kebijakan Surat Keterangan Magang, PKL, dan Penelitian",
+      "category": "kebijakan",
+      "document_type": "official_circular",
+      "effective_date": null,
+      "priority": 1,
+      "status": "active",
+      "source_file": null,
+      "processed_file": "KB-008-kebijakan-surat-keterangan.md"
+    },
+    {
+      "document_id": "KB-009",
+      "title": "Penelitian, Permintaan Data, Wawancara, dan Observasi",
+      "category": "penelitian",
+      "document_type": "official_infographic",
+      "effective_date": null,
+      "priority": 3,
+      "status": "active",
+      "source_file": null,
+      "processed_file": "KB-009-penelitian-permintaan-data.md"
+    },
+    {
+      "document_id": "KB-010",
+      "title": "Contoh Surat Permohonan Magang dan PKL",
+      "category": "template",
+      "document_type": "official_template",
+      "effective_date": null,
+      "priority": 4,
+      "status": "reference",
+      "source_file": null,
+      "processed_file": "KB-010-contoh-surat-permohonan.md"
+    }
+  ]
+}
