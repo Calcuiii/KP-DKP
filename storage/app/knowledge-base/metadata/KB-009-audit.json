@@ -1,0 +1,99 @@
+{
+  "document_id": "KB-009",
+  "audit_version": "1.0",
+  "audit_status": "completed",
+  "source_grounding_required": true,
+  "source_provenance": {
+    "source_type": "official_infographic",
+    "issuer": "Dinas Kelautan dan Perikanan Provinsi Jawa Timur",
+    "source_file": "originals/images/KB-009-penelitian-permintaan-data-wawancara-observasi.jpeg",
+    "source_sha256": "61ed802a8e0e951811346cc61fe1c3d391814e10a035d13f66b1bd4577b0669f",
+    "source_reference": null,
+    "source_available_for_audit": true
+  },
+  "audit_notes": [
+    "Processed knowledge base hanya memuat informasi yang didukung oleh sumber asli.",
+    "Duplikasi Fakultas dan Universitas pada sumber dinormalisasi menjadi informasi unik.",
+    "Ketidakkonsistenan penomoran huruf pada sumber tidak digunakan untuk menebak butir yang tidak tercantum.",
+    "Setiap klaim verified memiliki source_evidence yang spesifik."
+  ],
+  "claims": [
+    {
+      "claim_id": "KB-009-C01",
+      "topic": "identitas_diri",
+      "claim": "Pemohon melampirkan identitas diri yang masih berlaku.",
+      "status": "verified",
+      "source_evidence": "Identitas Diri yang masih berlaku"
+    },
+    {
+      "claim_id": "KB-009-C02",
+      "topic": "jenis_identitas",
+      "claim": "Identitas diri dapat berupa KTM atau KTP/SIM.",
+      "status": "verified",
+      "source_evidence": "Kartu Tanda Mahasiswa (KTM) atau Kartu Tanda Penduduk (KTP) / Surat Izin Mengemudi (SIM)"
+    },
+    {
+      "claim_id": "KB-009-C03",
+      "topic": "surat_permohonan_resmi",
+      "claim": "Pemohon melampirkan Surat Permohonan Resmi dari institusi pendidikan asal.",
+      "status": "verified",
+      "source_evidence": "Surat Permohonan Resmi dari Institusi Pendidikan Asal"
+    },
+    {
+      "claim_id": "KB-009-C04",
+      "topic": "identitas_mahasiswa_dalam_surat",
+      "claim": "Surat Permohonan memuat Nama Mahasiswa, Nomor Induk Mahasiswa, dan Semester.",
+      "status": "verified",
+      "source_evidence": "Nama Mahasiswa; Nomer Induk Mahasiswa; Semester"
+    },
+    {
+      "claim_id": "KB-009-C05",
+      "topic": "institusi_mahasiswa_dalam_surat",
+      "claim": "Surat Permohonan memuat Program Studi atau Departemen, Fakultas, dan Universitas.",
+      "status": "verified",
+      "source_evidence": "Program Studi / Departemen; Fakultas; Universitas"
+    },
+    {
+      "claim_id": "KB-009-C06",
+      "topic": "dosen_pembimbing",
+      "claim": "Surat Permohonan memuat nama Dosen Pembimbing atau Dosen Lapangan dan nomor WhatsApp aktifnya.",
+      "status": "verified",
+      "source_evidence": "Nama Dosen Pembimbing / Dosen Lapangan dan No. WhatsApp aktifnya"
+    },
+    {
+      "claim_id": "KB-009-C07",
+      "topic": "deadline_data",
+      "claim": "Surat Permohonan memuat batas waktu atau deadline keperluan data.",
+      "status": "verified",
+      "source_evidence": "Batas Waktu / Deadline Keperluan Data"
+    },
+    {
+      "claim_id": "KB-009-C08",
+      "topic": "tujuan_penggunaan_data",
+      "claim": "Surat Permohonan memuat tujuan penggunaan data atau informasi.",
+      "status": "verified",
+      "source_evidence": "Tujuan Penggunaan Data / Informasi"
+    },
+    {
+      "claim_id": "KB-009-C09",
+      "topic": "ethical_clearance",
+      "claim": "Pemohon melampirkan Form \"Ethical Clearance\".",
+      "status": "verified",
+      "source_evidence": "Form \"Ethical Clearance\""
+    },
+    {
+      "claim_id": "KB-009-C10",
+      "topic": "proposal_kegiatan",
+      "claim": "Pemohon melampirkan Proposal Kegiatan dengan format sesuai institusi asal.",
+      "status": "verified",
+      "source_evidence": "Proposal Kegiatan (format sesuai institusi asal)"
+    },
+    {
+      "claim_id": "KB-009-C11",
+      "topic": "tautan_layanan",
+      "claim": "Tautan yang tercantum pada sumber adalah bit.ly/EASL-DKP.",
+      "status": "verified",
+      "source_evidence": "https://bit.ly/EASL-DKP"
+    }
+  ]
+}

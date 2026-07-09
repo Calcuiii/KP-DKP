@@ -113,14 +113,15 @@
     },
     {
       "document_id": "KB-009",
-      "title": "Penelitian, Permintaan Data, Wawancara, dan Observasi",
+      "title": "Persyaratan Dokumen Pengajuan Penelitian, Permintaan Data, Informasi, Wawancara, dan Observasi",
       "category": "penelitian",
       "document_type": "official_infographic",
       "effective_date": null,
       "priority": 3,
       "status": "active",
-      "source_file": null,
-      "processed_file": "KB-009-penelitian-permintaan-data.md"
+      "source_file": "originals/images/KB-009-penelitian-permintaan-data-wawancara-observasi.jpeg",
+      "processed_file": "KB-009-penelitian-permintaan-data.md",
+      "source_sha256": "61ed802a8e0e951811346cc61fe1c3d391814e10a035d13f66b1bd4577b0669f"
     },
     {
       "document_id": "KB-010",
