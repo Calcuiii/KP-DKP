@@ -53,14 +53,15 @@
     },
     {
       "document_id": "KB-004",
-      "title": "Informasi Wajib Surat Permohonan",
+      "title": "Informasi yang Wajib Disampaikan dalam Surat Permohonan Magang / Praktik Kerja Lapang",
       "category": "pengajuan",
       "document_type": "official_infographic",
       "effective_date": null,
       "priority": 3,
       "status": "active",
-      "source_file": null,
-      "processed_file": "KB-004-informasi-surat-permohonan.md"
+      "source_file": "originals/images/KB-004-informasi-wajib-surat-permohonan.jpeg",
+      "processed_file": "KB-004-informasi-wajib-surat-permohonan.md",
+      "source_sha256": "c85afb968ef8c851609bbffc552622786996d383f28ea3b2615c519c1cb593c2"
     },
     {
       "document_id": "KB-005",

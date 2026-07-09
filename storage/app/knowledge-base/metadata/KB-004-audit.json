@@ -1,0 +1,105 @@
+{
+  "document_id": "KB-004",
+  "audit_version": "1.0",
+  "audit_status": "completed",
+  "source_grounding_required": true,
+  "source_provenance": {
+    "source_type": "official_infographic",
+    "issuer": "Dinas Kelautan dan Perikanan Provinsi Jawa Timur",
+    "source_file": "originals/images/KB-004-informasi-wajib-surat-permohonan.jpeg",
+    "source_sha256": "c85afb968ef8c851609bbffc552622786996d383f28ea3b2615c519c1cb593c2",
+    "source_reference": "12 poin informasi wajib dalam Surat Permohonan Magang / Praktik Kerja Lapang",
+    "source_available_for_audit": true
+  },
+  "audit_notes": [
+    "Processed knowledge base disusun berdasarkan transkripsi sumber infografik resmi.",
+    "Setiap klaim verified memiliki source_evidence yang merujuk pada poin sumber.",
+    "Processed knowledge base tidak boleh menambahkan persyaratan yang tidak terdapat pada sumber."
+  ],
+  "claims": [
+    {
+      "claim_id": "KB-004-C01",
+      "topic": "nama_lengkap",
+      "claim": "Surat Permohonan memuat Nama Lengkap pemohon untuk identifikasi.",
+      "status": "verified",
+      "source_evidence": "Poin 1: Nama Lengkap — Nama lengkap pemohon untuk identifikasi."
+    },
+    {
+      "claim_id": "KB-004-C02",
+      "topic": "nis_nim",
+      "claim": "NIS atau NIM wajib ditulis untuk masing-masing individu.",
+      "status": "verified",
+      "source_evidence": "Poin 2: NIS/NIM — Wajib ditulis setiap masing-masing individu."
+    },
+    {
+      "claim_id": "KB-004-C03",
+      "topic": "kompetensi_keahlian",
+      "claim": "Surat Permohonan memuat Kompetensi Keahlian berupa bidang keahlian atau studi pemohon.",
+      "status": "verified",
+      "source_evidence": "Poin 3: Kompetensi Keahlian — Bidang keahlian atau studi pemohon."
+    },
+    {
+      "claim_id": "KB-004-C04",
+      "topic": "sekolah_fakultas",
+      "claim": "Surat Permohonan memuat Sekolah atau Fakultas tempat pemohon terdaftar.",
+      "status": "verified",
+      "source_evidence": "Poin 4: Sekolah/Fakultas — Institusi pendidikan tempat pemohon terdaftar."
+    },
+    {
+      "claim_id": "KB-004-C05",
+      "topic": "universitas_asal",
+      "claim": "Surat Permohonan memuat Universitas Asal pemohon.",
+      "status": "verified",
+      "source_evidence": "Poin 5: Universitas Asal — Universitas tempat pemohon berasal."
+    },
+    {
+      "claim_id": "KB-004-C06",
+      "topic": "jumlah_peserta",
+      "claim": "Surat Permohonan memuat jumlah peserta yang diharapkan dalam kegiatan.",
+      "status": "verified",
+      "source_evidence": "Poin 6: Jumlah Peserta — Jumlah peserta yang diharapkan dalam kegiatan."
+    },
+    {
+      "claim_id": "KB-004-C07",
+      "topic": "surat_keterangan_sertifikat",
+      "claim": "Bagi pemohon yang membutuhkan Surat Keterangan dan Sertifikat, kebutuhan tersebut wajib disampaikan dalam Surat Permohonan.",
+      "status": "verified",
+      "source_evidence": "Poin 7: Surat Keterangan dan Sertifikat — Bagi pemohon yang membutuhkan Surat Keterangan dan Sertifikat, wajib disampaikan dalam surat."
+    },
+    {
+      "claim_id": "KB-004-C08",
+      "topic": "lokasi_kegiatan",
+      "claim": "Surat Permohonan memuat lokasi yang diinginkan untuk kegiatan Magang atau Praktik Kerja Lapang.",
+      "status": "verified",
+      "source_evidence": "Poin 8: Lokasi Kegiatan — Lokasi yang diinginkan untuk kegiatan magang/Praktik Kerja Lapang."
+    },
+    {
+      "claim_id": "KB-004-C09",
+      "topic": "periode_kegiatan",
+      "claim": "Surat Permohonan memuat periode kegiatan berupa tanggal mulai dan tanggal berakhir yang diusulkan.",
+      "status": "verified",
+      "source_evidence": "Poin 9: Periode Kegiatan — Tanggal mulai dan berakhir yang diusulkan untuk kegiatan."
+    },
+    {
+      "claim_id": "KB-004-C10",
+      "topic": "tema_kegiatan",
+      "claim": "Surat Permohonan memuat tema atau topik utama kegiatan.",
+      "status": "verified",
+      "source_evidence": "Poin 10: Tema Kegiatan — Tema atau topik utama kegiatan."
+    },
+    {
+      "claim_id": "KB-004-C11",
+      "topic": "judul_kegiatan",
+      "claim": "Surat Permohonan memuat judul spesifik kegiatan Magang.",
+      "status": "verified",
+      "source_evidence": "Poin 11: Judul Kegiatan — Judul spesifik kegiatan magang."
+    },
+    {
+      "claim_id": "KB-004-C12",
+      "topic": "nomor_wa_perwakilan",
+      "claim": "Surat Permohonan memuat nomor WhatsApp perwakilan untuk koordinasi.",
+      "status": "verified",
+      "source_evidence": "Poin 12: No. WA Perwakilan — Nomor WhatsApp untuk koordinasi."
+    }
+  ]
+}
