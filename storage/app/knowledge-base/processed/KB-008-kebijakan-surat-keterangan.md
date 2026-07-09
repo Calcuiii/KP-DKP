@@ -8,6 +8,7 @@ effective_date: null
 priority: 1
 status: active
 source_file: originals/images/KB-008-se-sekda-magang-pkl-penelitian.jpeg
+policy_relations: [{"relation": "overrides", "document_id": "KB-002", "topics": ["surat_keterangan"]}, {"relation": "overrides", "document_id": "KB-007", "topics": ["surat_keterangan"]}, {"relation": "clarifies", "document_id": "KB-002", "topics": ["sertifikat"]}, {"relation": "clarifies", "document_id": "KB-007", "topics": ["sertifikat"]}, {"relation": "clarifies", "document_id": "KB-010", "topics": ["sertifikat"]}]
 ---
 
 # Kebijakan Surat Keterangan Magang, PKL, dan Penelitian
