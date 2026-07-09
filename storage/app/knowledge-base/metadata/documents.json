@@ -89,14 +89,15 @@
     },
     {
       "document_id": "KB-007",
-      "title": "Penerbitan Sertifikat Magang dan PKL",
-      "category": "sertifikat",
+      "title": "Alur Magang / Praktik Kerja Lapang (PKL)",
+      "category": "prosedur",
       "document_type": "official_infographic",
       "effective_date": null,
       "priority": 3,
       "status": "active",
-      "source_file": null,
-      "processed_file": "KB-007-penerbitan-sertifikat.md"
+      "source_file": "originals/images/KB-007-alur-magang-pkl.jpeg",
+      "processed_file": "KB-007-alur-magang-pkl.md",
+      "source_sha256": "03ccdbed3fc8fa1bef5d09acf7903f8d775ab8f44d642dedd1635b1544711c5c"
     },
     {
       "document_id": "KB-008",
