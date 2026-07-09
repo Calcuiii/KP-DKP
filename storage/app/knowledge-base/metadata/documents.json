@@ -41,14 +41,15 @@
     },
     {
       "document_id": "KB-003",
-      "title": "Persyaratan Magang dan PKL",
-      "category": "persyaratan",
+      "title": "Prosedur Pelayanan Magang / Praktik Kerja Lapang",
+      "category": "prosedur",
       "document_type": "official_infographic",
       "effective_date": null,
       "priority": 3,
       "status": "active",
-      "source_file": null,
-      "processed_file": "KB-003-persyaratan-magang-pkl.md"
+      "source_file": "originals/images/KB-003-prosedur-pelayanan-magang-pkl.jpeg",
+      "processed_file": "KB-003-prosedur-pelayanan-magang-pkl.md",
+      "source_sha256": "621a4536e8758e2428520407d570a9f96b934c91e3887b09152d9e7bca194e8e"
     },
     {
       "document_id": "KB-004",
