@@ -107,8 +107,9 @@
       "effective_date": null,
       "priority": 1,
       "status": "active",
-      "source_file": null,
-      "processed_file": "KB-008-kebijakan-surat-keterangan.md"
+      "source_file": "originals/images/KB-008-se-sekda-magang-pkl-penelitian.jpeg",
+      "processed_file": "KB-008-kebijakan-surat-keterangan.md",
+      "source_sha256": "78a233b9c02c1ddabec89e76472261511d7569b334a4d53dd26c2c50e753a44a"
     },
     {
       "document_id": "KB-009",
