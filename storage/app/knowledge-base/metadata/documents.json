@@ -23,8 +23,9 @@
       "effective_date": null,
       "priority": 3,
       "status": "active",
-      "source_file": null,
-      "processed_file": "KB-001-ketentuan-umum-peserta.md"
+      "source_file": "originals/images/KB-001-ketentuan-umum-peserta.jpeg",
+      "processed_file": "KB-001-ketentuan-umum-peserta.md",
+      "source_sha256": "c959bee662284b34d64c889d3b0e82eacc71c646f8b2c9ca0c5c4aedbff011fe"
     },
     {
       "document_id": "KB-002",

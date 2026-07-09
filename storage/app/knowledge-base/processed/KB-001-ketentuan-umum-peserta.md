@@ -7,72 +7,67 @@ issuer: Dinas Kelautan dan Perikanan Provinsi Jawa Timur
 effective_date: null
 priority: 3
 status: active
-source_file: null
+source_file: originals/images/KB-001-ketentuan-umum-peserta.jpeg
 ---
 
 # Ketentuan Umum Peserta Magang dan PKL
 
 ## Ruang Lingkup
 
-Dokumen ini memuat ketentuan umum yang harus diperhatikan oleh peserta selama melaksanakan kegiatan Magang atau Praktik Kerja Lapangan (PKL) di lingkungan Dinas Kelautan dan Perikanan Provinsi Jawa Timur.
+Dokumen ini memuat ketentuan umum bagi peserta Magang Kerja atau Praktik Kerja Lapangan (PKL) di lingkungan Dinas Kelautan dan Perikanan Provinsi Jawa Timur.
 
-## Kehadiran dan Jam Kerja
+## Waktu Pelaksanaan
 
-Peserta wajib mengikuti ketentuan hari dan jam kerja yang berlaku.
+Peserta wajib mengikuti waktu Magang Kerja atau Praktik Kerja Lapangan yang berlaku di lingkungan Dinas Kelautan dan Perikanan Provinsi Jawa Timur.
 
-Hari kerja berlangsung dari Senin sampai Jumat.
-
-Jam kerja peserta adalah sebagai berikut:
+Jam pelaksanaan adalah:
 
 - Senin sampai Kamis: pukul 08.00 sampai 16.00 WIB.
-- Jumat: pukul 07.00 sampai 15.30 WIB.
+- Jumat: pukul 07.30 sampai 16.00 WIB.
 
-Peserta wajib melakukan presensi pada saat datang dan pulang.
+## Kegiatan Selama Pelaksanaan
 
-## Pakaian Peserta
+Peserta wajib mengikuti seluruh kegiatan yang berlaku selama periode Magang Kerja atau Praktik Kerja Lapangan, termasuk upacara dan kegiatan insidentil lainnya tanpa terkecuali.
 
-Peserta wajib menggunakan pakaian yang sopan dan rapi selama melaksanakan kegiatan.
+## Kepatuhan terhadap Aturan
 
-Ketentuan pakaian peserta adalah sebagai berikut:
+Peserta wajib memenuhi seluruh aturan yang berlaku di lingkungan kantor Dinas Kelautan dan Perikanan Provinsi Jawa Timur.
 
-- Senin sampai Rabu menggunakan atasan putih dan bawahan hitam.
-- Kamis menggunakan batik.
-- Jumat menggunakan pakaian bebas, sopan, dan rapi.
+## Etika dan Tata Krama
 
-Peserta menggunakan sepatu selama melaksanakan kegiatan.
+Peserta wajib menjaga etika dan tata krama terhadap seluruh pegawai dan rekan kerja.
 
-## Identitas Peserta
+## Biaya Pelaksanaan
 
-Peserta wajib menggunakan kartu identitas atau tanda pengenal selama melaksanakan kegiatan Magang atau PKL.
+Seluruh biaya yang dikeluarkan oleh peserta Magang Kerja atau Praktik Kerja Lapangan menjadi tanggung jawab masing-masing peserta.
 
-## Tata Tertib
+## Penempatan Unit Kerja
 
-Peserta wajib menjaga sikap, etika, kesopanan, dan kedisiplinan selama berada di lingkungan kerja.
+Peserta bersedia ditempatkan di unit kerja mana saja yang membutuhkan.
 
-Peserta wajib menaati peraturan dan tata tertib yang berlaku di Dinas Kelautan dan Perikanan Provinsi Jawa Timur.
+## Keamanan dan Kerahasiaan
 
-Peserta wajib menjaga kebersihan dan ketertiban lingkungan kerja.
+Peserta wajib turut menjaga keamanan dan kerahasiaan dokumen negara yang bersifat rahasia.
 
-## Pelaksanaan Kegiatan
+## Laporan
 
-Peserta melaksanakan kegiatan sesuai dengan arahan pembimbing lapangan atau unit kerja tempat pelaksanaan Magang atau PKL.
+Peserta wajib membuat laporan Magang Kerja atau Praktik Kerja Lapangan sesuai dengan format institusi asal.
 
-Peserta wajib mengikuti kegiatan yang diberikan selama pelaksanaan Magang atau PKL.
+Laporan dikirimkan dalam bentuk PDF.
 
-## Dokumentasi dan Publikasi Kegiatan
+## Presentasi Hasil
 
-Peserta wajib membuat dokumentasi kegiatan selama pelaksanaan Magang atau PKL.
+Peserta melakukan presentasi hasil Magang Kerja atau Praktik Kerja Lapangan pada minggu terakhir. Pelaksanaan presentasi bersifat tentatif.
 
-Peserta wajib membuat video kegiatan dan mengunggahnya pada media sosial sesuai ketentuan yang berlaku.
+## Sanksi Pelanggaran
 
-## Penyelesaian Kegiatan
+Apabila peserta melanggar aturan yang berlaku selama periode Magang Kerja atau Praktik Kerja Lapangan, peserta bersedia menerima sanksi berupa:
 
-Peserta wajib menyelesaikan laporan kegiatan Magang atau PKL.
-
-Peserta wajib melakukan presentasi hasil kegiatan sesuai ketentuan penyelesaian kegiatan yang berlaku.
+- Pembinaan berupa teguran lisan untuk pelanggaran ringan.
+- Penundaan penerbitan Surat Keterangan dan Sertifikat Magang Kerja untuk pelanggaran sedang.
 
 ## Batasan Informasi
 
-Dokumen ini menjelaskan ketentuan umum peserta selama pelaksanaan Magang atau PKL.
+Dokumen ini hanya menjelaskan ketentuan umum peserta selama pelaksanaan Magang Kerja atau Praktik Kerja Lapangan.
 
-Informasi mengenai persyaratan pengajuan, alur pendaftaran, penyelesaian kegiatan secara rinci, dan penerbitan sertifikat dijelaskan pada dokumen knowledge base lainnya.
+Informasi mengenai persyaratan pengajuan, alur pendaftaran, proses penyelesaian kegiatan secara rinci, dan prosedur penerbitan sertifikat dijelaskan pada dokumen knowledge base lainnya.
