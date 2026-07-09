@@ -1,0 +1,100 @@
+{
+  "document_id": "KB-010",
+  "source_file": "originals/documents/KB-010-contoh-surat-permohonan-magang-pkl.pdf",
+  "source_sha256": "7e883ff03a37d3f7caa2eb892ca0c7333fe34ed6d38ac58ffbbf7f39da0a7a4a",
+  "processed_file": "KB-010-contoh-surat-permohonan.md",
+  "audit_status": "completed",
+  "claim_count": 15,
+  "claims": [
+    {
+      "claim_id": "KB-010-C01",
+      "status": "verified",
+      "claim": "Surat menggunakan kop surat resmi instansi atau institusi pendidikan asal.",
+      "evidence": "KOP SURAT RESMI INSTANSI / INSTITUSI PENDIDIKAN ASAL"
+    },
+    {
+      "claim_id": "KB-010-C02",
+      "status": "verified",
+      "claim": "Surat memuat Nomor, Lampiran, dan Hal.",
+      "evidence": "Nomor, Lampiran, dan Hal tercantum pada template."
+    },
+    {
+      "claim_id": "KB-010-C03",
+      "status": "verified",
+      "claim": "Hal surat pada contoh adalah Izin Magang Mandiri dengan arahan menyebutkan inti kegiatan utama.",
+      "evidence": "Hal : Izin Magang Mandiri *)sebutkan Inti Kegiatan Utama"
+    },
+    {
+      "claim_id": "KB-010-C04",
+      "status": "verified",
+      "claim": "Surat ditujukan kepada Kepala Dinas Kelautan dan Perikanan Provinsi Jawa Timur di Surabaya.",
+      "evidence": "Kepada Yth. Kepala Dinas Kelautan dan Perikanan Provinsi Jawa Timur di-Surabaya"
+    },
+    {
+      "claim_id": "KB-010-C05",
+      "status": "verified",
+      "claim": "Surat menyampaikan permohonan agar mahasiswa diizinkan melaksanakan Magang Mandiri.",
+      "evidence": "kami mohon bantuan dan kesediaan Bapak/Ibu mengizinkan mahasiswa kami"
+    },
+    {
+      "claim_id": "KB-010-C06",
+      "status": "verified",
+      "claim": "Surat memuat Nama Mahasiswa, NIM, Program Studi, dan Dosen Pengampu atau Pembimbing Lapangan.",
+      "evidence": "Nama Mahasiswa NIM Program Studi Dosen Pengampu / Pembimbing Lapangan"
+    },
+    {
+      "claim_id": "KB-010-C07",
+      "status": "verified",
+      "claim": "Surat memuat Tema Kegiatan.",
+      "evidence": "Tema Kegiatan"
+    },
+    {
+      "claim_id": "KB-010-C08",
+      "status": "verified",
+      "claim": "Surat memuat Lokasi Kegiatan dengan arahan agar lokasi ditulis secara spesifik.",
+      "evidence": "Lokasi Kegiatan ... lokasi harus spesifik"
+    },
+    {
+      "claim_id": "KB-010-C09",
+      "status": "verified",
+      "claim": "Surat memuat Judul Kegiatan.",
+      "evidence": "Judul Kegiatan"
+    },
+    {
+      "claim_id": "KB-010-C10",
+      "status": "verified",
+      "claim": "Surat memuat Periode Kegiatan.",
+      "evidence": "Periode Kegiatan"
+    },
+    {
+      "claim_id": "KB-010-C11",
+      "status": "verified",
+      "claim": "Contoh surat mencantumkan permohonan penerbitan Sertifikat Magang.",
+      "evidence": "kami juga memohon kesediaan Instansi Bapak/Ibu untuk dapat menerbitkan Sertifikat magang"
+    },
+    {
+      "claim_id": "KB-010-C12",
+      "status": "verified",
+      "claim": "Surat mencantumkan nama dan nomor WhatsApp perwakilan peserta sebagai narahubung.",
+      "evidence": "Nama : Nomer WA :"
+    },
+    {
+      "claim_id": "KB-010-C13",
+      "status": "verified",
+      "claim": "Surat ditandatangani oleh Dekan, Direktur, atau Pimpinan sesuai jabatan.",
+      "evidence": "Dekan / Direktur / Pimpinan (Jabatan)"
+    },
+    {
+      "claim_id": "KB-010-C14",
+      "status": "verified",
+      "claim": "Tanda tangan basah wajib dibubuhi stempel dan TTE diperbolehkan.",
+      "evidence": "TTD basah wajib dibubuhi stempel. boleh menggunakan TTE"
+    },
+    {
+      "claim_id": "KB-010-C15",
+      "status": "verified",
+      "claim": "Template menyediakan bagian Tembusan dan Arsip.",
+      "evidence": "Tembusan ... Arsip"
+    }
+  ]
+}

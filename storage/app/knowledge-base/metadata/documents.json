@@ -131,8 +131,9 @@
       "effective_date": null,
       "priority": 4,
       "status": "reference",
-      "source_file": null,
-      "processed_file": "KB-010-contoh-surat-permohonan.md"
+      "source_file": "originals/documents/KB-010-contoh-surat-permohonan-magang-pkl.pdf",
+      "processed_file": "KB-010-contoh-surat-permohonan.md",
+      "source_sha256": "7e883ff03a37d3f7caa2eb892ca0c7333fe34ed6d38ac58ffbbf7f39da0a7a4a"
     }
   ]
 }
