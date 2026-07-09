@@ -29,14 +29,15 @@
     },
     {
       "document_id": "KB-002",
-      "title": "Alur Magang dan Praktik Kerja Lapangan",
-      "category": "prosedur",
+      "title": "Penerbitan Surat Keterangan dan Sertifikat",
+      "category": "penyelesaian",
       "document_type": "official_infographic",
       "effective_date": null,
       "priority": 3,
       "status": "active",
-      "source_file": null,
-      "processed_file": "KB-002-alur-magang-pkl.md"
+      "source_file": "originals/images/KB-002-penerbitan-surat-keterangan-dan-sertifikat.jpeg",
+      "processed_file": "KB-002-penerbitan-surat-keterangan-dan-sertifikat.md",
+      "source_sha256": "b0ca7f68a6f33dbe059be6929817cf5953f335ceafca50288b0a9375bfbd5a81"
     },
     {
       "document_id": "KB-003",
