@@ -77,14 +77,15 @@
     },
     {
       "document_id": "KB-006",
-      "title": "Penyelesaian Magang dan PKL",
-      "category": "penyelesaian",
+      "title": "Layanan Pendaftaran Magang Kerja / Praktik Kerja Lapang",
+      "category": "layanan",
       "document_type": "official_infographic",
       "effective_date": null,
       "priority": 3,
       "status": "active",
-      "source_file": null,
-      "processed_file": "KB-006-penyelesaian-magang-pkl.md"
+      "source_file": "originals/images/KB-006-layanan-pendaftaran-magang-pkl.jpeg",
+      "processed_file": "KB-006-layanan-pendaftaran-magang-pkl.md",
+      "source_sha256": "7dc84bed5ee130a38e910aa98a8d87fad159ec884b36f82964c480f9408dfc7e"
     },
     {
       "document_id": "KB-007",

@@ -1,0 +1,121 @@
+{
+  "document_id": "KB-006",
+  "audit_version": "1.0",
+  "audit_status": "completed",
+  "source_grounding_required": true,
+  "source_provenance": {
+    "source_type": "official_infographic",
+    "issuer": "Dinas Kelautan dan Perikanan Provinsi Jawa Timur",
+    "source_file": "originals/images/KB-006-layanan-pendaftaran-magang-pkl.jpeg",
+    "source_sha256": "7dc84bed5ee130a38e910aa98a8d87fad159ec884b36f82964c480f9408dfc7e",
+    "source_available_for_audit": true
+  },
+  "audit_notes": [
+    "Knowledge base hanya memuat informasi layanan yang didukung sumber asli.",
+    "Nama pegawai dan alamat email personal tidak dimasukkan ke processed knowledge base karena tidak diperlukan untuk menjawab informasi layanan.",
+    "Tautan pendaftaran yang juga muncul pada KB-003 dipertahankan karena KB-006 berfungsi sebagai informasi kanal layanan, sedangkan KB-003 menjelaskan prosedur pelayanan.",
+    "Setiap klaim verified memiliki source_evidence yang spesifik."
+  ],
+  "claims": [
+    {
+      "claim_id": "KB-006-C01",
+      "topic": "pendaftaran_utama",
+      "claim": "Tautan layanan pendaftaran Magang Kerja atau Praktik Kerja Lapang adalah bit.ly/DaftarMagangPKL_DKP_JATIM.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-006-layanan-pendaftaran-magang-pkl.jpeg",
+        "evidence": "Pada bagian layanan pendaftaran tercantum bit.ly/DaftarMagangPKL_DKP_JATIM."
+      }
+    },
+    {
+      "claim_id": "KB-006-C02",
+      "topic": "form_sekolah_menengah",
+      "claim": "Pemohon dari Sekolah Menengah menggunakan tinyurl.com/DaftarMagangDKP-SM.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-006-layanan-pendaftaran-magang-pkl.jpeg",
+        "evidence": "Pada source tercantum tinyurl.com/DaftarMagangDKP-SM bagi pemohon dari Sekolah Menengah."
+      }
+    },
+    {
+      "claim_id": "KB-006-C03",
+      "topic": "form_perguruan_tinggi",
+      "claim": "Pemohon dari Perguruan Tinggi menggunakan tinyurl.com/DaftarMagangDKP-PT.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-006-layanan-pendaftaran-magang-pkl.jpeg",
+        "evidence": "Pada source tercantum tinyurl.com/DaftarMagangDKP-PT bagi pemohon dari Perguruan Tinggi."
+      }
+    },
+    {
+      "claim_id": "KB-006-C04",
+      "topic": "pengisian_individu",
+      "claim": "Form wajib diisi oleh masing-masing individu atau pemohon.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-006-layanan-pendaftaran-magang-pkl.jpeg",
+        "evidence": "Source memuat perhatian bahwa form wajib diisi oleh masing-masing individu atau pemohon."
+      }
+    },
+    {
+      "claim_id": "KB-006-C05",
+      "topic": "layanan_wopps",
+      "claim": "Tautan bit.ly/WOPPS digunakan untuk pelayanan wawancara, observasi, permintaan data, penelitian, dan sampling.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-006-layanan-pendaftaran-magang-pkl.jpeg",
+        "evidence": "Source mencantumkan bit.ly/WOPPS untuk pelayanan wawancara, observasi, permintaan data, penelitian, dan sampling."
+      }
+    },
+    {
+      "claim_id": "KB-006-C06",
+      "topic": "bagian_layanan",
+      "claim": "Informasi layanan mencantumkan Bagian Umum dan Kepegawaian.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-006-layanan-pendaftaran-magang-pkl.jpeg",
+        "evidence": "Pada identitas layanan tercantum Bagian Umum dan Kepegawaian."
+      }
+    },
+    {
+      "claim_id": "KB-006-C07",
+      "topic": "kontak_whatsapp",
+      "claim": "Nomor WhatsApp yang tercantum untuk layanan adalah 0852-53000-485.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-006-layanan-pendaftaran-magang-pkl.jpeg",
+        "evidence": "Source mencantumkan nomor WhatsApp 0852-53000-485."
+      }
+    },
+    {
+      "claim_id": "KB-006-C08",
+      "topic": "whatsapp_chat",
+      "claim": "Pesan WhatsApp dilakukan melalui chat.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-006-layanan-pendaftaran-magang-pkl.jpeg",
+        "evidence": "Source mencantumkan catatan WA Chat messages only please."
+      }
+    },
+    {
+      "claim_id": "KB-006-C09",
+      "topic": "jam_kerja",
+      "claim": "Jam kerja yang tercantum adalah pukul 08.00 WIB sampai 16.00 WIB.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-006-layanan-pendaftaran-magang-pkl.jpeg",
+        "evidence": "Source mencantumkan Office Hours 08.00 WIB - 16.00 WIB."
+      }
+    },
+    {
+      "claim_id": "KB-006-C10",
+      "topic": "survei_kepuasan",
+      "claim": "Tautan Survei Kepuasan Masyarakat adalah bit.ly/SKM_DKP-JATIM.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-006-layanan-pendaftaran-magang-pkl.jpeg",
+        "evidence": "Source mencantumkan tautan survey bit.ly/SKM_DKP-JATIM."
+      }
+    }
+  ]
+}
