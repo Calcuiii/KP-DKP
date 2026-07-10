@@ -199,6 +199,101 @@ final class LexicalKnowledgeBaseRetrieverTest extends TestCase
         );
     }
 
+    public function test_it_returns_no_results_when_all_query_tokens_are_stopwords(): void
+    {
+        $retriever = new LexicalKnowledgeBaseRetriever;
+
+        $chunks = [
+            $this->chunk(
+                chunkId: 'KB-TEST-S001',
+                sectionTitle: 'Informasi Umum',
+                content: 'Layanan magang disediakan oleh instansi terkait.',
+            ),
+        ];
+
+        $results = $retriever->retrieve(
+            'apa yang bagaimana',
+            $chunks,
+        );
+
+        self::assertSame([], $results);
+    }
+
+    public function test_it_produces_identical_scores_for_stopword_and_informative_only_queries(): void
+    {
+        $retriever = new LexicalKnowledgeBaseRetriever;
+
+        $chunks = [
+            $this->chunk(
+                chunkId: 'KB-TEST-S001',
+                documentId: 'KB-TEST-A',
+                sectionTitle: 'Penerbitan Dokumen',
+                content: 'Formulir permohonan meliputi surat dan sertifikat resmi.',
+            ),
+            $this->chunk(
+                chunkId: 'KB-TEST-S002',
+                documentId: 'KB-TEST-B',
+                sectionTitle: 'Surat Edaran',
+                content: 'Sertifikat diterbitkan setelah proses verifikasi selesai.',
+            ),
+        ];
+
+        $informativeOnlyResults = $retriever->retrieve(
+            'surat sertifikat',
+            $chunks,
+            10,
+        );
+
+        $stopwordPrefixedResults = $retriever->retrieve(
+            'apakah surat sertifikat',
+            $chunks,
+            10,
+        );
+
+        self::assertNotEmpty($informativeOnlyResults);
+
+        self::assertCount(
+            count($informativeOnlyResults),
+            $stopwordPrefixedResults,
+        );
+
+        foreach ($informativeOnlyResults as $index => $result) {
+            self::assertSame(
+                $result->chunk->chunkId,
+                $stopwordPrefixedResults[$index]->chunk->chunkId,
+            );
+
+            self::assertSame(
+                $result->score,
+                $stopwordPrefixedResults[$index]->score,
+            );
+        }
+    }
+
+    public function test_it_reduces_false_positive_results_for_real_corpus_regression_query(): void
+    {
+        $results = $this->retrieveFromKnowledgeBase(
+            'query-yang-sama-sekali-tidak-ada-xyz',
+            100,
+        );
+
+        self::assertLessThan(34, count($results));
+        self::assertNotEmpty($results);
+
+        foreach ($results as $result) {
+            $haystack = mb_strtolower(
+                $result->chunk->sectionTitle
+                    .' '.$result->chunk->documentTitle
+                    .' '.$result->chunk->content,
+            );
+
+            self::assertMatchesRegularExpression(
+                '/\btidak\b/u',
+                $haystack,
+            );
+        }
+    }
+
     /**
      * @return array<int, KnowledgeBaseSearchResult>
      */
