@@ -9,6 +9,7 @@ use App\KnowledgeBase\KnowledgeBaseDocumentLoader;
 use App\KnowledgeBase\KnowledgeBasePolicyResolver;
 use App\KnowledgeBase\KnowledgeBaseRegistry;
 use App\KnowledgeBase\KnowledgeBaseRetrievalPipeline;
+use App\KnowledgeBase\KnowledgeBaseTopicResolver;
 use App\KnowledgeBase\LexicalKnowledgeBaseRetriever;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -34,7 +35,6 @@ final class KnowledgeBaseRetrievalPipelineTest extends TestCase
     {
         $results = $this->pipeline()->retrieve(
             'sertifikat',
-            'sertifikat',
             5,
         );
 
@@ -52,11 +52,10 @@ final class KnowledgeBaseRetrievalPipelineTest extends TestCase
         );
     }
 
-    public function test_it_applies_override_policy_before_final_top_k(): void
+    public function test_it_resolves_topic_and_applies_override_policy_automatically(): void
     {
         $results = $this->pipeline()->retrieve(
-            'surat keterangan',
-            'surat_keterangan',
+            'Bagaimana cara mendapatkan surat keterangan magang?',
             20,
         );
 
@@ -73,7 +72,6 @@ final class KnowledgeBaseRetrievalPipelineTest extends TestCase
     public function test_it_applies_clarification_ordering_before_final_top_k(): void
     {
         $results = $this->pipeline()->retrieve(
-            'sertifikat',
             'sertifikat',
             20,
         );
@@ -95,7 +93,6 @@ final class KnowledgeBaseRetrievalPipelineTest extends TestCase
     {
         $results = $this->pipeline()->retrieve(
             'magang',
-            'unrelated_topic',
             3,
         );
 
@@ -108,9 +105,34 @@ final class KnowledgeBaseRetrievalPipelineTest extends TestCase
             [],
             $this->pipeline()->retrieve(
                 'kataunikyangtidakada123456789',
-                'unrelated_topic',
                 5,
             ),
+        );
+    }
+
+    public function test_it_retrieves_lexically_when_topic_is_unmatched(): void
+    {
+        $results = $this->pipeline()->retrieve(
+            'magang',
+            5,
+        );
+
+        self::assertNotEmpty($results);
+        self::assertLessThanOrEqual(5, count($results));
+    }
+
+    public function test_it_uses_resolved_topic_without_caller_supplied_topic(): void
+    {
+        $results = $this->pipeline()->retrieve(
+            'Apakah peserta magang mendapatkan sertifikat?',
+            5,
+        );
+
+        self::assertNotEmpty($results);
+
+        self::assertSame(
+            'KB-008',
+            $results[0]->chunk->documentId,
         );
     }
 
@@ -123,7 +145,6 @@ final class KnowledgeBaseRetrievalPipelineTest extends TestCase
 
         $this->pipeline()->retrieve(
             'sertifikat',
-            'sertifikat',
             0,
         );
     }
@@ -135,20 +156,22 @@ final class KnowledgeBaseRetrievalPipelineTest extends TestCase
 
         $this->pipeline()->retrieve(
             '   ',
-            'sertifikat',
             5,
         );
     }
 
-    public function test_it_rejects_empty_topic(): void
+    public function test_it_normalizes_topic_resolution_through_pipeline(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Topic must not be empty.');
-
-        $this->pipeline()->retrieve(
-            'sertifikat',
-            '   ',
+        $results = $this->pipeline()->retrieve(
+            '  SERTIFIKAT??? Bagaimana caranya!!  ',
             5,
+        );
+
+        self::assertNotEmpty($results);
+
+        self::assertSame(
+            'KB-008',
+            $results[0]->chunk->documentId,
         );
     }
 
@@ -164,6 +187,7 @@ final class KnowledgeBaseRetrievalPipelineTest extends TestCase
             chunker: new KnowledgeBaseChunker,
             retriever: new LexicalKnowledgeBaseRetriever,
             policyResolver: new KnowledgeBasePolicyResolver,
+            topicResolver: new KnowledgeBaseTopicResolver,
         );
     }
 }

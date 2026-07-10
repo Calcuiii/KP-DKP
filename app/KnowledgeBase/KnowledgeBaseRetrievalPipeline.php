@@ -14,6 +14,7 @@ final class KnowledgeBaseRetrievalPipeline
         private readonly KnowledgeBaseChunker $chunker,
         private readonly LexicalKnowledgeBaseRetriever $retriever,
         private readonly KnowledgeBasePolicyResolver $policyResolver,
+        private readonly KnowledgeBaseTopicResolver $topicResolver,
     ) {}
 
     /**
@@ -21,7 +22,6 @@ final class KnowledgeBaseRetrievalPipeline
      */
     public function retrieve(
         string $query,
-        string $topic,
         int $topK = 5,
     ): array {
         if ($topK < 1) {
@@ -32,9 +32,7 @@ final class KnowledgeBaseRetrievalPipeline
             throw new InvalidArgumentException('Query must not be empty.');
         }
 
-        if (trim($topic) === '') {
-            throw new InvalidArgumentException('Topic must not be empty.');
-        }
+        $topic = $this->topicResolver->resolve($query);
 
         $documents = $this->registry->all();
 
@@ -51,6 +49,10 @@ final class KnowledgeBaseRetrievalPipeline
             $chunks,
             count($chunks),
         );
+
+        if ($topic === null) {
+            return array_slice($retrieved, 0, $topK);
+        }
 
         $resolved = $this->policyResolver->resolve(
             $topic,
