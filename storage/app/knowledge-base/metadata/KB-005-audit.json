@@ -1,0 +1,50 @@
+{
+  "document_id": "KB-005",
+  "audit_version": "1.0",
+  "audit_status": "completed",
+  "source_grounding_required": true,
+  "source_provenance": {
+    "source_type": "official_infographic",
+    "issuer": "Dinas Kelautan dan Perikanan Provinsi Jawa Timur",
+    "source_file": "originals/images/KB-005-pelayanan-magang-pkl-dkp-jatim.jpeg",
+    "source_sha256": "3ba082da7e0223a1ad648e8bca9100005b52aaf1b8704f3edd479dbf845f6bb4",
+    "source_available_for_audit": true
+  },
+  "audit_notes": [
+    "Knowledge base hanya memuat persyaratan yang tercantum pada sumber asli.",
+    "Informasi media sosial, situs web, dan slogan instansi tidak dimasukkan sebagai klaim substantif karena tidak berkaitan langsung dengan persyaratan pelayanan.",
+    "Setiap klaim verified memiliki source_evidence yang spesifik."
+  ],
+  "claims": [
+    {
+      "claim_id": "KB-005-C01",
+      "topic": "pas_photo",
+      "claim": "Pas Photo tercantum sebagai persyaratan pelayanan Magang atau Praktik Kerja Lapang (PKL).",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-005-pelayanan-magang-pkl-dkp-jatim.jpeg",
+        "evidence": "Pada bagian PERSYARATAN tercantum Pas Photo."
+      }
+    },
+    {
+      "claim_id": "KB-005-C02",
+      "topic": "ktm",
+      "claim": "KTM (Kartu Tanda Mahasiswa) tercantum sebagai persyaratan pelayanan Magang atau Praktik Kerja Lapang (PKL).",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-005-pelayanan-magang-pkl-dkp-jatim.jpeg",
+        "evidence": "Pada bagian PERSYARATAN tercantum KTM (Kartu Tanda Mahasiswa)."
+      }
+    },
+    {
+      "claim_id": "KB-005-C03",
+      "topic": "surat_permohonan",
+      "claim": "Surat Permohonan tercantum sebagai persyaratan pelayanan Magang atau Praktik Kerja Lapang (PKL).",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-005-pelayanan-magang-pkl-dkp-jatim.jpeg",
+        "evidence": "Pada bagian PERSYARATAN tercantum Surat Permohonan."
+      }
+    }
+  ]
+}

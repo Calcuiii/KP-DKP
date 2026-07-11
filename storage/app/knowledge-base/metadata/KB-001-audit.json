@@ -1,0 +1,119 @@
+{
+  "document_id": "KB-001",
+  "audit_version": "1.0",
+  "audit_status": "completed",
+  "source_grounding_required": true,
+  "source_provenance": {
+    "source_type": "official_infographic",
+    "issuer": "Dinas Kelautan dan Perikanan Provinsi Jawa Timur",
+    "source_file": "originals/images/KB-001-ketentuan-umum-peserta.jpeg",
+    "source_reference": "Infografis Ketentuan Umum Peserta Magang Kerja / Praktek Kerja Lapangan",
+    "source_sha256": "c959bee662284b34d64c889d3b0e82eacc71c646f8b2c9ca0c5c4aedbff011fe",
+    "source_available_for_audit": true
+  },
+  "audit_notes": [
+    "Processed knowledge base telah disusun ulang berdasarkan sumber asli.",
+    "Klaim yang tidak terdapat pada sumber asli telah dihapus dari KB-001.",
+    "Normalisasi ejaan dilakukan tanpa mengubah makna ketentuan pada sumber."
+  ],
+  "claims": [
+    {
+      "claim_id": "KB-001-C01",
+      "topic": "waktu_senin_kamis",
+      "claim": "Jam pelaksanaan Senin sampai Kamis adalah pukul 08.00 sampai 16.00 WIB.",
+      "status": "verified",
+      "source_evidence": "Ketentuan nomor 1: Senin-Kamis pukul 08.00-16.00 WIB."
+    },
+    {
+      "claim_id": "KB-001-C02",
+      "topic": "waktu_jumat",
+      "claim": "Jam pelaksanaan Jumat adalah pukul 07.30 sampai 16.00 WIB.",
+      "status": "verified",
+      "source_evidence": "Ketentuan nomor 1: Jumat pukul 07.30-16.00 WIB."
+    },
+    {
+      "claim_id": "KB-001-C03",
+      "topic": "kegiatan_wajib",
+      "claim": "Peserta wajib mengikuti seluruh kegiatan selama periode Magang atau PKL, termasuk upacara dan kegiatan insidentil lainnya.",
+      "status": "verified",
+      "source_evidence": "Ketentuan nomor 2."
+    },
+    {
+      "claim_id": "KB-001-C04",
+      "topic": "kepatuhan_aturan",
+      "claim": "Peserta wajib memenuhi seluruh aturan yang berlaku di lingkungan kantor DKP Provinsi Jawa Timur.",
+      "status": "verified",
+      "source_evidence": "Ketentuan nomor 3."
+    },
+    {
+      "claim_id": "KB-001-C05",
+      "topic": "etika_tata_krama",
+      "claim": "Peserta wajib menjaga etika dan tata krama terhadap seluruh pegawai dan rekan kerja.",
+      "status": "verified",
+      "source_evidence": "Ketentuan nomor 4."
+    },
+    {
+      "claim_id": "KB-001-C06",
+      "topic": "biaya_peserta",
+      "claim": "Seluruh biaya yang dikeluarkan menjadi tanggung jawab masing-masing peserta.",
+      "status": "verified",
+      "source_evidence": "Ketentuan nomor 5."
+    },
+    {
+      "claim_id": "KB-001-C07",
+      "topic": "penempatan_unit",
+      "claim": "Peserta bersedia ditempatkan di unit kerja mana saja yang membutuhkan.",
+      "status": "verified",
+      "source_evidence": "Ketentuan nomor 6."
+    },
+    {
+      "claim_id": "KB-001-C08",
+      "topic": "kerahasiaan_dokumen",
+      "claim": "Peserta wajib turut menjaga keamanan dan kerahasiaan dokumen negara yang bersifat rahasia.",
+      "status": "verified",
+      "source_evidence": "Ketentuan nomor 7."
+    },
+    {
+      "claim_id": "KB-001-C09",
+      "topic": "format_laporan",
+      "claim": "Peserta wajib membuat laporan sesuai dengan format institusi asal.",
+      "status": "verified",
+      "source_evidence": "Ketentuan nomor 8."
+    },
+    {
+      "claim_id": "KB-001-C10",
+      "topic": "pengiriman_laporan_pdf",
+      "claim": "Laporan Magang atau PKL dikirimkan dalam bentuk PDF.",
+      "status": "verified",
+      "source_evidence": "Ketentuan nomor 9."
+    },
+    {
+      "claim_id": "KB-001-C11",
+      "topic": "presentasi",
+      "claim": "Peserta melakukan presentasi hasil Magang atau PKL pada minggu terakhir dan pelaksanaannya bersifat tentatif.",
+      "status": "verified",
+      "source_evidence": "Ketentuan nomor 10."
+    },
+    {
+      "claim_id": "KB-001-C12",
+      "topic": "sanksi_pelanggaran",
+      "claim": "Peserta yang melanggar aturan bersedia menerima sanksi sesuai ketentuan yang tercantum pada sumber.",
+      "status": "verified",
+      "source_evidence": "Ketentuan nomor 11."
+    },
+    {
+      "claim_id": "KB-001-C13",
+      "topic": "sanksi_ringan",
+      "claim": "Sanksi ringan berupa pembinaan dalam bentuk teguran lisan.",
+      "status": "verified",
+      "source_evidence": "Ketentuan nomor 11 huruf a."
+    },
+    {
+      "claim_id": "KB-001-C14",
+      "topic": "sanksi_sedang",
+      "claim": "Sanksi sedang berupa penundaan penerbitan Surat Keterangan dan Sertifikat Magang Kerja.",
+      "status": "verified",
+      "source_evidence": "Ketentuan nomor 11 huruf b."
+    }
+  ]
+}

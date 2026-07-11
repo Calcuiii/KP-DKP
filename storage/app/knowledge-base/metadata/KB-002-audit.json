@@ -1,0 +1,119 @@
+{
+  "document_id": "KB-002",
+  "audit_version": "1.0",
+  "audit_status": "completed",
+  "source_grounding_required": true,
+  "source_provenance": {
+    "source_type": "official_infographic",
+    "issuer": "Dinas Kelautan dan Perikanan Provinsi Jawa Timur",
+    "source_file": "originals/images/KB-002-penerbitan-surat-keterangan-dan-sertifikat.jpeg",
+    "source_sha256": "b0ca7f68a6f33dbe059be6929817cf5953f335ceafca50288b0a9375bfbd5a81",
+    "source_available_for_audit": true
+  },
+  "audit_notes": [
+    "Processed knowledge base disusun hanya dari informasi yang tercantum pada sumber asli.",
+    "Setiap klaim verified memiliki source_evidence yang spesifik.",
+    "Tautan form dipertahankan sesuai teks yang tercantum pada infografik sumber."
+  ],
+  "claims": [
+    {
+      "claim_id": "KB-002-C01",
+      "topic": "form_pendaftaran_awal",
+      "claim": "Peserta wajib mengisi form Pendaftaran Awal.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-002-penerbitan-surat-keterangan-dan-sertifikat.jpeg",
+        "source_section": "Langkah 1",
+        "evidence": "Mengisi form Pendaftaran Awal dan form Pelaksanaan Magang/PKL."
+      }
+    },
+    {
+      "claim_id": "KB-002-C02",
+      "topic": "form_pelaksanaan",
+      "claim": "Peserta wajib mengisi form Pelaksanaan Magang atau PKL.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-002-penerbitan-surat-keterangan-dan-sertifikat.jpeg",
+        "source_section": "Langkah 1",
+        "evidence": "Mengisi form Pendaftaran Awal dan form Pelaksanaan Magang/PKL."
+      }
+    },
+    {
+      "claim_id": "KB-002-C03",
+      "topic": "pengisian_individu",
+      "claim": "Setiap individu wajib mengisi form masing-masing.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-002-penerbitan-surat-keterangan-dan-sertifikat.jpeg",
+        "source_section": "Langkah 1",
+        "evidence": "Setiap individu masing masing wajib mengisi."
+      }
+    },
+    {
+      "claim_id": "KB-002-C04",
+      "topic": "surat_permohonan_penerbitan",
+      "claim": "Peserta membuat Surat Permohonan Penerbitan Surat Keterangan dan Sertifikat.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-002-penerbitan-surat-keterangan-dan-sertifikat.jpeg",
+        "source_section": "Langkah 2",
+        "evidence": "Membuat Surat Permohonan Penerbitan Surat Keterangan dan Sertifikat."
+      }
+    },
+    {
+      "claim_id": "KB-002-C05",
+      "topic": "penerbit_surat_permohonan",
+      "claim": "Surat Permohonan dikeluarkan secara resmi oleh Fakultas.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-002-penerbitan-surat-keterangan-dan-sertifikat.jpeg",
+        "source_section": "Langkah 2",
+        "evidence": "yang dikeluarkan oleh Fakultas (resmi)."
+      }
+    },
+    {
+      "claim_id": "KB-002-C06",
+      "topic": "presentasi_kegiatan",
+      "claim": "Peserta membuat presentasi paparan kegiatan selama periode Magang atau PKL.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-002-penerbitan-surat-keterangan-dan-sertifikat.jpeg",
+        "source_section": "Langkah 3",
+        "evidence": "Membuat presentasi paparan kegiatan yang dilaksanakan selama periode Magang / PKL."
+      }
+    },
+    {
+      "claim_id": "KB-002-C07",
+      "topic": "laporan_pkl",
+      "claim": "Peserta membuat laporan PKL sesuai format penulisan arahan Fakultas.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-002-penerbitan-surat-keterangan-dan-sertifikat.jpeg",
+        "source_section": "Langkah 4",
+        "evidence": "Membuat Laporan PKL dengan format penulisan sesuai arahan Fakultas."
+      }
+    },
+    {
+      "claim_id": "KB-002-C08",
+      "topic": "form_penyelesaian_perguruan_tinggi",
+      "claim": "Peserta Perguruan Tinggi mengisi form penyelesaian melalui bit.ly/SelesaiMagangPKL-PT.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-002-penerbitan-surat-keterangan-dan-sertifikat.jpeg",
+        "source_section": "Langkah 5",
+        "evidence": "bit.ly/SelesaiMagangPKL-PT Perguruan Tinggi."
+      }
+    },
+    {
+      "claim_id": "KB-002-C09",
+      "topic": "form_penyelesaian_sma_smk",
+      "claim": "Peserta SMA atau SMK mengisi form penyelesaian melalui bit.ly/SelesaiMagangPKL-SM.",
+      "status": "verified",
+      "source_evidence": {
+        "source_file": "originals/images/KB-002-penerbitan-surat-keterangan-dan-sertifikat.jpeg",
+        "source_section": "Langkah 5",
+        "evidence": "bit.ly/SelesaiMagangPKL-SM SMA / SMK."
+      }
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "document_id": "KB-007",
+  "audit_version": "1.0",
+  "audit_status": "completed",
+  "source_grounding_required": true,
+  "source_provenance": {
+    "source_type": "official_infographic",
+    "issuer": "Dinas Kelautan dan Perikanan Provinsi Jawa Timur",
+    "source_file": "originals/images/KB-007-alur-magang-pkl.jpeg",
+    "source_sha256": "03ccdbed3fc8fa1bef5d09acf7903f8d775ab8f44d642dedd1635b1544711c5c",
+    "source_available_for_audit": true
+  },
+  "audit_notes": [
+    "Processed knowledge base disusun berdasarkan source asli.",
+    "Setiap klaim verified memiliki source_evidence yang spesifik.",
+    "Informasi footer media sosial dan website tidak dimasukkan sebagai klaim prosedural."
+  ],
+  "claims": [
+    {
+      "claim_id": "KB-007-C01",
+      "topic": "form_buku_tamu",
+      "claim": "Calon peserta mengisi Google Form Buku Tamu Magang atau PKL melalui bit.ly/DaftarMagangPKL_DKP_JATIM.",
+      "status": "verified",
+      "source_evidence": "Langkah 1"
+    },
+    {
+      "claim_id": "KB-007-C02",
+      "topic": "koordinasi_kuota_prodi",
+      "claim": "Dilakukan koordinasi ketersediaan kuota dan kesesuaian Program Studi atau Jurusan.",
+      "status": "verified",
+      "source_evidence": "Langkah 2"
+    },
+    {
+      "claim_id": "KB-007-C03",
+      "topic": "penjelasan_aturan",
+      "claim": "Calon peserta mendapatkan penjelasan awal terkait aturan dan tata tertib.",
+      "status": "verified",
+      "source_evidence": "Langkah 2"
+    },
+    {
+      "claim_id": "KB-007-C04",
+      "topic": "surat_permohonan",
+      "claim": "Apabila diterima, calon peserta mengajukan Surat Permohonan Magang atau PKL.",
+      "status": "verified",
+      "source_evidence": "Langkah 3"
+    },
+    {
+      "claim_id": "KB-007-C05",
+      "topic": "informasi_surat_permohonan",
+      "claim": "Surat Permohonan memuat Nama, NIS/NIM, Keahlian/Program Studi, Sekolah/Fakultas, Universitas, Lokasi Kegiatan, Periode Kegiatan, Tema/Topik, Judul Spesifik, dan nomor CP WhatsApp perwakilan pemohon.",
+      "status": "verified",
+      "source_evidence": "Langkah 3"
+    },
+    {
+      "claim_id": "KB-007-C06",
+      "topic": "surat_balasan",
+      "claim": "Dilakukan penerbitan Surat Balasan.",
+      "status": "verified",
+      "source_evidence": "Langkah 4"
+    },
+    {
+      "claim_id": "KB-007-C07",
+      "topic": "form_pelaksanaan_sma_smk",
+      "claim": "Peserta SMA atau SMK mengisi Form Pelaksanaan melalui tinyurl.com/DaftarMagangDKP-SM.",
+      "status": "verified",
+      "source_evidence": "Langkah 5"
+    },
+    {
+      "claim_id": "KB-007-C08",
+      "topic": "form_pelaksanaan_pt",
+      "claim": "Peserta Perguruan Tinggi mengisi Form Pelaksanaan melalui tinyurl.com/DaftarMagangDKP-PT.",
+      "status": "verified",
+      "source_evidence": "Langkah 5"
+    },
+    {
+      "claim_id": "KB-007-C09",
+      "topic": "pelaksanaan",
+      "claim": "Peserta melaksanakan kegiatan Magang atau PKL.",
+      "status": "verified",
+      "source_evidence": "Langkah 6"
+    },
+    {
+      "claim_id": "KB-007-C10",
+      "topic": "laporan",
+      "claim": "Peserta menyusun laporan kegiatan menggunakan format sesuai institusi terkait.",
+      "status": "verified",
+      "source_evidence": "Langkah 7"
+    },
+    {
+      "claim_id": "KB-007-C11",
+      "topic": "bahan_presentasi",
+      "claim": "Peserta menyusun bahan presentasi hasil pelaksanaan Magang.",
+      "status": "verified",
+      "source_evidence": "Langkah 8"
+    },
+    {
+      "claim_id": "KB-007-C12",
+      "topic": "presentasi",
+      "claim": "Peserta melakukan presentasi di lokasi kegiatan Magang atau PKL.",
+      "status": "verified",
+      "source_evidence": "Langkah 9"
+    },
+    {
+      "claim_id": "KB-007-C13",
+      "topic": "form_penyelesaian",
+      "claim": "Peserta mengisi Form Penyelesaian melalui bit.ly/SelesaiMagangPKL-SM untuk Sekolah Menengah atau bit.ly/SelesaiMagangPKL-PT untuk Perguruan Tinggi.",
+      "status": "verified",
+      "source_evidence": "Langkah 10"
+    },
+    {
+      "claim_id": "KB-007-C14",
+      "topic": "penerbitan_surat_sertifikat",
+      "claim": "Surat Keterangan dan Sertifikat diterbitkan apabila dibutuhkan.",
+      "status": "verified",
+      "source_evidence": "Langkah 11"
+    },
+    {
+      "claim_id": "KB-007-C15",
+      "topic": "lampiran_surat_permohonan",
+      "claim": "Kebutuhan Surat Keterangan dan Sertifikat dilampirkan dengan Surat Permohonan.",
+      "status": "verified",
+      "source_evidence": "Langkah 11"
+    }
+  ]
+}

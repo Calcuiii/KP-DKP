@@ -1,0 +1,176 @@
+{
+  "schema_version": "1.0",
+  "knowledge_base": {
+    "name": "DKP Assistant Knowledge Base",
+    "issuer": "Dinas Kelautan dan Perikanan Provinsi Jawa Timur",
+    "description": "Knowledge base untuk layanan informasi Kerja Praktik, Magang, PKL, penelitian, permintaan data, dan administrasi terkait."
+  },
+  "priority_policy": {
+    "description": "Nilai priority yang lebih kecil menunjukkan otoritas sumber yang lebih tinggi.",
+    "levels": {
+      "1": "Surat edaran, regulasi, atau kebijakan resmi terbaru",
+      "2": "SOP, prosedur pelayanan, atau dokumen resmi operasional",
+      "3": "Panduan dan infografik resmi",
+      "4": "Contoh atau template dokumen"
+    }
+  },
+  "documents": [
+    {
+      "document_id": "KB-001",
+      "title": "Ketentuan Umum Peserta Magang dan PKL",
+      "category": "pelaksanaan",
+      "document_type": "official_infographic",
+      "effective_date": null,
+      "priority": 3,
+      "status": "active",
+      "source_file": "originals/images/KB-001-ketentuan-umum-peserta.jpeg",
+      "processed_file": "KB-001-ketentuan-umum-peserta.md",
+      "source_sha256": "c959bee662284b34d64c889d3b0e82eacc71c646f8b2c9ca0c5c4aedbff011fe"
+    },
+    {
+      "document_id": "KB-002",
+      "title": "Penerbitan Surat Keterangan dan Sertifikat",
+      "category": "penyelesaian",
+      "document_type": "official_infographic",
+      "effective_date": null,
+      "priority": 3,
+      "status": "active",
+      "source_file": "originals/images/KB-002-penerbitan-surat-keterangan-dan-sertifikat.jpeg",
+      "processed_file": "KB-002-penerbitan-surat-keterangan-dan-sertifikat.md",
+      "source_sha256": "b0ca7f68a6f33dbe059be6929817cf5953f335ceafca50288b0a9375bfbd5a81"
+    },
+    {
+      "document_id": "KB-003",
+      "title": "Prosedur Pelayanan Magang / Praktik Kerja Lapang",
+      "category": "prosedur",
+      "document_type": "official_infographic",
+      "effective_date": null,
+      "priority": 3,
+      "status": "active",
+      "source_file": "originals/images/KB-003-prosedur-pelayanan-magang-pkl.jpeg",
+      "processed_file": "KB-003-prosedur-pelayanan-magang-pkl.md",
+      "source_sha256": "621a4536e8758e2428520407d570a9f96b934c91e3887b09152d9e7bca194e8e"
+    },
+    {
+      "document_id": "KB-004",
+      "title": "Informasi yang Wajib Disampaikan dalam Surat Permohonan Magang / Praktik Kerja Lapang",
+      "category": "pengajuan",
+      "document_type": "official_infographic",
+      "effective_date": null,
+      "priority": 3,
+      "status": "active",
+      "source_file": "originals/images/KB-004-informasi-wajib-surat-permohonan.jpeg",
+      "processed_file": "KB-004-informasi-wajib-surat-permohonan.md",
+      "source_sha256": "c85afb968ef8c851609bbffc552622786996d383f28ea3b2615c519c1cb593c2"
+    },
+    {
+      "document_id": "KB-005",
+      "title": "Persyaratan Pelayanan Magang / Praktik Kerja Lapang (PKL)",
+      "category": "persyaratan",
+      "document_type": "official_infographic",
+      "effective_date": null,
+      "priority": 3,
+      "status": "active",
+      "source_file": "originals/images/KB-005-pelayanan-magang-pkl-dkp-jatim.jpeg",
+      "processed_file": "KB-005-persyaratan-pelayanan-magang-pkl.md",
+      "source_sha256": "3ba082da7e0223a1ad648e8bca9100005b52aaf1b8704f3edd479dbf845f6bb4"
+    },
+    {
+      "document_id": "KB-006",
+      "title": "Layanan Pendaftaran Magang Kerja / Praktik Kerja Lapang",
+      "category": "layanan",
+      "document_type": "official_infographic",
+      "effective_date": null,
+      "priority": 3,
+      "status": "active",
+      "source_file": "originals/images/KB-006-layanan-pendaftaran-magang-pkl.jpeg",
+      "processed_file": "KB-006-layanan-pendaftaran-magang-pkl.md",
+      "source_sha256": "7dc84bed5ee130a38e910aa98a8d87fad159ec884b36f82964c480f9408dfc7e"
+    },
+    {
+      "document_id": "KB-007",
+      "title": "Alur Magang / Praktik Kerja Lapang (PKL)",
+      "category": "prosedur",
+      "document_type": "official_infographic",
+      "effective_date": null,
+      "priority": 3,
+      "status": "active",
+      "source_file": "originals/images/KB-007-alur-magang-pkl.jpeg",
+      "processed_file": "KB-007-alur-magang-pkl.md",
+      "source_sha256": "03ccdbed3fc8fa1bef5d09acf7903f8d775ab8f44d642dedd1635b1544711c5c"
+    },
+    {
+      "document_id": "KB-008",
+      "title": "Kebijakan Surat Keterangan Magang, PKL, dan Penelitian",
+      "category": "kebijakan",
+      "document_type": "official_circular",
+      "effective_date": null,
+      "priority": 1,
+      "status": "active",
+      "source_file": "originals/images/KB-008-se-sekda-magang-pkl-penelitian.jpeg",
+      "processed_file": "KB-008-kebijakan-surat-keterangan.md",
+      "source_sha256": "78a233b9c02c1ddabec89e76472261511d7569b334a4d53dd26c2c50e753a44a",
+      "policy_relations": [
+        {
+          "relation": "overrides",
+          "document_id": "KB-002",
+          "topics": [
+            "surat_keterangan"
+          ]
+        },
+        {
+          "relation": "overrides",
+          "document_id": "KB-007",
+          "topics": [
+            "surat_keterangan"
+          ]
+        },
+        {
+          "relation": "clarifies",
+          "document_id": "KB-002",
+          "topics": [
+            "sertifikat"
+          ]
+        },
+        {
+          "relation": "clarifies",
+          "document_id": "KB-007",
+          "topics": [
+            "sertifikat"
+          ]
+        },
+        {
+          "relation": "clarifies",
+          "document_id": "KB-010",
+          "topics": [
+            "sertifikat"
+          ]
+        }
+      ]
+    },
+    {
+      "document_id": "KB-009",
+      "title": "Persyaratan Dokumen Pengajuan Penelitian, Permintaan Data, Informasi, Wawancara, dan Observasi",
+      "category": "penelitian",
+      "document_type": "official_infographic",
+      "effective_date": null,
+      "priority": 3,
+      "status": "active",
+      "source_file": "originals/images/KB-009-penelitian-permintaan-data-wawancara-observasi.jpeg",
+      "processed_file": "KB-009-penelitian-permintaan-data.md",
+      "source_sha256": "61ed802a8e0e951811346cc61fe1c3d391814e10a035d13f66b1bd4577b0669f"
+    },
+    {
+      "document_id": "KB-010",
+      "title": "Contoh Surat Permohonan Magang dan PKL",
+      "category": "template",
+      "document_type": "official_template",
+      "effective_date": null,
+      "priority": 4,
+      "status": "reference",
+      "source_file": "originals/documents/KB-010-contoh-surat-permohonan-magang-pkl.pdf",
+      "processed_file": "KB-010-contoh-surat-permohonan.md",
+      "source_sha256": "7e883ff03a37d3f7caa2eb892ca0c7333fe34ed6d38ac58ffbbf7f39da0a7a4a"
+    }
+  ]
+}
