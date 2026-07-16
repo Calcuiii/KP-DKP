@@ -26,6 +26,8 @@
 <body>
     @yield('content')
 
+    @include('components.dev-nav')
+
     @stack('scripts')
 </body>
 </html>
