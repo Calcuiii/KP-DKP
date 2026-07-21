@@ -18,11 +18,17 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
-    ];
+    'name',
+    'email',
+    'password',
+    'role',
+    'status',
+];
+
+public function getRoleLabelAttribute(): string
+{
+    return $this->role === 'superadmin' ? 'Super Admin' : 'Admin';
+}
 
     /**
      * Kolom yang disembunyikan saat model di-serialize (mis. jadi JSON).

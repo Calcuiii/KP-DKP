@@ -1,42 +1,48 @@
 import {
     createIcons,
-    Fish, 
-    MessageSquare, 
-    Menu, 
-    X, 
-    Zap, 
-    ChevronRight, 
-    FileText, 
+    Fish,
+    MessageSquare,
+    Menu,
+    X,
+    Zap,
+    ChevronRight,
+    FileText,
     Send,
-    Shield, 
-    ArrowRight, 
-    BookOpen, 
-    CheckCircle, 
-    Award, 
+    Shield,
+    ArrowRight,
+    BookOpen,
+    CheckCircle,
+    Award,
     MessageCircle,
-    Search, 
-    Database, 
-    Info, 
-    Layers, 
-    FileCheck, 
-    RefreshCw, 
+    Search,
+    Database,
+    Info,
+    Layers,
+    FileCheck,
+    RefreshCw,
     TrendingUp,
-    ChevronDown, 
-    ChevronUp, 
-    Eye, 
-    EyeOff,
-    BarChart2, 
-    Inbox, 
-    ThumbsUp, 
-    Settings, 
-    Users, 
-    Activity, 
+    ChevronDown,
+    ChevronUp,
+    BarChart2,
+    Inbox,
+    ThumbsUp,
+    Settings,
+    Users,
+    Activity,
     LogOut,
-    Bell, 
-    Hash, 
-    Clock, 
-    Star, 
+    Bell,
+    Eye,
+    EyeOff,
+    Lock,
     AlertCircle,
+    Hash,
+    Clock,
+    Star,
+    Plus,
+    RotateCcw,
+    Trash2,
+    Upload,
+    XCircle,
 } from 'lucide';
 
 createIcons({
@@ -44,39 +50,32 @@ createIcons({
         Fish, MessageSquare, Menu, X, Zap, ChevronRight, FileText, Send,
         Shield, ArrowRight, BookOpen, CheckCircle, Award, MessageCircle,
         Search, Database, Info, Layers, FileCheck, RefreshCw, TrendingUp,
-        ChevronDown, ChevronUp, Eye, EyeOff,
-        BarChart2, Inbox, ThumbsUp, Settings, Users, Activity, LogOut,
-        Bell, Hash, Clock, Star, AlertCircle,
+        ChevronDown, ChevronUp, BarChart2, Inbox, ThumbsUp, Settings,
+        Users, Activity, LogOut, Bell, Eye, EyeOff, Lock, AlertCircle,
+        Hash, Clock, Star, Plus, RotateCcw, Trash2, Upload, XCircle,
     },
 });
+
 document.addEventListener('DOMContentLoaded', () => {
+    // ── Landing: mobile menu ──────────────────────────────────────────
     const mobileMenuButton = document.querySelector('[data-mobile-menu-button]');
     const mobileMenu = document.querySelector('[data-mobile-menu]');
     const menuIcon = document.querySelector('[data-menu-icon]');
     const closeIcon = document.querySelector('[data-close-icon]');
-    const sidebarToggle = document.querySelector('[data-sidebar-toggle]');
-    const sidebar = document.querySelector('[data-admin-sidebar]');
 
-    sidebarToggle?.addEventListener('click', () => {
-        sidebar?.classList.toggle('w-60');
-        sidebar?.classList.toggle('w-0');
-    });
+    if (mobileMenuButton && mobileMenu && menuIcon && closeIcon) {
+        mobileMenuButton.addEventListener('click', () => {
+            const isOpen = !mobileMenu.classList.contains('hidden');
 
-    if (!mobileMenuButton || !mobileMenu || !menuIcon || !closeIcon) {
-        return;
+            mobileMenu.classList.toggle('hidden');
+            menuIcon.classList.toggle('hidden', !isOpen);
+            closeIcon.classList.toggle('hidden', isOpen);
+
+            mobileMenuButton.setAttribute('aria-expanded', String(!isOpen));
+        });
     }
 
-    mobileMenuButton.addEventListener('click', () => {
-        const isOpen = !mobileMenu.classList.contains('hidden');
-
-        mobileMenu.classList.toggle('hidden');
-
-        menuIcon.classList.toggle('hidden', !isOpen);
-        closeIcon.classList.toggle('hidden', isOpen);
-
-        mobileMenuButton.setAttribute('aria-expanded', String(!isOpen));
-    });
-
+    // ── Landing: FAQ accordion ────────────────────────────────────────
     const faqItems = document.querySelectorAll('[data-faq-item]');
 
     faqItems.forEach((item) => {
@@ -88,33 +87,68 @@ document.addEventListener('DOMContentLoaded', () => {
             const willOpen = button.getAttribute('aria-expanded') !== 'true';
 
             faqItems.forEach((otherItem) => {
-                const otherButton = otherItem.querySelector('[data-faq-button]');
-                const otherAnswer = otherItem.querySelector('[data-faq-answer]');
-                const otherIcon = otherItem.querySelector('[data-faq-icon]');
-
-                otherButton?.setAttribute('aria-expanded', 'false');
-                otherAnswer?.classList.add('hidden');
-
-                if (otherIcon) {
-                    otherIcon.setAttribute('data-lucide', 'chevron-down');
-                }
+                otherItem.querySelector('[data-faq-button]')?.setAttribute('aria-expanded', 'false');
+                otherItem.querySelector('[data-faq-answer]')?.classList.add('hidden');
+                otherItem.querySelector('[data-faq-icon]')?.setAttribute('data-lucide', 'chevron-down');
             });
 
             if (willOpen) {
                 button.setAttribute('aria-expanded', 'true');
                 answer?.classList.remove('hidden');
-
-                if (icon) {
-                    icon.setAttribute('data-lucide', 'chevron-up');
-                }
+                icon?.setAttribute('data-lucide', 'chevron-up');
             }
 
-            createIcons({
-                icons: {
-                    ChevronDown,
-                    ChevronUp,
-                },
-            });
+            createIcons({ icons: { ChevronDown, ChevronUp } });
+        });
+    });
+
+    // ── Admin: toggle sidebar ─────────────────────────────────────────
+    const sidebarToggle = document.querySelector('[data-sidebar-toggle]');
+    const sidebar = document.querySelector('[data-admin-sidebar]');
+
+    sidebarToggle?.addEventListener('click', () => {
+        sidebar?.classList.toggle('w-60');
+        sidebar?.classList.toggle('w-0');
+    });
+
+    // ── Admin login: toggle show/hide password ────────────────────────
+    const pwToggle = document.querySelector('[data-toggle-password]');
+    const pwInput = document.querySelector('[data-password-input]');
+    const pwEyeIcon = document.querySelector('[data-password-eye-icon]');
+
+    pwToggle?.addEventListener('click', () => {
+        const isPassword = pwInput?.getAttribute('type') === 'password';
+
+        pwInput?.setAttribute('type', isPassword ? 'text' : 'password');
+        pwEyeIcon?.setAttribute('data-lucide', isPassword ? 'eye-off' : 'eye');
+
+        createIcons({ icons: { Eye, EyeOff } });
+    });
+
+    // ── Admin: modal Knowledge Base (buka/tutup) ──────────────────────
+    document.querySelectorAll('[data-open-modal]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const modal = document.querySelector(`[data-modal="${btn.dataset.openModal}"]`);
+            modal?.classList.remove('hidden');
+            modal?.classList.add('flex');
+        });
+    });
+
+    document.querySelectorAll('[data-close-modal]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const modal = document.querySelector(`[data-modal="${btn.dataset.closeModal}"]`);
+            modal?.classList.add('hidden');
+            modal?.classList.remove('flex');
+        });
+    });
+
+    // ── Admin: tampilkan nama file yang dipilih ───────────────────────
+    document.querySelectorAll('[data-file-input]').forEach((input) => {
+        input.addEventListener('change', () => {
+            const label = input.closest('label')?.querySelector('[data-file-label]');
+            if (label && input.files[0]) {
+                label.textContent = input.files[0].name;
+            }
         });
     });
 });
