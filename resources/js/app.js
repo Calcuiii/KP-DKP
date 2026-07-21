@@ -1,3 +1,5 @@
+import './chatbot';
+
 import {
     createIcons,
     Fish,

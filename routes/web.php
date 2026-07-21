@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\KnowledgeBaseController;
+use App\Http\Controllers\Auth\AdminLoginController;
+use App\Http\Controllers\ChatbotController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ConversationLogController;
 use App\Http\Controllers\Admin\UnansweredQuestionController;
@@ -12,10 +13,34 @@ use App\Http\Controllers\Admin\AnalyticsController;
 
 Route::view('/', 'pages.landing')->name('landing');
 
-Route::middleware('guest')->group(function () {
-    Route::get('/admin-login', [AdminLoginController::class, 'create'])->name('admin.login');
-    Route::post('/admin-login', [AdminLoginController::class, 'store'])->name('admin-login.store');
+Route::get('/chatbot', [ChatbotController::class, 'index'])
+    ->name('chatbot');
+
+Route::prefix('api/chatbot')
+    ->name('chatbot.api.')
+    ->middleware('throttle:60,1')
+    ->group(function (): void {
+        Route::get('/history', [ChatbotController::class, 'history'])
+            ->name('history');
+
+        Route::get('/conversations/{conversation}', [ChatbotController::class, 'conversation'])
+            ->name('conversation');
+
+        Route::post('/messages', [ChatbotController::class, 'send'])
+            ->name('messages.send');
+
+        Route::post('/messages/{message}/feedback', [ChatbotController::class, 'feedback'])
+            ->name('messages.feedback');
+    });
+
+Route::middleware('guest')->group(function (): void {
+    Route::get('/admin-login', [AdminLoginController::class, 'create'])
+        ->name('admin.login');
+
+    Route::post('/admin-login', [AdminLoginController::class, 'store'])
+        ->name('admin-login.store');
 });
+
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -45,3 +70,4 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::post('/logout', [AdminLoginController::class, 'destroy'])->name('admin.logout');
 });
+
