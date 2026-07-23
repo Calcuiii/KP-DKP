@@ -4,7 +4,7 @@
         Landing
     </a>
 
-    <a href="{{ route('landing') }}#chatbot"
+    <a href="{{ route('chatbot') }}"
        class="rounded-full px-4 py-2 text-sm font-semibold transition-colors text-muted-foreground hover:text-navy">
         Chat
     </a>

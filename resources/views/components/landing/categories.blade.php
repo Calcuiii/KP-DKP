@@ -25,7 +25,7 @@
 
             {{-- Persyaratan --}}
             <a
-                href="#chatbot"
+                href="{{ route('chatbot') }}"
                 class="group rounded-2xl border border-border bg-white p-5 text-left transition-all hover:border-ocean/30 hover:shadow-md"
             >
                 <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-ocean/[0.08]">
@@ -63,7 +63,7 @@
 
             {{-- Alur Pengajuan --}}
             <a
-                href="#chatbot"
+                href="{{ route('chatbot') }}"
                 class="group rounded-2xl border border-border bg-white p-5 text-left transition-all hover:border-teal/30 hover:shadow-md"
             >
                 <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-teal/[0.08]">
@@ -101,7 +101,7 @@
 
             {{-- Dokumen Pengajuan --}}
             <a
-                href="#chatbot"
+                href="{{ route('chatbot') }}"
                 class="group rounded-2xl border border-border bg-white p-5 text-left transition-all hover:border-indigo-500/30 hover:shadow-md"
             >
                 <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/[0.08]">
@@ -139,7 +139,7 @@
 
             {{-- Pelaksanaan --}}
             <a
-                href="#chatbot"
+                href="{{ route('chatbot') }}"
                 class="group rounded-2xl border border-border bg-white p-5 text-left transition-all hover:border-amber-500/30 hover:shadow-md"
             >
                 <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/[0.08]">
@@ -177,7 +177,7 @@
 
             {{-- Penyelesaian --}}
             <a
-                href="#chatbot"
+                href="{{ route('chatbot') }}"
                 class="group rounded-2xl border border-border bg-white p-5 text-left transition-all hover:border-pink-500/30 hover:shadow-md"
             >
                 <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-pink-500/[0.08]">
@@ -215,7 +215,7 @@
 
             {{-- Sertifikat --}}
             <a
-                href="#chatbot"
+                href="{{ route('chatbot') }}"
                 class="group rounded-2xl border border-border bg-white p-5 text-left transition-all hover:border-sky-500/30 hover:shadow-md"
             >
                 <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-sky-500/[0.08]">
@@ -253,3 +253,5 @@
         </div>
     </div>
 </section>
+
+

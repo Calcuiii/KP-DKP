@@ -74,7 +74,7 @@
                 </h4>
 
                 <a
-                    href="#chatbot"
+                    href="{{ route('chatbot') }}"
                     class="block py-1 text-xs text-muted-foreground hover:text-foreground"
                 >
                     Chatbot
@@ -123,3 +123,4 @@
         </div>
     </div>
 </footer>
+

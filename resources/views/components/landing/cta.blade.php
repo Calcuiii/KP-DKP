@@ -13,7 +13,7 @@
             </p>
 
             <a
-                href="#chatbot"
+                href="{{ route('chatbot') }}"
                 class="inline-flex items-center gap-2 rounded-xl border-2 border-white/30 px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
             >
                 <i
@@ -27,3 +27,4 @@
         </div>
     </div>
 </section>
+

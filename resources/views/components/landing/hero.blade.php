@@ -62,7 +62,7 @@
             <div class="flex flex-wrap gap-3">
 
                 <a
-                    href="#chatbot"
+                    href="{{ route('chatbot') }}"
                     class="flex items-center gap-2 rounded-xl bg-gradient-to-br from-ocean to-navy px-6 py-3 font-semibold text-white shadow-md transition-all hover:opacity-90 active:scale-95"
                 >
                     <i
@@ -297,3 +297,4 @@
         </div>
     </div>
 </section>
+

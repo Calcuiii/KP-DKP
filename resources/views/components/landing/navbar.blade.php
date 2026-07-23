@@ -71,7 +71,7 @@
             {{-- Actions --}}
             <div class="flex items-center gap-3">
                 <a
-                    href="#chatbot"
+                    href="{{ route('chatbot') }}"
                     class="hidden items-center gap-2 rounded-xl bg-ocean px-4 py-2 text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95 md:inline-flex"
                 >
                     <i
@@ -160,7 +160,7 @@
             </a>
 
             <a
-                href="#chatbot"
+                href="{{ route('chatbot') }}"
                 class="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-ocean py-2.5 text-sm font-semibold text-white"
             >
                 <i
@@ -174,3 +174,4 @@
         </div>
     </div>
 </nav>
+
