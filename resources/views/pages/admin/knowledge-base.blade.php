@@ -11,6 +11,12 @@
         </div>
     @endif
 
+    @if (session('error'))
+        <div class="rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-700">
+            {{ session('error') }}
+        </div>
+    @endif
+
     {{-- Metric Cards --}}
     <div class="grid gap-4 sm:grid-cols-4">
         <x-admin.metric-card icon="file-text" label="Total Dokumen" :value="$metrics['total']" color="ocean" />
@@ -87,7 +93,7 @@
                                     </a>
                                     <form method="POST" action="{{ route('admin.knowledge-base.reindex', $doc) }}">
                                         @csrf
-                                        <button type="submit" class="rounded-lg p-1.5 hover:bg-accent" title="Proses Ulang">
+                                        <button type="submit" class="rounded-lg p-1.5 hover:bg-accent" title="Proses dan perbarui indeks">
                                             <i data-lucide="rotate-ccw" class="h-3 w-3" aria-hidden="true"></i>
                                         </button>
                                     </form>

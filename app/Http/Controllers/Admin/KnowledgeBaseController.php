@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreKnowledgeBaseDocumentRequest;
+use App\Models\ActivityLog;
 use App\Models\KnowledgeBaseDocument;
+use App\Services\KnowledgeBaseDocumentIndexer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Throwable;
 
 class KnowledgeBaseController extends Controller
 {
@@ -32,12 +35,14 @@ class KnowledgeBaseController extends Controller
         return view('pages.admin.knowledge-base', compact('documents', 'metrics'));
     }
 
-    public function store(StoreKnowledgeBaseDocumentRequest $request): RedirectResponse
-    {
+    public function store(
+        StoreKnowledgeBaseDocumentRequest $request,
+        KnowledgeBaseDocumentIndexer $indexer,
+    ): RedirectResponse {
         $file = $request->file('file');
         $path = $file->store('knowledge-base', 'public');
 
-        KnowledgeBaseDocument::create([
+        $document = KnowledgeBaseDocument::create([
             'name' => $request->name,
             'category' => $request->category,
             'type' => strtoupper($file->getClientOriginalExtension()),
@@ -51,27 +56,57 @@ class KnowledgeBaseController extends Controller
             'uploaded_by' => auth()->id(),
         ]);
 
-        \App\Models\ActivityLog::record('Upload', 'Knowledge Base', "Mengunggah dokumen \"{$request->name}\"");
+        ActivityLog::record('Upload', 'Knowledge Base', "Mengunggah dokumen \"{$request->name}\"");
 
-        return redirect()->route('admin.knowledge-base')
-            ->with('status', 'Dokumen berhasil diunggah dan menunggu diproses.');
+        return $this->process($document, $indexer, 'Dokumen berhasil diunggah');
     }
 
     public function destroy(KnowledgeBaseDocument $document): RedirectResponse
     {
         Storage::disk('public')->delete($document->file_path);
-        \App\Models\ActivityLog::record('Delete', 'Knowledge Base', "Menghapus dokumen \"{$document->name}\"");
+        ActivityLog::record('Delete', 'Knowledge Base', "Menghapus dokumen \"{$document->name}\"");
         $document->delete();
 
         return redirect()->route('admin.knowledge-base')
             ->with('status', 'Dokumen berhasil dihapus.');
     }
 
-    public function reindex(KnowledgeBaseDocument $document): RedirectResponse
-    {
+    public function reindex(
+        KnowledgeBaseDocument $document,
+        KnowledgeBaseDocumentIndexer $indexer,
+    ): RedirectResponse {
+        return $this->process($document, $indexer, 'Dokumen berhasil diproses ulang');
+    }
+
+    private function process(
+        KnowledgeBaseDocument $document,
+        KnowledgeBaseDocumentIndexer $indexer,
+        string $successMessage,
+    ): RedirectResponse {
         $document->update(['status' => 'Processing', 'index_status' => 'Processing']);
 
-        return redirect()->route('admin.knowledge-base')
-            ->with('status', 'Dokumen sedang diproses ulang.');
+        try {
+            $chunksCount = $indexer->index($document);
+
+            $document->update([
+                'status' => 'Ready',
+                'index_status' => 'Ready',
+                'chunks_count' => $chunksCount,
+            ]);
+
+            return redirect()->route('admin.knowledge-base')
+                ->with('status', $successMessage.' dan siap digunakan oleh chatbot.');
+        } catch (Throwable $exception) {
+            report($exception);
+
+            $document->update([
+                'status' => 'Failed',
+                'index_status' => 'Failed',
+                'chunks_count' => 0,
+            ]);
+
+            return redirect()->route('admin.knowledge-base')
+                ->with('error', 'Dokumen gagal diproses: '.$exception->getMessage());
+        }
     }
 }

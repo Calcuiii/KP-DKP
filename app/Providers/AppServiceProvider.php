@@ -9,8 +9,10 @@ use App\KnowledgeBase\KnowledgeBaseRegistry;
 use App\KnowledgeBase\KnowledgeBaseRetrievalPipeline;
 use App\KnowledgeBase\KnowledgeBaseTopicResolver;
 use App\KnowledgeBase\LexicalKnowledgeBaseRetriever;
+use App\Services\KnowledgeBaseDocumentIndexer;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
+use Smalot\PdfParser\Parser;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
             KnowledgeBaseRegistry::class,
             static fn (): KnowledgeBaseRegistry => new KnowledgeBaseRegistry(
                 config('knowledge-base.registry_path'),
+                config('knowledge-base.uploaded_registry_path'),
             ),
         );
 
@@ -42,6 +45,17 @@ class AppServiceProvider extends ServiceProvider
                 retriever: $app->make(LexicalKnowledgeBaseRetriever::class),
                 policyResolver: $app->make(KnowledgeBasePolicyResolver::class),
                 topicResolver: $app->make(KnowledgeBaseTopicResolver::class),
+            ),
+        );
+
+        $this->app->singleton(
+            KnowledgeBaseDocumentIndexer::class,
+            static fn (Application $app): KnowledgeBaseDocumentIndexer => new KnowledgeBaseDocumentIndexer(
+                registryPath: config('knowledge-base.uploaded_registry_path'),
+                processedDirectory: config('knowledge-base.processed_directory'),
+                documentLoader: $app->make(KnowledgeBaseDocumentLoader::class),
+                chunker: $app->make(KnowledgeBaseChunker::class),
+                pdfParser: new Parser,
             ),
         );
     }

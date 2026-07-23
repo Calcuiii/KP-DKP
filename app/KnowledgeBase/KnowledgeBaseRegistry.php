@@ -11,6 +11,7 @@ final class KnowledgeBaseRegistry
 {
     public function __construct(
         private readonly string $registryPath,
+        private readonly ?string $uploadedRegistryPath = null,
     ) {}
 
     /**
@@ -18,15 +19,42 @@ final class KnowledgeBaseRegistry
      */
     public function all(): array
     {
-        $data = $this->readRegistry();
+        $documents = $this->documentsFromRegistry($this->readRegistry($this->registryPath));
+
+        if ($this->uploadedRegistryPath !== null && is_file($this->uploadedRegistryPath)) {
+            array_push(
+                $documents,
+                ...$this->documentsFromRegistry($this->readRegistry($this->uploadedRegistryPath)),
+            );
+        }
+
+        $documentIds = [];
+
+        foreach ($documents as $document) {
+            if (isset($documentIds[$document->documentId])) {
+                throw new RuntimeException(
+                    sprintf('Duplicate knowledge base document ID: %s.', $document->documentId),
+                );
+            }
+
+            $documentIds[$document->documentId] = true;
+        }
+
+        return $documents;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<int, KnowledgeBaseDocument>
+     */
+    private function documentsFromRegistry(array $data): array
+    {
 
         if (! isset($data['documents']) || ! is_array($data['documents'])) {
             throw new RuntimeException('Knowledge base registry must contain a documents array.');
         }
 
         $documents = [];
-        $documentIds = [];
-
         foreach ($data['documents'] as $index => $document) {
             if (! is_array($document)) {
                 throw new RuntimeException(
@@ -36,13 +64,6 @@ final class KnowledgeBaseRegistry
 
             $mappedDocument = $this->mapDocument($document, $index);
 
-            if (isset($documentIds[$mappedDocument->documentId])) {
-                throw new RuntimeException(
-                    sprintf('Duplicate knowledge base document ID: %s.', $mappedDocument->documentId),
-                );
-            }
-
-            $documentIds[$mappedDocument->documentId] = true;
             $documents[] = $mappedDocument;
         }
 
@@ -52,19 +73,19 @@ final class KnowledgeBaseRegistry
     /**
      * @return array<string, mixed>
      */
-    private function readRegistry(): array
+    private function readRegistry(string $path): array
     {
-        if (! is_file($this->registryPath)) {
+        if (! is_file($path)) {
             throw new RuntimeException(
-                sprintf('Knowledge base registry not found: %s.', $this->registryPath),
+                sprintf('Knowledge base registry not found: %s.', $path),
             );
         }
 
-        $contents = file_get_contents($this->registryPath);
+        $contents = file_get_contents($path);
 
         if ($contents === false) {
             throw new RuntimeException(
-                sprintf('Unable to read knowledge base registry: %s.', $this->registryPath),
+                sprintf('Unable to read knowledge base registry: %s.', $path),
             );
         }
 
