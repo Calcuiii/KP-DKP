@@ -26,7 +26,10 @@
 <body>
     @yield('content')
 
-    @include('components.dev-nav')
+    @hasSection('hide_dev_nav')
+    @else
+        @include('components.dev-nav')
+    @endif
 
     @stack('scripts')
 </body>

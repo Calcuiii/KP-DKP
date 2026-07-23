@@ -15,8 +15,6 @@ import {
     Plus,
     RefreshCw,
     Send,
-    ThumbsDown,
-    ThumbsUp,
     X,
     createIcons,
 } from 'lucide';
@@ -38,8 +36,6 @@ const icons = {
     Plus,
     RefreshCw,
     Send,
-    ThumbsDown,
-    ThumbsUp,
     X,
 };
 
@@ -115,9 +111,11 @@ const formatHistoryGroup = (isoDate) => {
 const initializeChatbot = () => {
     const app = document.querySelector('[data-chatbot-app]');
 
-    if (!app) {
+    if (!app || app.dataset.chatbotInitialized === 'true') {
         return;
     }
+
+    app.dataset.chatbotInitialized = 'true';
 
     const form = app.querySelector('[data-chat-form]');
     const input = app.querySelector('[data-chat-input]');
@@ -162,7 +160,6 @@ const initializeChatbot = () => {
         history: app.dataset.historyUrl,
         send: app.dataset.sendUrl,
         conversationTemplate: app.dataset.conversationUrlTemplate,
-        feedbackTemplate: app.dataset.feedbackUrlTemplate,
     };
 
     const request = async (url, options = {}) => {
@@ -293,36 +290,6 @@ const initializeChatbot = () => {
         return card;
     };
 
-    const setFeedbackButtonState = (container, selectedRating) => {
-        container.querySelectorAll('[data-feedback-rating]').forEach((button) => {
-            const selected = button.dataset.feedbackRating === selectedRating;
-            button.classList.toggle('bg-secondary', selected);
-            button.classList.toggle('text-ocean', selected);
-        });
-    };
-
-    const submitFeedback = async (messageId, rating, container) => {
-        if (!messageId) {
-            return;
-        }
-
-        const url = urls.feedbackTemplate.replace('__MESSAGE__', String(messageId));
-
-        try {
-            await request(url, {
-                method: 'POST',
-                body: JSON.stringify({
-                    session_key: state.sessionKey,
-                    rating,
-                }),
-            });
-
-            setFeedbackButtonState(container, rating);
-        } catch (error) {
-            showError(error.message);
-        }
-    };
-
     const createAssistantMessage = (message) => {
         const wrapper = document.createElement('article');
         wrapper.className = 'flex items-start gap-3';
@@ -342,7 +309,7 @@ const initializeChatbot = () => {
         }
 
         const answerText = document.createElement('div');
-        answerText.className = 'whitespace-pre-wrap';
+        answerText.className = 'whitespace-pre-line';
         answerText.textContent = message.content;
         bubble.append(answerText);
 
@@ -401,31 +368,11 @@ const initializeChatbot = () => {
             }
         });
 
-        const positiveButton = document.createElement('button');
-        positiveButton.type = 'button';
-        positiveButton.dataset.feedbackRating = 'positive';
-        positiveButton.className = 'rounded-lg p-1.5 text-muted-foreground transition hover:bg-secondary hover:text-teal';
-        positiveButton.title = 'Jawaban membantu';
-        positiveButton.innerHTML = '<i data-lucide="thumbs-up" class="h-3.5 w-3.5"></i>';
-        positiveButton.addEventListener('click', () => submitFeedback(message.id, 'positive', actions));
-
-        const negativeButton = document.createElement('button');
-        negativeButton.type = 'button';
-        negativeButton.dataset.feedbackRating = 'negative';
-        negativeButton.className = 'rounded-lg p-1.5 text-muted-foreground transition hover:bg-secondary hover:text-destructive';
-        negativeButton.title = 'Jawaban tidak membantu';
-        negativeButton.innerHTML = '<i data-lucide="thumbs-down" class="h-3.5 w-3.5"></i>';
-        negativeButton.addEventListener('click', () => submitFeedback(message.id, 'negative', actions));
-
         const timestamp = document.createElement('span');
         timestamp.className = 'ml-1 text-[10px] text-muted-foreground';
         timestamp.textContent = formatTime(message.created_at);
 
-        actions.append(copyButton, regenerateButton, positiveButton, negativeButton, timestamp);
-
-        if (message.feedback?.rating) {
-            setFeedbackButtonState(actions, message.feedback.rating);
-        }
+        actions.append(copyButton, regenerateButton, timestamp);
 
         body.append(bubble, actions);
         wrapper.append(avatar, body);

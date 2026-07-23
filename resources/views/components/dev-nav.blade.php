@@ -14,8 +14,4 @@
         Admin Login
     </a>
 
-    <a href="{{ route('admin.dashboard') }}"
-        class="rounded-full px-4 py-2 text-sm font-semibold transition-colors {{ request()->routeIs('admin.*') && !request()->routeIs('admin.login') ? 'bg-navy text-white' : 'text-muted-foreground hover:text-navy' }}">
-        Dashboard
-    </a>
 </div>

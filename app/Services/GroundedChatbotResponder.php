@@ -84,9 +84,9 @@ final class GroundedChatbotResponder
             ];
         }
 
-        $answer = "Berdasarkan dokumen resmi yang tersedia, berikut informasi yang relevan:\n\n"
-            .implode("\n\n", $answerSections)
-            ."\n\nSilakan gunakan sumber yang tercantum untuk memeriksa konteks lengkapnya.";
+        $answer = "Berikut informasi yang tersedia pada dokumen resmi:\n"
+            .implode("\n", $answerSections)
+            ."\nAnda dapat membuka bagian sumber di bawah untuk melihat dokumen lengkap.";
 
         return [
             'status' => self::STATUS_SUCCESS,
@@ -98,8 +98,8 @@ final class GroundedChatbotResponder
     private function cleanMarkdown(string $content): string
     {
         $content = str_replace(["\r\n", "\r"], "\n", trim($content));
-        $content = preg_replace('/^#{1,6}\s+/m', '', $content) ?? $content;
-        $content = preg_replace('/\n{3,}/', "\n\n", $content) ?? $content;
+        $content = preg_replace('/^#{1,6}\s+.*(?:\n|$)/m', '', $content) ?? $content;
+        $content = preg_replace('/\n[ \t]*\n+/', "\n", $content) ?? $content;
 
         return Str::limit(trim($content), 950, '');
     }

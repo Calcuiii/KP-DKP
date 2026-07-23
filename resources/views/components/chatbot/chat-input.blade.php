@@ -2,7 +2,7 @@
     <form data-chat-form class="mx-auto max-w-3xl">
         @csrf
 
-        <div class="flex items-end gap-2 rounded-2xl border border-border bg-input-background px-4 py-3 transition focus-within:border-ocean/40 focus-within:ring-4 focus-within:ring-ocean/5">
+        <div class="flex items-center gap-2 rounded-2xl border border-border bg-input-background px-4 py-3 transition focus-within:border-ocean/40 focus-within:ring-4 focus-within:ring-ocean/5">
             <textarea
                 data-chat-input
                 rows="1"
