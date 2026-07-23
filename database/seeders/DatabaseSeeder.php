@@ -21,5 +21,8 @@ class DatabaseSeeder extends Seeder
         'password' => bcrypt('password123'),
         'role' => 'superadmin',
     ]);
+
+    $this->call(ConversationLogSeeder::class);
+    $this->call(UnansweredQuestionSeeder::class);
 }
 }

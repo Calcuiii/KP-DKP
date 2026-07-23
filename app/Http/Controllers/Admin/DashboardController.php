@@ -15,7 +15,6 @@ class DashboardController extends Controller
             ['icon' => 'activity', 'label' => 'Pertanyaan Hari Ini', 'value' => '47', 'sub' => 'Diperbarui real-time', 'color' => 'indigo'],
             ['icon' => 'database', 'label' => 'Knowledge Base Aktif', 'value' => '6', 'sub' => '2 dalam proses', 'color' => 'amber'],
             ['icon' => 'inbox', 'label' => 'Pertanyaan Tidak Terjawab', 'value' => '42', 'sub' => '4 baru hari ini', 'color' => 'red'],
-            ['icon' => 'thumbs-up', 'label' => 'Feedback Positif', 'value' => '86%', 'sub' => 'Dari 512 feedback', 'color' => 'teal'],
             ['icon' => 'clock', 'label' => 'Rata-rata Response Time', 'value' => '1.3s', 'sub' => 'Stabil minggu ini', 'color' => 'ocean'],
             ['icon' => 'star', 'label' => 'Satisfaction Rate', 'value' => '4.2/5', 'sub' => 'Berdasarkan rating', 'color' => 'amber'],
         ];
@@ -47,11 +46,11 @@ class DashboardController extends Controller
         ];
 
         $recentQuestions = [
-            ['question' => 'Apa saja persyaratan untuk mengajukan magang di DKP?', 'category' => 'Persyaratan', 'status' => 'Dijawab', 'time' => '2024-04-10 14:32', 'feedback' => 'Positif'],
-            ['question' => 'Bagaimana alur pengajuan Kerja Praktik?', 'category' => 'Alur', 'status' => 'Dijawab', 'time' => '2024-04-10 13:15', 'feedback' => 'Positif'],
-            ['question' => 'Apakah siswa SMK bisa magang di DKP Jatim?', 'category' => 'Umum', 'status' => 'Dijawab', 'time' => '2024-04-10 11:44', 'feedback' => 'Negatif'],
-            ['question' => 'Berapa lama proses verifikasi dokumen pengajuan?', 'category' => 'Alur', 'status' => 'Tidak Ditemukan', 'time' => '2024-04-10 10:02', 'feedback' => '-'],
-            ['question' => 'Dokumen apa saja yang harus disiapkan untuk KP?', 'category' => 'Dokumen', 'status' => 'Dijawab', 'time' => '2024-04-09 16:30', 'feedback' => 'Positif'],
+            ['question' => 'Apa saja persyaratan untuk mengajukan magang di DKP?', 'category' => 'Persyaratan', 'status' => 'Dijawab', 'time' => '2024-04-10 14:32'],
+            ['question' => 'Bagaimana alur pengajuan Kerja Praktik?', 'category' => 'Alur', 'status' => 'Dijawab', 'time' => '2024-04-10 13:15'],
+            ['question' => 'Apakah siswa SMK bisa magang di DKP Jatim?', 'category' => 'Umum', 'status' => 'Dijawab', 'time' => '2024-04-10 11:44'],
+            ['question' => 'Berapa lama proses verifikasi dokumen pengajuan?', 'category' => 'Alur', 'status' => 'Tidak Ditemukan', 'time' => '2024-04-10 10:02'],
+            ['question' => 'Dokumen apa saja yang harus disiapkan untuk KP?', 'category' => 'Dokumen', 'status' => 'Dijawab', 'time' => '2024-04-09 16:30'],
         ];
 
         return view('pages.admin.dashboard', compact(

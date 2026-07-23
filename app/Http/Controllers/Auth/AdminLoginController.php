@@ -21,6 +21,7 @@ class AdminLoginController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        \App\Models\ActivityLog::record('Login', 'Auth', 'Login ke sistem admin');
 
         return redirect()->intended(route('admin.dashboard'));
     }

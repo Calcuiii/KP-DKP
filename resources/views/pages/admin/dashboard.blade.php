@@ -80,7 +80,6 @@
                         <th class="px-4 py-3 text-left font-semibold">Kategori</th>
                         <th class="px-4 py-3 text-left font-semibold">Status</th>
                         <th class="px-4 py-3 text-left font-semibold">Waktu</th>
-                        <th class="px-4 py-3 text-left font-semibold">Feedback</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,11 +90,6 @@
                             <td class="px-4 py-3"><x-admin.status-badge :status="$row['status']" /></td>
                             <td class="px-4 py-3 text-muted-foreground">{{ $row['time'] }}</td>
                             <td class="px-4 py-3">
-                                @if ($row['feedback'] !== '-')
-                                    <x-admin.status-badge :status="$row['feedback']" />
-                                @else
-                                    <span class="text-muted-foreground">-</span>
-                                @endif
                             </td>
                         </tr>
                     @endforeach
