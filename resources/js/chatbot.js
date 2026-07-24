@@ -18,6 +18,10 @@ import {
     X,
     createIcons,
 } from 'lucide';
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
+
+marked.setOptions({ gfm: true, breaks: true });
 
 const icons = {
     ArrowRight,
@@ -309,8 +313,8 @@ const initializeChatbot = () => {
         }
 
         const answerText = document.createElement('div');
-        answerText.className = 'whitespace-pre-line';
-        answerText.textContent = message.content;
+        answerText.className = 'chat-markdown text-sm leading-7';
+        answerText.innerHTML = DOMPurify.sanitize(marked.parse(message.content ?? ''));
         bubble.append(answerText);
 
         if (Array.isArray(message.sources) && message.sources.length > 0) {

@@ -89,15 +89,15 @@
     },
     {
       "document_id": "KB-007",
-      "title": "Alur Magang / Praktik Kerja Lapang (PKL)",
+      "title": "Alur Utama Magang / Praktik Kerja Lapang (PKL)",
       "category": "prosedur",
-      "document_type": "official_infographic",
+      "document_type": "official_guide",
       "effective_date": null,
       "priority": 3,
       "status": "active",
-      "source_file": "originals/images/KB-007-alur-magang-pkl.jpeg",
+      "source_file": "originals/documents/KB-007-alur-utama-magang-pkl.pdf",
       "processed_file": "KB-007-alur-magang-pkl.md",
-      "source_sha256": "03ccdbed3fc8fa1bef5d09acf7903f8d775ab8f44d642dedd1635b1544711c5c"
+      "source_sha256": "f3d230cdab526eeff016ce51367fc78a5e987a1c7f8b18a7ad93aca2c1a49391"
     },
     {
       "document_id": "KB-008",

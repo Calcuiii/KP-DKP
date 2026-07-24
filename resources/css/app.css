@@ -159,3 +159,39 @@
         text-decoration: none;
     }
 }
+
+.chat-markdown p {
+    margin-bottom: 0.5rem;
+}
+.chat-markdown p:last-child {
+    margin-bottom: 0;
+}
+.chat-markdown strong {
+    font-weight: 700;
+}
+.chat-markdown ul,
+.chat-markdown ol {
+    padding-left: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+.chat-markdown table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0.5rem 0;
+    font-size: 0.8125rem;
+}
+.chat-markdown th,
+.chat-markdown td {
+    border: 1px solid var(--border);
+    padding: 6px 10px;
+    text-align: left;
+}
+.chat-markdown th {
+    background: var(--secondary);
+    color: var(--navy);
+    font-weight: 600;
+}
+.chat-markdown a {
+    color: var(--ocean);
+    text-decoration: underline;
+}
