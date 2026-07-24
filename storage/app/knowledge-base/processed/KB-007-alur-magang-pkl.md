@@ -1,98 +1,123 @@
 ---
 document_id: KB-007
-title: Alur Magang / Praktik Kerja Lapang (PKL)
+title: Alur Utama Magang / Praktik Kerja Lapang (PKL)
 category: prosedur
-document_type: official_infographic
+document_type: official_guide
 issuer: Dinas Kelautan dan Perikanan Provinsi Jawa Timur
 effective_date: null
 priority: 3
 status: active
-source_file: originals/images/KB-007-alur-magang-pkl.jpeg
+source_file: originals/documents/KB-007-alur-utama-magang-pkl.pdf
+chatbot_notes: ["Untuk pertanyaan tentang alur Magang atau PKL, jelaskan langkah secara berurutan dan sesuaikan jawaban dengan tahap yang ditanyakan.", "Jangan menyatakan Surat Keterangan atau Sertifikat terbit otomatis; kebutuhan dokumen tersebut harus dicantumkan atau dilampirkan dalam Surat Permohonan."]
 ---
 
-# Alur Magang / Praktik Kerja Lapang (PKL)
+# Alur Utama Magang / Praktik Kerja Lapang (PKL)
 
-## Ruang Lingkup
+## Ringkasan Alur
 
-Dokumen ini memuat alur Magang atau Praktik Kerja Lapang (PKL).
+Panduan tahapan pengajuan, pelaksanaan, hingga penyelesaian kegiatan Magang dan Praktik Kerja Lapangan (PKL) di Dinas Kelautan dan Perikanan Provinsi Jawa Timur.
 
-## Langkah 1: Form Buku Tamu
+Alur Magang atau Praktik Kerja Lapang (PKL) terdiri dari tahap pengajuan, konfirmasi, pelaksanaan, dan penerbitan dokumen akhir. Calon peserta memulai dari pengisian Buku Tamu, kemudian berkoordinasi mengenai kuota dan kesesuaian jurusan sebelum mengajukan surat permohonan.
 
-Calon peserta mengisi Google Form Buku Tamu Magang atau Praktik Kerja Lapang melalui:
+### Ringkasan Tahapan
 
-- bit.ly/DaftarMagangPKL_DKP_JATIM
+| Tahap | Nama Tahap | Langkah |
+| --- | --- | --- |
+| 1 | Pengajuan | Langkah 1 – 4 |
+| 2 | Konfirmasi | Langkah 5 – 6 |
+| 3 | Pelaksanaan | Langkah 7 – 10 |
+| — | Penerbitan Dokumen Akhir | Langkah 11 |
 
-## Langkah 2: Koordinasi Awal
+## Tahap 1: Pengajuan
 
-Dilakukan koordinasi mengenai ketersediaan kuota dan kesesuaian Program Studi atau Jurusan.
+### Langkah 1: Isi Buku Tamu Magang / PKL
 
-Calon peserta juga mendapatkan penjelasan awal terkait aturan dan tata tertib.
+**Pelaku:** Calon Peserta
 
-## Langkah 3: Surat Permohonan
+Calon peserta mengisi Google Form Buku Tamu sebagai tahap awal pendataan permohonan Magang atau PKL.
 
-Apabila diterima, calon peserta mengajukan Surat Permohonan Magang atau PKL yang berisi informasi:
+- Link: bit.ly/DaftarMagangPKL_DKP_JATIM
 
-- Nama.
-- NIS atau NIM.
-- Keahlian atau Program Studi.
-- Sekolah atau Fakultas.
-- Universitas.
-- Lokasi Kegiatan.
-- Periode Kegiatan.
-- Tema atau Topik.
-- Judul Spesifik.
-- Nomor CP WhatsApp perwakilan pemohon.
+### Langkah 2: Koordinasi Ketersediaan Kuota
 
-## Langkah 4: Surat Balasan
+**Pelaku:** Calon Peserta
 
-Dilakukan penerbitan Surat Balasan.
+Calon peserta berkoordinasi mengenai ketersediaan kuota dan kesesuaian Program Studi atau Jurusan.
 
-## Langkah 5: Form Pelaksanaan
+**Catatan:** Calon peserta memperoleh informasi awal mengenai aturan dan tata tertib.
 
-Peserta mengisi Google Form Pelaksanaan Magang atau PKL.
+### Langkah 3: Ajukan Surat Permohonan
 
-Bagi peserta SMA atau SMK:
+**Pelaku:** Calon Peserta
 
-- tinyurl.com/DaftarMagangDKP-SM
+Calon peserta mengajukan Surat Permohonan Magang atau PKL setelah memperoleh persetujuan awal.
 
-Bagi peserta Perguruan Tinggi:
+Informasi lebih detail: lihat Infografis ke-5 dalam seri ini (dokumen KB-004: Informasi yang Wajib Disampaikan dalam Surat Permohonan Magang / Praktik Kerja Lapang).
 
-- tinyurl.com/DaftarMagangDKP-PT
+### Langkah 4: Isi Form Pelaksanaan Magang / PKL
 
-## Langkah 6: Pelaksanaan Magang atau PKL
+**Pelaku:** Calon Peserta
 
-Peserta melaksanakan kegiatan Magang atau Praktik Kerja Lapang.
+Calon peserta mengisi Google Form pelaksanaan Magang atau PKL sesuai kategori institusi pendidikan.
 
-## Langkah 7: Laporan Kegiatan
+- SMA/K: https://tinyurl.com/DaftarMagangDKP-SM
+- Perguruan Tinggi: https://tinyurl.com/DaftarMagangDKP-PT
 
-Peserta menyusun Laporan Kegiatan Magang atau Praktik Kerja Lapang menggunakan format sesuai institusi terkait.
+## Tahap 2: Konfirmasi
 
-## Langkah 8: Bahan Presentasi
+### Langkah 5: Penerbitan Surat Balasan
 
-Peserta menyusun bahan presentasi hasil pelaksanaan Magang.
+**Pelaku:** Proses Dinas
 
-## Langkah 9: Presentasi
+Dinas memproses dan menerbitkan Surat Balasan sebagai tindak lanjut atas permohonan Magang atau PKL.
 
-Peserta melakukan presentasi di lokasi kegiatan Magang atau Praktik Kerja Lapang.
+### Langkah 6: Pelaksanaan Magang / PKL
 
-## Langkah 10: Form Penyelesaian
+**Pelaku:** Peserta
 
-Setelah menyelesaikan kegiatan, peserta mengisi Google Form terkait selesainya Magang atau PKL.
+Peserta melaksanakan kegiatan Magang atau PKL sesuai periode, lokasi, aturan, dan tata tertib yang telah ditentukan.
 
-Bagi Sekolah Menengah:
+## Tahap 3: Pelaksanaan
 
-- bit.ly/SelesaiMagangPKL-SM
+### Langkah 7: Susun Laporan Kegiatan
 
-Bagi Perguruan Tinggi:
+**Pelaku:** Peserta
 
-- bit.ly/SelesaiMagangPKL-PT
+Peserta menyusun laporan hasil kegiatan Magang atau PKL menggunakan format sesuai ketentuan institusi terkait.
 
-## Langkah 11: Surat Keterangan dan Sertifikat
+### Langkah 8: Siapkan Bahan Presentasi
 
-Dilakukan penerbitan Surat Keterangan dan Sertifikat apabila dibutuhkan.
+**Pelaku:** Peserta
 
-Kebutuhan Surat Keterangan dan Sertifikat dilampirkan dengan Surat Permohonan.
+Peserta menyusun bahan presentasi yang merangkum hasil pelaksanaan kegiatan Magang atau PKL.
 
-## Batasan Informasi
+### Langkah 9: Presentasi Hasil Kegiatan
 
-Dokumen ini menjelaskan alur Magang atau Praktik Kerja Lapang berdasarkan infografik resmi.
+**Pelaku:** Peserta
+
+Peserta melakukan presentasi hasil kegiatan di lokasi pelaksanaan Magang atau PKL.
+
+### Langkah 10: Isi Form Selesai Magang / PKL
+
+**Pelaku:** Peserta
+
+Setelah kegiatan selesai, peserta mengisi Google Form sebagai konfirmasi penyelesaian Magang atau PKL.
+
+- SMA/K: bit.ly/SelesaiMagangPKL-SM
+- Perguruan Tinggi: bit.ly/SelesaiMagangPKL-PT
+
+## Penerbitan Dokumen Akhir
+
+### Langkah 11: Penerbitan Surat Keterangan dan Sertifikat
+
+**Pelaku:** Proses Dinas
+
+Dinas menerbitkan Surat Keterangan dan Sertifikat apabila peserta telah melampirkan keterangan tersebut di Surat Permohonan.
+
+## Informasi Kontak
+
+Informasi kontak Dinas Kelautan dan Perikanan Provinsi Jawa Timur:
+
+- Instagram: @diskanlajatim
+- Situs Web: dkp.jatimprov.co.id
+- Facebook: diskanlajawatimur

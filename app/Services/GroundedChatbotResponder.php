@@ -84,13 +84,17 @@ final class GroundedChatbotResponder
             ];
         }
 
-        $answer = "Berikut informasi yang tersedia pada dokumen resmi:\n"
-            .implode("\n", $answerSections)
-            ."\nAnda dapat membuka bagian sumber di bawah untuk melihat dokumen lengkap.";
+        $header = 'Berikut informasi yang tersedia pada dokumen resmi:';
+        $footer = 'Anda dapat membuka bagian sumber di bawah untuk melihat dokumen lengkap.';
+
+        $sectionsBudget = 3500 - mb_strlen($header) - mb_strlen($footer) - 4;
+        $body = $this->truncateSafely(implode("\n\n", $answerSections), max($sectionsBudget, 0));
+
+        $answer = $header."\n\n".$body."\n\n".$footer;
 
         return [
             'status' => self::STATUS_SUCCESS,
-            'answer' => Str::limit($answer, 3500, ''),
+            'answer' => $answer,
             'sources' => $publicSources,
         ];
     }
@@ -98,9 +102,46 @@ final class GroundedChatbotResponder
     private function cleanMarkdown(string $content): string
     {
         $content = str_replace(["\r\n", "\r"], "\n", trim($content));
-        $content = preg_replace('/^#{1,6}\s+.*(?:\n|$)/m', '', $content) ?? $content;
-        $content = preg_replace('/\n[ \t]*\n+/', "\n", $content) ?? $content;
+        $content = preg_replace_callback(
+            '/^#{1,6}\s+(.+)$/m',
+            static fn (array $matches): string => '**'.trim($matches[1]).'**',
+            $content,
+        ) ?? $content;
+        $content = preg_replace('/\n{3,}/', "\n\n", $content) ?? $content;
 
-        return Str::limit(trim($content), 950, '');
+        return $this->truncateSafely(trim($content), 950);
+    }
+
+    private function truncateSafely(string $content, int $maxLength): string
+    {
+        if (mb_strlen($content) <= $maxLength) {
+            return $content;
+        }
+
+        $blocks = preg_split('/\n{2,}/', $content) ?: [$content];
+
+        $result = [];
+        $length = 0;
+
+        foreach ($blocks as $block) {
+            // +2 memperhitungkan baris kosong pemisah saat blok digabung kembali.
+            $addedLength = mb_strlen($block) + ($result === [] ? 0 : 2);
+
+            if ($length + $addedLength > $maxLength) {
+                break;
+            }
+
+            $result[] = $block;
+            $length += $addedLength;
+        }
+
+        // Fallback: kalau blok pertama saja sudah melebihi batas (mis. satu
+        // paragraf sangat panjang tanpa baris kosong), potong paksa supaya
+        // tidak mengembalikan jawaban kosong.
+        if ($result === []) {
+            return mb_substr($blocks[0], 0, $maxLength);
+        }
+
+        return implode("\n\n", $result);
     }
 }

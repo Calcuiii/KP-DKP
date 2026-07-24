@@ -96,30 +96,33 @@ final class LexicalKnowledgeBaseRetriever
         $documentTitle = $this->normalize($chunk->documentTitle);
         $content = $this->normalize($chunk->content);
         $score = 0;
+    
         if (str_contains($sectionTitle, $normalizedQuery)) {
             $score += 12;
         }
         if (str_contains($documentTitle, $normalizedQuery)) {
-            $score += 8;
+            $score += 2;
         }
         if (str_contains($content, $normalizedQuery)) {
             $score += 6;
         }
+    
         $sectionTokens = array_fill_keys($this->tokenize($sectionTitle), true);
         $documentTokens = array_fill_keys($this->tokenize($documentTitle), true);
         $contentTokens = array_fill_keys($this->tokenize($content), true);
+    
         foreach ($queryTokens as $token) {
             if (isset($sectionTokens[$token])) {
-                $score += 5;
+                $score += 6;
             }
             if (isset($documentTokens[$token])) {
-                $score += 3;
-            }
-            if (isset($contentTokens[$token])) {
                 $score += 1;
             }
+            if (isset($contentTokens[$token])) {
+                $score += 2;
+            }
         }
-
+    
         return $score;
     }
 

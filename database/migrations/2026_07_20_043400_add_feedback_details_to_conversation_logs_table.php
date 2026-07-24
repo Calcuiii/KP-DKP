@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('conversation_logs', function (Blueprint $table) {
             $table->text('answer_preview')->nullable()->after('question');
-            $table->string('feedback_reason', 100)->nullable()->after('feedback');
+            $table->string('feedback_reason', 100)->nullable()->after('answer_preview');
         });
     }
 
