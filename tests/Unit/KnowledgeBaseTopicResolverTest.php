@@ -60,13 +60,52 @@ final class KnowledgeBaseTopicResolverTest extends TestCase
         );
     }
 
-    public function test_it_resolves_prosedur_magang_pkl_topic(): void
+    public function test_it_resolves_prosedur_magang_pkl_topic_from_token_signals(): void
+    {
+        $resolver = new KnowledgeBaseTopicResolver;
+
+        foreach ([
+            'alur utama pengajuan magang',
+            'Apa langkah 5 dalam alur magang?',
+            'Bagaimana prosedur magang?',
+            'Bagaimana alur PKL dari awal sampai selesai?',
+            'Apa tata cara pengajuan PKL?',
+        ] as $query) {
+            self::assertSame('prosedur_magang_pkl', $resolver->resolve($query));
+        }
+    }
+
+    public function test_it_does_not_preempt_other_topics_with_procedure_token_matching(): void
     {
         $resolver = new KnowledgeBaseTopicResolver;
 
         self::assertSame(
-            'prosedur_magang_pkl',
-            $resolver->resolve('Bagaimana alur magang dari awal sampai selesai?'),
+            'informasi_wajib_surat_permohonan',
+            $resolver->resolve('Informasi apa saja yang wajib ada di surat permohonan magang?'),
+        );
+        self::assertSame(
+            'sertifikat',
+            $resolver->resolve('Bagaimana alur penerbitan sertifikat magang?'),
+        );
+        self::assertSame(
+            'pendaftaran_magang_pkl',
+            $resolver->resolve('Apa langkah-langkah pendaftaran magang?'),
+        );
+        self::assertSame(
+            'contoh_surat_permohonan',
+            $resolver->resolve('Apa langkah-langkah mengisi contoh surat permohonan magang?'),
+        );
+        self::assertSame(
+            'informasi_wajib_surat_permohonan',
+            $resolver->resolve('Apa langkah-langkah mengisi informasi wajib surat permohonan magang?'),
+        );
+        self::assertSame(
+            'contoh_surat_permohonan',
+            $resolver->resolve('Bagaimana alur mengisi contoh surat permohonan magang?'),
+        );
+        self::assertSame(
+            'informasi_wajib_surat_permohonan',
+            $resolver->resolve('Bagaimana alur informasi wajib yang harus ada di surat permohonan magang?'),
         );
     }
 

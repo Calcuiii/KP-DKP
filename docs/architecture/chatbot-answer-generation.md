@@ -2,13 +2,16 @@
 
 ## Status
 
-Approved.
+Approved and implemented.
 
-## Context
+## Current Context
 
-The application currently provides a deterministic Knowledge Base retrieval chain:
+KP-DKP has an interactive chatbot UI and public web API endpoints. Requests are validated, rate-limited, persisted as conversations/messages, and answered synchronously from the internal Knowledge Base.
 
-Knowledge Base files
+The active chain is deterministic:
+
+```text
+Markdown Knowledge Base
 → KnowledgeBaseRegistry
 → KnowledgeBaseDocumentLoader
 → KnowledgeBaseChunker
@@ -17,119 +20,91 @@ Knowledge Base files
 → KnowledgeBasePolicyResolver
 → KnowledgeBaseRetrievalPipeline
 → KnowledgeBaseGroundedContextBuilder
+→ GroundedChatbotResponder
+→ ChatbotController / JSON API / Chat UI
+```
 
-The grounded context layer produces ordered retrieval sources containing internal retrieval metadata and provenance.
-
-The application does not yet provide answer generation, an LLM provider integration, an HTTP chatbot endpoint, or an interactive chatbot UI.
-
-This decision defines the architectural boundary for answer generation before provider-specific implementation is introduced.
+There is a provider-neutral `KnowledgeBaseAnswerGenerator` contract and result value object, but no provider implementation is bound or invoked by the active chat path. The current chatbot is not an LLM-generated-answer system.
 
 ## Decision
 
-### Provider Strategy
+### Grounded answer behavior
 
-OpenAI is the initial selected LLM provider.
+`GroundedChatbotResponder` must compose answers only from sections returned by the retrieval pipeline. It must not contain rules tied to a document ID, a particular Knowledge Base title, a named business topic, or a fixed number of steps.
 
-Application and domain answer-generation contracts must remain provider-neutral.
+Responder retrieval uses `topK=20`. It includes complete eligible sections in retrieval order until the source body reaches a 5,500-character budget. A section is included whole or omitted; it must not be truncated in the middle. The budget is not an instruction to add weak candidates merely to fill remaining space.
 
-Provider-specific SDK types, response objects, exceptions, and configuration must not leak into provider-neutral application contracts.
+### Retrieval eligibility
 
-### Grounding Input
+Lexical score remains a ranking mechanism. A positive score alone is not sufficient to make a section eligible for presentation.
 
-Answer generation receives `KnowledgeBaseGroundedContext` as its only Knowledge Base grounding input.
+Each result must have `hasDirectMatch` evidence from one of:
 
-The generator must answer only from the supplied grounded context.
+- query phrase/token match in the section title; or
+- query phrase/token match in the section content.
 
-The generator must not use unsupported model knowledge to answer questions presented as official Knowledge Base information.
+Document-title matches may contribute to score and ordering, but cannot be the only reason a section is returned. This avoids unrelated sections inheriting relevance from a broad document title.
 
-If the grounded context does not contain sufficient information, the result must state that the official Knowledge Base does not contain enough information.
+The retriever, not the responder, computes eligibility because it owns normalization, tokenization, and individual scoring signals.
 
-### Public Answer Contract
+### Topic and policy resolution
 
-The future public chatbot answer contract contains:
+Topic resolution and policy resolution remain part of the retrieval pipeline. They are not replaced by responder-level keyword routing. Policy relations continue to act only on retrieved results.
 
-- answer text;
-- safe source references.
+`prosedur_magang_pkl` uses token-based matching rather than exact normalized substring matching. It recognizes separated `alur` and `magang`/`pkl` terms, while preserving higher-precedence topics. When an otherwise ambiguous `langkah` or `alur` query explicitly targets `contoh_surat_permohonan` or `informasi_wajib_surat_permohonan`, it defers to that more specific topic.
 
-Each public source reference contains only:
+KB-007 declares an `overrides` policy relation for KB-003 only when the resolved topic is `prosedur_magang_pkl`. This is not a blanket retirement of KB-003: KB-003 remains available for other resolved topics, including `penelitian_permintaan_data`. The relation is stored identically in both the KB-007 Markdown frontmatter and the registry because the document loader validates that metadata remains synchronized.
 
-- `document_id`;
-- `document_title`;
-- `section_title`.
+### Known limitation: broad overview queries
 
-The public answer contract must not expose:
+The chatbot deliberately does not guarantee every official step for a broad overview query such as `bagaimana alur utama pengajuan magang`. Eligibility requires `hasDirectMatch` evidence in the section title or content. A closing section that does not repeat the overview query's lexical terms can therefore be omitted even when it belongs to the same official document.
 
-- lexical score;
-- `source_file`;
-- `source_sha256`;
-- raw chunk content;
-- `policyRelations`.
+This is an accepted limitation of the current lexical retrieval design, not a truncation defect and not an LLM or semantic-retrieval behavior. Specific questions that directly match a step's title or content continue to retrieve that step correctly. No document-ID-specific responder route is used to override this rule.
 
-### Empty Grounded Context
+### Public answer contract
 
-When the grounded context contains no sources:
+The public response contains answer text and safe source references only:
 
-- the provider must not be called;
-- the application returns a deterministic insufficient-information fallback.
+- `document_id`
+- `document_title`
+- `section_title`
 
-### Provider Timeout and Failure
+It must not expose lexical score, raw chunk content, source file path, source checksum, frontmatter, or policy relations.
 
-Provider timeout or failure must not be represented as a successful generated answer.
+### Internal metadata
 
-The provider-neutral answer-generation boundary must preserve a structured failure outcome so that a future HTTP adapter can map failures safely.
+Knowledge Base frontmatter is removed before chunking. Internal instruction fields such as `chatbot_notes` must remain in frontmatter and must never become retrievable sections or public answer text.
 
-### HTTP Access
+### Empty context and failures
 
-The future chatbot HTTP endpoint is intended to be public.
+When no eligible source is available, return the deterministic insufficient-information response. Unexpected errors remain failures and must not be presented as successful grounded answers.
 
-Before the chatbot UI is connected, the HTTP boundary must provide:
+## Active Flow
 
-- request validation;
-- rate limiting;
-- safe response serialization.
+```text
+Query
+→ lexical scoring and direct-match eligibility
+→ topic/policy resolution
+→ top 20 eligible results
+→ complete sections within 5,500-character body budget
+→ safe answer and source references
+→ persisted JSON response and Markdown-rendered UI
+```
 
-### Unsupported Metadata
+## Verification Requirements
 
-Page numbers are not part of the current Knowledge Base metadata and must not be fabricated.
-
-Confidence percentages are not supported because lexical retrieval scores are not calibrated model confidence values.
-
-### Expected Architecture
-
-Knowledge Base
-→ Retrieval Pipeline
-→ Grounded Context Builder
-→ Provider-Neutral Answer Generation Contract
-→ OpenAI Provider Adapter
-→ Safe Answer + Source References
-→ HTTP Adapter
-→ Chatbot UI
-
-## Consequences
-
-The answer-generation contract can be tested independently of OpenAI.
-
-Provider integration can be replaced without changing retrieval or HTTP contracts.
-
-Internal retrieval metadata remains private.
-
-Empty-context behavior is deterministic and does not consume provider requests.
-
-Provider failures remain distinguishable from valid insufficient-information answers.
-
-HTTP and UI implementation are deferred until the answer-generation boundary and provider adapter are stable.
+- A section with two document-title token matches but no section/content match is rejected.
+- Section-title and content matches remain retrievable.
+- Existing D1-D3 KB-004 versus KB-007 topic regressions remain correct.
+- Broad Magang/PKL flow questions follow direct-match eligibility and may omit a lexically unmatched official step; they must not use document-specific routing to force completeness.
+- Queries containing `alur`, `langkah`, and `berurutan` do not expose `chatbot_notes` or other frontmatter instructions.
+- Full existing test suite passes before the change is committed.
 
 ## Out of Scope
 
-This decision does not implement:
-
-- OpenAI SDK or API integration;
-- provider credentials or configuration;
-- prompt formatting;
-- provider request or response mapping;
-- HTTP routes or controllers;
-- request validation;
-- rate limiting;
-- chatbot JavaScript;
-- landing-page UI changes;
-- retrieval, scoring, topic-resolution, or policy-resolution changes.
+- OpenAI or other LLM provider integration;
+- provider credentials, prompts, and provider request/response mapping;
+- routes, controllers, request validation, rate limiting, or UI redesign;
+- changing Knowledge Base business content or document IDs;
+- embedding/vector retrieval;
+- confidence percentages or fabricated page references.

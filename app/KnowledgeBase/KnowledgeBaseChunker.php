@@ -76,7 +76,7 @@ final class KnowledgeBaseChunker
     ): array {
         $content = str_replace(["\r\n", "\r"], "\n", $document->content);
         $lines = explode("\n", $content);
-    
+
         if ($lines === [] || ! str_starts_with(trim($lines[0]), '# ')) {
             throw new RuntimeException(
                 sprintf(
@@ -85,54 +85,58 @@ final class KnowledgeBaseChunker
                 ),
             );
         }
-    
+
         $sections = [];
         $parentTitle = null;
         $currentTitle = null;
         $currentLines = [];
-    
-        $flush = function () use (&$sections, &$parentTitle, &$currentTitle, &$currentLines, $document): void {
+
+        $flush = function (bool $skipEmptyParent = false) use (&$sections, &$parentTitle, &$currentTitle, &$currentLines, $document): void {
             if ($currentTitle === null) {
                 return;
             }
 
             $bodyOnly = array_slice($currentLines, 1);
-            if (trim(implode("\n", $bodyOnly)) === '') {
+            if (
+                $skipEmptyParent
+                && $parentTitle === $currentTitle
+                && trim(implode("\n", $bodyOnly)) === ''
+            ) {
                 return;
             }
-        
+
             $fullTitle = $parentTitle !== null && $parentTitle !== $currentTitle
                 ? $parentTitle.' — '.$currentTitle
                 : $currentTitle;
-        
+
             $sections[] = $this->buildSection($fullTitle, $currentLines, $document);
         };
-    
+
         foreach ($lines as $line) {
             if (str_starts_with($line, '## ')) {
                 $flush();
                 $parentTitle = trim(substr($line, 3));
                 $currentTitle = $parentTitle;
                 $currentLines = [$line];
-    
+
                 continue;
             }
-    
+
             if (str_starts_with($line, '### ')) {
-                $flush();
+                $flush(true);
                 $currentTitle = trim(substr($line, 4));
                 $currentLines = [$line];
-    
+
                 continue;
             }
-    
+
             if ($currentTitle !== null) {
                 $currentLines[] = $line;
             }
         }
-    
+
         $flush();
-    
+
         if ($sections === []) {
             throw new RuntimeException(
                 sprintf(
@@ -141,7 +145,7 @@ final class KnowledgeBaseChunker
                 ),
             );
         }
-    
+
         return $sections;
     }
 
@@ -165,7 +169,7 @@ final class KnowledgeBaseChunker
 
         $content = trim(implode("\n", $lines));
 
-        if ($content === '' || $content === '## '.$title) {
+        if ($content === '' || trim(implode("\n", array_slice($lines, 1))) === '') {
             throw new RuntimeException(
                 sprintf(
                     'Knowledge base document %s contains an empty section: %s.',

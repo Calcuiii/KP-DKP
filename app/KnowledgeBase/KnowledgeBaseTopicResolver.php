@@ -28,7 +28,8 @@ final class KnowledgeBaseTopicResolver
 
     /**
      * Keyword/phrase rules per canonical topic. Matching is a normalized
-     * substring check, not fuzzy matching.
+     * substring check, except prosedur_magang_pkl which uses token-based
+     * matching to recognize separated alur and Magang/PKL terms.
      *
      * @var array<string, array<int, string>>
      */
@@ -93,14 +94,69 @@ final class KnowledgeBaseTopicResolver
         $normalized = $this->normalize($query);
 
         foreach (self::TOPIC_PRECEDENCE as $topic) {
-            foreach (self::TOPIC_KEYWORDS[$topic] as $keyword) {
-                if (str_contains($normalized, $keyword)) {
-                    return $topic;
-                }
+            if ($this->matchesTopic($topic, $normalized)) {
+                return $topic;
             }
         }
 
         return null;
+    }
+
+    private function matchesTopic(string $topic, string $normalizedQuery): bool
+    {
+        if ($topic === 'prosedur_magang_pkl') {
+            return $this->matchesProcedureMagangPkl($normalizedQuery);
+        }
+
+        foreach (self::TOPIC_KEYWORDS[$topic] as $keyword) {
+            if (str_contains($normalizedQuery, $keyword)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function matchesProcedureMagangPkl(string $normalizedQuery): bool
+    {
+        $tokens = array_fill_keys(explode(' ', $normalizedQuery), true);
+
+        if (isset($tokens['prosedur'])) {
+            return true;
+        }
+
+        if (isset($tokens['tata']) && isset($tokens['cara'])) {
+            return true;
+        }
+
+        if ($this->matchesExplicitLowerPriorityTopic($normalizedQuery)) {
+            return false;
+        }
+
+        if (isset($tokens['langkah'])) {
+            return isset($tokens['magang'])
+                || isset($tokens['pkl'])
+                || isset($tokens['alur']);
+        }
+
+        return isset($tokens['alur'])
+            && (isset($tokens['magang']) || isset($tokens['pkl']));
+    }
+
+    private function matchesExplicitLowerPriorityTopic(string $normalizedQuery): bool
+    {
+        foreach ([
+            'contoh_surat_permohonan',
+            'informasi_wajib_surat_permohonan',
+        ] as $topic) {
+            foreach (self::TOPIC_KEYWORDS[$topic] as $keyword) {
+                if (str_contains($normalizedQuery, $keyword)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private function normalize(string $query): string

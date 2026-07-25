@@ -17,28 +17,49 @@ final class KnowledgeBaseGroundedContextBuilder
         $results = $this->pipeline->retrieve($query, $topK);
 
         $sources = array_map(
-            static function (KnowledgeBaseSearchResult $result): array {
-                $chunk = $result->chunk;
-
-                return [
-                    'chunk_id' => $chunk->chunkId,
-                    'document_id' => $chunk->documentId,
-                    'document_title' => $chunk->documentTitle,
-                    'section_title' => $chunk->sectionTitle,
-                    'section_index' => $chunk->sectionIndex,
-                    'content' => $chunk->content,
-                    'score' => $result->score,
-                    'category' => $chunk->category,
-                    'document_type' => $chunk->documentType,
-                    'priority' => $chunk->priority,
-                    'status' => $chunk->status,
-                    'source_file' => $chunk->sourceFile,
-                    'source_sha256' => $chunk->sourceSha256,
-                ];
-            },
+            static fn (KnowledgeBaseSearchResult $result): array => self::source(
+                $result->chunk,
+                $result->score,
+            ),
             $results,
         );
 
         return new KnowledgeBaseGroundedContext($query, $sources);
+    }
+
+    /**
+     * @return array{
+     *     chunk_id: string,
+     *     document_id: string,
+     *     document_title: string,
+     *     section_title: string,
+     *     section_index: int,
+     *     content: string,
+     *     score: int,
+     *     category: string,
+     *     document_type: string,
+     *     priority: int,
+     *     status: string,
+     *     source_file: string,
+     *     source_sha256: string
+     * }
+     */
+    private static function source(KnowledgeBaseChunk $chunk, int $score): array
+    {
+        return [
+            'chunk_id' => $chunk->chunkId,
+            'document_id' => $chunk->documentId,
+            'document_title' => $chunk->documentTitle,
+            'section_title' => $chunk->sectionTitle,
+            'section_index' => $chunk->sectionIndex,
+            'content' => $chunk->content,
+            'score' => $score,
+            'category' => $chunk->category,
+            'document_type' => $chunk->documentType,
+            'priority' => $chunk->priority,
+            'status' => $chunk->status,
+            'source_file' => $chunk->sourceFile,
+            'source_sha256' => $chunk->sourceSha256,
+        ];
     }
 }

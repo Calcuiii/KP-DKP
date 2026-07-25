@@ -170,6 +170,59 @@ final class LexicalKnowledgeBaseRetrieverTest extends TestCase
         );
     }
 
+    public function test_it_rejects_a_section_matched_only_by_multiple_document_title_tokens(): void
+    {
+        $retriever = new LexicalKnowledgeBaseRetriever;
+
+        $chunks = [
+            new KnowledgeBaseChunk(
+                chunkId: 'KB-TEST-S001',
+                documentId: 'KB-TEST',
+                documentTitle: 'Panduan Magang PKL',
+                sectionTitle: 'Informasi Kontak',
+                sectionIndex: 1,
+                content: 'Hubungi layanan melalui saluran resmi.',
+                category: 'test',
+                documentType: 'official_guide',
+                priority: 3,
+                status: 'active',
+                sourceFile: 'originals/documents/test.pdf',
+                sourceSha256: str_repeat('a', 64),
+                policyRelations: [],
+            ),
+        ];
+
+        self::assertSame([], $retriever->retrieve('magang pkl', $chunks));
+    }
+
+    public function test_it_keeps_a_section_with_a_direct_content_match(): void
+    {
+        $retriever = new LexicalKnowledgeBaseRetriever;
+
+        $chunks = [
+            new KnowledgeBaseChunk(
+                chunkId: 'KB-TEST-S001',
+                documentId: 'KB-TEST',
+                documentTitle: 'Panduan Magang PKL',
+                sectionTitle: 'Informasi Kontak',
+                sectionIndex: 1,
+                content: 'Pelaksanaan magang dilakukan sesuai jadwal resmi.',
+                category: 'test',
+                documentType: 'official_guide',
+                priority: 3,
+                status: 'active',
+                sourceFile: 'originals/documents/test.pdf',
+                sourceSha256: str_repeat('a', 64),
+                policyRelations: [],
+            ),
+        ];
+
+        $results = $retriever->retrieve('magang pkl', $chunks);
+
+        self::assertCount(1, $results);
+        self::assertSame('KB-TEST-S001', $results[0]->chunk->chunkId);
+    }
+
     public function test_it_rejects_empty_query(): void
     {
         $this->expectException(InvalidArgumentException::class);

@@ -8,6 +8,7 @@ effective_date: null
 priority: 3
 status: active
 source_file: originals/documents/KB-007-alur-utama-magang-pkl.pdf
+policy_relations: [{"relation": "overrides", "document_id": "KB-003", "topics": ["prosedur_magang_pkl"]}]
 chatbot_notes: ["Untuk pertanyaan tentang alur Magang atau PKL, jelaskan langkah secara berurutan dan sesuaikan jawaban dengan tahap yang ditanyakan.", "Jangan menyatakan Surat Keterangan atau Sertifikat terbit otomatis; kebutuhan dokumen tersebut harus dicantumkan atau dilampirkan dalam Surat Permohonan."]
 ---
 

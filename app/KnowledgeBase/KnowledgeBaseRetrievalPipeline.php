@@ -61,4 +61,5 @@ final class KnowledgeBaseRetrievalPipeline
 
         return array_slice($resolved, 0, $topK);
     }
+
 }

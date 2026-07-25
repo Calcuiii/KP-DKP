@@ -41,7 +41,7 @@ final class KnowledgeBaseChunkerTest extends TestCase
 
         $chunks = (new KnowledgeBaseChunker)->chunkAll($loadedDocuments);
 
-        self::assertCount(85, $chunks);
+        self::assertCount(86, $chunks);
         self::assertContainsOnlyInstancesOf(KnowledgeBaseChunk::class, $chunks);
 
         $chunkIds = array_map(
@@ -62,7 +62,7 @@ final class KnowledgeBaseChunkerTest extends TestCase
             );
 
             self::assertNotSame('', trim($chunk->sectionTitle));
-            self::assertStringStartsWith('## ', $chunk->content);
+            self::assertMatchesRegularExpression('/^#{2,3} /', $chunk->content);
         }
     }
 

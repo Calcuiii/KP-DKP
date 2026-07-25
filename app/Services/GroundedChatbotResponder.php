@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\KnowledgeBase\KnowledgeBaseGroundedContextBuilder;
-use Illuminate\Support\Str;
 
 final class GroundedChatbotResponder
 {
     public const STATUS_SUCCESS = 'success';
 
     public const STATUS_INSUFFICIENT_INFORMATION = 'insufficient_information';
+
+    private const RETRIEVAL_TOP_K = 20;
+
+    private const BODY_CHARACTER_BUDGET = 5500;
 
     public function __construct(
         private readonly KnowledgeBaseGroundedContextBuilder $contextBuilder,
@@ -30,7 +33,10 @@ final class GroundedChatbotResponder
      */
     public function answer(string $question): array
     {
-        $context = $this->contextBuilder->build($question, 5);
+        $context = $this->contextBuilder->build(
+            $question,
+            self::RETRIEVAL_TOP_K,
+        );
 
         $usableSources = array_values(array_filter(
             $context->sources,
@@ -49,6 +55,7 @@ final class GroundedChatbotResponder
         $publicSources = [];
         $answerSections = [];
         $seenSourceKeys = [];
+        $bodyLength = 0;
 
         foreach ($usableSources as $source) {
             $sourceKey = $source['document_id'].'|'.$source['section_title'];
@@ -59,21 +66,26 @@ final class GroundedChatbotResponder
 
             $seenSourceKeys[$sourceKey] = true;
 
+            $cleanContent = $this->cleanMarkdown($source['content']);
+
+            if ($cleanContent === '') {
+                continue;
+            }
+
+            $addedLength = mb_strlen($cleanContent)
+                + ($answerSections === [] ? 0 : 2);
+
+            if ($bodyLength + $addedLength > self::BODY_CHARACTER_BUDGET) {
+                break;
+            }
+
             $publicSources[] = [
                 'document_id' => $source['document_id'],
                 'document_title' => $source['document_title'],
                 'section_title' => $source['section_title'],
             ];
-
-            $cleanContent = $this->cleanMarkdown($source['content']);
-
-            if ($cleanContent !== '') {
-                $answerSections[] = $cleanContent;
-            }
-
-            if (count($publicSources) >= 3) {
-                break;
-            }
+            $answerSections[] = $cleanContent;
+            $bodyLength += $addedLength;
         }
 
         if ($answerSections === []) {
@@ -87,10 +99,7 @@ final class GroundedChatbotResponder
         $header = 'Berikut informasi yang tersedia pada dokumen resmi:';
         $footer = 'Anda dapat membuka bagian sumber di bawah untuk melihat dokumen lengkap.';
 
-        $sectionsBudget = 3500 - mb_strlen($header) - mb_strlen($footer) - 4;
-        $body = $this->truncateSafely(implode("\n\n", $answerSections), max($sectionsBudget, 0));
-
-        $answer = $header."\n\n".$body."\n\n".$footer;
+        $answer = $header."\n\n".implode("\n\n", $answerSections)."\n\n".$footer;
 
         return [
             'status' => self::STATUS_SUCCESS,
@@ -109,39 +118,6 @@ final class GroundedChatbotResponder
         ) ?? $content;
         $content = preg_replace('/\n{3,}/', "\n\n", $content) ?? $content;
 
-        return $this->truncateSafely(trim($content), 950);
-    }
-
-    private function truncateSafely(string $content, int $maxLength): string
-    {
-        if (mb_strlen($content) <= $maxLength) {
-            return $content;
-        }
-
-        $blocks = preg_split('/\n{2,}/', $content) ?: [$content];
-
-        $result = [];
-        $length = 0;
-
-        foreach ($blocks as $block) {
-            // +2 memperhitungkan baris kosong pemisah saat blok digabung kembali.
-            $addedLength = mb_strlen($block) + ($result === [] ? 0 : 2);
-
-            if ($length + $addedLength > $maxLength) {
-                break;
-            }
-
-            $result[] = $block;
-            $length += $addedLength;
-        }
-
-        // Fallback: kalau blok pertama saja sudah melebihi batas (mis. satu
-        // paragraf sangat panjang tanpa baris kosong), potong paksa supaya
-        // tidak mengembalikan jawaban kosong.
-        if ($result === []) {
-            return mb_substr($blocks[0], 0, $maxLength);
-        }
-
-        return implode("\n\n", $result);
+        return trim($content);
     }
 }

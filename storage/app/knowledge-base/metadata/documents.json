@@ -97,7 +97,16 @@
       "status": "active",
       "source_file": "originals/documents/KB-007-alur-utama-magang-pkl.pdf",
       "processed_file": "KB-007-alur-magang-pkl.md",
-      "source_sha256": "f3d230cdab526eeff016ce51367fc78a5e987a1c7f8b18a7ad93aca2c1a49391"
+      "source_sha256": "f3d230cdab526eeff016ce51367fc78a5e987a1c7f8b18a7ad93aca2c1a49391",
+      "policy_relations": [
+        {
+          "relation": "overrides",
+          "document_id": "KB-003",
+          "topics": [
+            "prosedur_magang_pkl"
+          ]
+        }
+      ]
     },
     {
       "document_id": "KB-008",
