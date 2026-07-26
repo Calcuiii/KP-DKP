@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'groq' => [
+        'enabled' => env('GROQ_ENABLED', false),
+        'api_key' => env('GROQ_API_KEY'),
+        'model' => env('GROQ_MODEL', 'llama-3.1-8b-instant'),
+        'timeout_seconds' => (int) env('GROQ_TIMEOUT_SECONDS', 15),
+        'max_completion_tokens' => (int) env('GROQ_MAX_COMPLETION_TOKENS', 1200),
+    ],
+
 ];

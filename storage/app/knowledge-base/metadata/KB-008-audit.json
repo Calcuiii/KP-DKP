@@ -6,73 +6,65 @@
   "source_provenance": {
     "source_type": "official_circular",
     "issuer": "Dinas Kelautan dan Perikanan Provinsi Jawa Timur",
-    "source_file": "originals/images/KB-008-se-sekda-magang-pkl-penelitian.jpeg",
-    "source_sha256": "78a233b9c02c1ddabec89e76472261511d7569b334a4d53dd26c2c50e753a44a",
-    "source_reference": "SE SEKDA Tentang Magang/PKL/Penelitian",
+    "source_file": "originals/documents/Panduan_SE_Sekda_Magang_PKL_Penelitian.pdf",
+    "source_sha256": "2e8da5c4a116eba26189b8a6738f3ed257f174c6b446779c64ea969e58cb1f79",
+    "source_reference": "SE Sekda tentang Magang / PKL / Penelitian, Seri Infografis 03/07",
     "source_available_for_audit": true
   },
   "audit_notes": [
-    "Nomor surat, tanggal surat, dan identitas penandatangan tidak dicantumkan karena tidak tersedia dalam transkripsi sumber.",
-    "Redaksi tidak perlu lagi menerbitkan dipertahankan dan tidak diubah menjadi larangan penerbitan.",
-    "Poin mengenai Permohonan Awal dipertahankan sebagai saran, bukan kewajiban.",
-    "Setiap klaim verified memiliki source_evidence yang spesifik."
+    "Processed knowledge base diperbarui berdasarkan PDF sumber yang disediakan.",
+    "Ketentuan surat keterangan, sertifikat, dan pencantuman kebutuhan dokumen dipisahkan agar retrieval untuk pertanyaan spesifik tetap fokus.",
+    "Relasi kebijakan yang sudah terdaftar pada registry dipertahankan tanpa perubahan."
   ],
   "claims": [
     {
       "claim_id": "KB-008-C01",
-      "topic": "konteks_surat_edaran",
-      "claim": "Informasi disampaikan sebagai tindak lanjut surat terkait Magang, PKL, dan Penelitian.",
+      "topic": "ruang_lingkup",
+      "claim": "Ketentuan ini perlu diperhatikan sebelum mengajukan permohonan Magang, PKL, atau Penelitian.",
       "status": "verified",
-      "source_evidence": "Poin 1: Menindaklanjuti surat tsb., disampaikan bahwa..."
+      "source_evidence": "Pembuka dokumen."
     },
     {
       "claim_id": "KB-008-C02",
-      "topic": "surat_keterangan_tidak_perlu_diterbitkan",
-      "claim": "Pihak DKP Jatim tidak perlu lagi menerbitkan Surat Keterangan Penelitian.",
+      "topic": "surat_keterangan_tidak_diterbitkan",
+      "claim": "DKP Jawa Timur tidak lagi menerbitkan Surat Keterangan Magang, PKL, atau Penelitian berdasarkan Surat Edaran Sekretaris Daerah.",
       "status": "verified",
-      "source_evidence": "Poin 1: dari pihak DKP Jatim tidak perlu lagi menerbitkan Surat Keterangan Penelitian."
+      "source_evidence": "Ketentuan 01: Tidak Diterbitkan Surat Keterangan Magang / PKL / Penelitian."
     },
     {
       "claim_id": "KB-008-C03",
-      "topic": "cakupan_surat_keterangan",
-      "claim": "Sumber menyebut Surat Keterangan dalam cakupan Surat Keterangan Magang, PKL, atau Penelitian.",
+      "topic": "sertifikat_dapat_diterbitkan",
+      "claim": "Sertifikat Magang, PKL, atau Penelitian dapat diterbitkan setelah peserta mengajukan surat permohonan penerbitan sertifikat.",
       "status": "verified",
-      "source_evidence": "Poin 1: (Surat Keterangan Magang/PKL/Penelitian)."
+      "source_evidence": "Ketentuan 02: Sertifikat Tetap Dapat Diterbitkan."
     },
     {
       "claim_id": "KB-008-C04",
-      "topic": "sertifikat_dapat_difasilitasi",
-      "claim": "Penerbitan Sertifikat masih dapat difasilitasi.",
+      "topic": "kebutuhan_dokumen_permohonan_awal",
+      "claim": "Kebutuhan Surat Keterangan atau Sertifikat harus dicantumkan secara jelas dalam surat permohonan awal dari perguruan tinggi atau sekolah.",
       "status": "verified",
-      "source_evidence": "Poin 2: Penerbitan Sertifikat msh dapat difasilitasi."
+      "source_evidence": "Ketentuan 03: Cantumkan Kebutuhan Dokumen Sejak Awal."
     },
     {
       "claim_id": "KB-008-C05",
-      "topic": "permohonan_sertifikat",
-      "claim": "Untuk dapat diproses, penerbitan Sertifikat dilakukan dengan mengajukan Surat Permohonan terlebih dahulu.",
+      "topic": "template_surat_permohonan",
+      "claim": "Template Surat Permohonan tersedia melalui https://bit.ly/Permohonan_Sertifikat_DKP.",
       "status": "verified",
-      "source_evidence": "Poin 2: dengan mengajukan Surat Permohonan terlebih dahulu untuk dapat diproses."
+      "source_evidence": "Tautan template pada Ketentuan 03."
     },
     {
       "claim_id": "KB-008-C06",
-      "topic": "penyampaian_surat_edaran",
-      "claim": "Surat Edaran dimohon untuk disampaikan kepada masing-masing Dekan dan/atau Ketua Program Studi.",
+      "topic": "pengingat_kelengkapan_dokumen",
+      "claim": "Kebutuhan dokumen perlu dicantumkan sejak awal agar proses permohonan berjalan lebih cepat dan lancar.",
       "status": "verified",
-      "source_evidence": "Poin 3: Dimohon untuk dapat menyampaikan Surat Edaran tsb di atas kepada masing masing Dekan dan atau Ka Prodi masing masing."
+      "source_evidence": "Bagian Ingat."
     },
     {
       "claim_id": "KB-008-C07",
-      "topic": "pedoman_pelaksanaan",
-      "claim": "Penyampaian Surat Edaran dimaksudkan sebagai pedoman pelaksanaan kegiatan Magang, PKL, atau Penelitian.",
+      "topic": "kontak_resmi",
+      "claim": "Kontak resmi DKP Jatim mencakup situs web dkp.jatimprov.co.id, Instagram @diskanlajatim, dan Facebook diskanlajawatimur.",
       "status": "verified",
-      "source_evidence": "Poin 3: sebagai pedoman pelaksanaan kegiatan Magang/PKL/Penelitian."
-    },
-    {
-      "claim_id": "KB-008-C08",
-      "topic": "permohonan_awal",
-      "claim": "Disarankan agar penerbitan Surat Keterangan Magang, PKL, atau Penelitian dan Sertifikat dicantumkan secara tersurat dalam Permohonan Awal.",
-      "status": "verified",
-      "source_evidence": "Poin 4: Disarankan untuk penerbitan Suket Magang/PKL/Penelitian dan Sertifikat dituangkan secara tersurat di Permohonan Awalnya."
+      "source_evidence": "Bagian Sumber."
     }
   ]
 }

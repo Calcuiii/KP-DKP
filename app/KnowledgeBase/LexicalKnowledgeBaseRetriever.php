@@ -69,6 +69,7 @@ final class LexicalKnowledgeBaseRetriever
                 $results[] = new KnowledgeBaseSearchResult(
                     chunk: $chunk,
                     score: $scoring['score'],
+                    directMatchTokenCount: $scoring['direct_match_token_count'],
                 );
             }
         }
@@ -91,7 +92,7 @@ final class LexicalKnowledgeBaseRetriever
 
     /**
      * @param  array<int, string>  $queryTokens
-     * @return array{score: int, has_direct_match: bool}
+     * @return array{score: int, has_direct_match: bool, direct_match_token_count: int}
      */
     private function score(
         string $normalizedQuery,
@@ -103,6 +104,7 @@ final class LexicalKnowledgeBaseRetriever
         $content = $this->normalize($chunk->content);
         $score = 0;
         $hasDirectMatch = false;
+        $directMatchTokens = [];
 
         if (str_contains($sectionTitle, $normalizedQuery)) {
             $score += 12;
@@ -115,15 +117,16 @@ final class LexicalKnowledgeBaseRetriever
             $score += 6;
             $hasDirectMatch = true;
         }
-    
+
         $sectionTokens = array_fill_keys($this->tokenize($sectionTitle), true);
         $documentTokens = array_fill_keys($this->tokenize($documentTitle), true);
         $contentTokens = array_fill_keys($this->tokenize($content), true);
-    
+
         foreach ($queryTokens as $token) {
             if (isset($sectionTokens[$token])) {
                 $score += 6;
                 $hasDirectMatch = true;
+                $directMatchTokens[$token] = true;
             }
             if (isset($documentTokens[$token])) {
                 $score += 1;
@@ -131,12 +134,14 @@ final class LexicalKnowledgeBaseRetriever
             if (isset($contentTokens[$token])) {
                 $score += 2;
                 $hasDirectMatch = true;
+                $directMatchTokens[$token] = true;
             }
         }
 
         return [
             'score' => $score,
             'has_direct_match' => $hasDirectMatch,
+            'direct_match_token_count' => count($directMatchTokens),
         ];
     }
 

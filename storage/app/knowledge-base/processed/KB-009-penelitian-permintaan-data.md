@@ -7,14 +7,14 @@ issuer: Dinas Kelautan dan Perikanan Provinsi Jawa Timur
 effective_date: null
 priority: 3
 status: active
-source_file: originals/images/KB-009-penelitian-permintaan-data-wawancara-observasi.jpeg
+source_file: originals/documents/Panduan_Persyaratan_Dokumen_Pengajuan_Penelitian_Permintaan_Data.pdf
 ---
 
 # Persyaratan Dokumen Pengajuan Penelitian, Permintaan Data, Informasi, Wawancara, dan Observasi
 
 ## Ruang Lingkup
 
-Dokumen ini memuat persyaratan dokumen pengajuan Penelitian, Permintaan Data, Informasi, Wawancara, atau Observasi.
+Dokumen ini memuat persyaratan dokumen untuk pengajuan Penelitian atau Permintaan Data, Informasi, Wawancara, dan Observasi.
 
 ## Identitas Diri
 
@@ -43,20 +43,20 @@ Surat Permohonan tersebut memuat informasi:
 
 ## Ethical Clearance
 
-Pemohon melampirkan Form "Ethical Clearance".
+Pemohon melampirkan Form "Ethical Clearance" atau Form Persetujuan Etik melalui tautan berikut:
+
+- https://bit.ly/EASL-DKP
 
 ## Proposal Kegiatan
 
 Pemohon melampirkan Proposal Kegiatan dengan format sesuai institusi asal.
 
-## Tautan Layanan
+## Link Pengajuan
 
-Tautan yang tercantum pada sumber adalah:
+Kirimkan dokumen melalui link berikut:
 
-- bit.ly/EASL-DKP
+- https://bit.ly/WOPPS
 
-## Batasan Informasi
+## Catatan Penting
 
-Dokumen ini menjelaskan persyaratan dokumen pengajuan berdasarkan infografik resmi.
-
-Duplikasi Fakultas dan Universitas serta ketidakkonsistenan penomoran huruf pada sumber dinormalisasi menjadi daftar informasi unik tanpa menambahkan butir yang tidak tercantum pada sumber.
+Pastikan semua dokumen lengkap dan sesuai ketentuan agar proses pengajuan berjalan dengan lancar.
