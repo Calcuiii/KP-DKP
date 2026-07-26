@@ -2,6 +2,7 @@
 $menu = [
     ['icon' => 'bar-chart-2', 'label' => 'Dashboard', 'route' => 'admin.dashboard'],
     ['icon' => 'database', 'label' => 'Knowledge Base', 'route' => 'admin.knowledge-base'],
+    ['icon' => 'layers', 'label' => 'Infografis', 'route' => 'admin.infographics'],
     ['icon' => 'message-square', 'label' => 'Conversation Logs', 'route' => 'admin.conversation-logs'],
     ['icon' => 'inbox', 'label' => 'Pertanyaan Tidak Terjawab', 'route' => 'admin.unanswered-questions'],
     ['icon' => 'trending-up', 'label' => 'Analytics', 'route' => 'admin.analytics'],

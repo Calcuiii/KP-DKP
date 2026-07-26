@@ -3,7 +3,7 @@
         <div class="flex h-16 items-center justify-between">
 
             {{-- Logo / Institution --}}
-            <a href="#beranda" class="flex items-center gap-3">
+            <a href="{{ route('landing') }}#beranda" class="flex items-center gap-3">
                 <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-ocean">
                     <i
                         data-lucide="fish"
@@ -26,45 +26,52 @@
             {{-- Desktop Navigation --}}
             <div class="hidden items-center gap-6 md:flex">
                 <a
-                    href="#beranda"
+                    href="{{ route('landing') }}#beranda"
                     class="text-sm font-medium text-muted-foreground transition-colors hover:text-ocean"
                 >
                     Beranda
                 </a>
 
                 <a
-                    href="#layanan"
+                    href="{{ route('landing') }}#layanan"
                     class="text-sm font-medium text-muted-foreground transition-colors hover:text-ocean"
                 >
                     Layanan
                 </a>
 
                 <a
-                    href="#informasi"
+                    href="{{ route('landing') }}#informasi"
                     class="text-sm font-medium text-muted-foreground transition-colors hover:text-ocean"
                 >
                     Informasi
                 </a>
 
                 <a
-                    href="#cara-kerja"
+                    href="{{ route('landing') }}#cara-kerja"
                     class="text-sm font-medium text-muted-foreground transition-colors hover:text-ocean"
                 >
                     Cara Kerja
                 </a>
 
                 <a
-                    href="#faq"
+                    href="{{ route('landing') }}#faq"
                     class="text-sm font-medium text-muted-foreground transition-colors hover:text-ocean"
                 >
                     FAQ
                 </a>
 
                 <a
-                    href="#tentang"
+                    href="{{ route('landing') }}#tentang"
                     class="text-sm font-medium text-muted-foreground transition-colors hover:text-ocean"
                 >
                     Tentang
+                </a>
+
+                <a
+                    href="{{ route('infographics') }}"
+                    class="text-sm font-medium text-muted-foreground transition-colors hover:text-ocean"
+                >
+                    Infografis
                 </a>
             </div>
 
@@ -118,45 +125,52 @@
     >
         <div class="space-y-2">
             <a
-                href="#beranda"
+                href="{{ route('landing') }}#beranda"
                 class="block py-2 text-sm font-medium text-muted-foreground"
             >
                 Beranda
             </a>
 
             <a
-                href="#layanan"
+                href="{{ route('landing') }}#layanan"
                 class="block py-2 text-sm font-medium text-muted-foreground"
             >
                 Layanan
             </a>
 
             <a
-                href="#informasi"
+                href="{{ route('landing') }}#informasi"
                 class="block py-2 text-sm font-medium text-muted-foreground"
             >
                 Informasi
             </a>
 
             <a
-                href="#cara-kerja"
+                href="{{ route('landing') }}#cara-kerja"
                 class="block py-2 text-sm font-medium text-muted-foreground"
             >
                 Cara Kerja
             </a>
 
             <a
-                href="#faq"
+                href="{{ route('landing') }}#faq"
                 class="block py-2 text-sm font-medium text-muted-foreground"
             >
                 FAQ
             </a>
 
             <a
-                href="#tentang"
+                href="{{ route('landing') }}#tentang"
                 class="block py-2 text-sm font-medium text-muted-foreground"
             >
                 Tentang
+            </a>
+
+            <a
+                href="{{ route('infographics') }}"
+                class="block py-2 text-sm font-medium text-muted-foreground"
+            >
+                Infografis
             </a>
 
             <a
@@ -174,4 +188,3 @@
         </div>
     </div>
 </nav>
-

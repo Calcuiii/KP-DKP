@@ -9,8 +9,10 @@ use App\KnowledgeBase\KnowledgeBaseRegistry;
 use App\KnowledgeBase\KnowledgeBaseRetrievalPipeline;
 use App\KnowledgeBase\KnowledgeBaseTopicResolver;
 use App\KnowledgeBase\LexicalKnowledgeBaseRetriever;
+use App\Models\Infographic;
 use App\Services\KnowledgeBaseDocumentIndexer;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Smalot\PdfParser\Parser;
 
@@ -65,6 +67,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        View::composer(
+            ['pages.landing', 'pages.infographics'],
+            static function ($view): void {
+                $view->with('infographics', Infographic::query()->ordered()->get());
+            },
+        );
     }
 }

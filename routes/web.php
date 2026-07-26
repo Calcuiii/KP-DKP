@@ -1,17 +1,20 @@
 <?php
 
+use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\Admin\ConversationLogController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\InfographicController;
 use App\Http\Controllers\Admin\KnowledgeBaseController;
+use App\Http\Controllers\Admin\UnansweredQuestionController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\ChatbotController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\ConversationLogController;
-use App\Http\Controllers\Admin\UnansweredQuestionController;
-use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\Admin\ActivityLogController;
-use App\Http\Controllers\Admin\AnalyticsController;
 
 Route::view('/', 'pages.landing')->name('landing');
+
+Route::view('/infografis', 'pages.infographics')->name('infographics');
 
 Route::get('/chatbot', [ChatbotController::class, 'index'])
     ->name('chatbot');
@@ -41,7 +44,6 @@ Route::middleware('guest')->group(function (): void {
         ->name('admin-login.store');
 });
 
-
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
@@ -49,6 +51,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/knowledge-base', [KnowledgeBaseController::class, 'store'])->name('admin.knowledge-base.store');
     Route::delete('/knowledge-base/{document}', [KnowledgeBaseController::class, 'destroy'])->name('admin.knowledge-base.destroy');
     Route::post('/knowledge-base/{document}/reindex', [KnowledgeBaseController::class, 'reindex'])->name('admin.knowledge-base.reindex');
+
+    Route::get('/infografis', [InfographicController::class, 'index'])->name('admin.infographics');
+    Route::get('/infografis/{infographic}/edit', [InfographicController::class, 'edit'])->name('admin.infographics.edit');
+    Route::put('/infografis/{infographic}', [InfographicController::class, 'update'])->name('admin.infographics.update');
 
     Route::get('/conversation-logs', [ConversationLogController::class, 'index'])->name('admin.conversation-logs');
     Route::get('/conversation-logs/export', [ConversationLogController::class, 'export'])->name('admin.conversation-logs.export');
@@ -58,7 +64,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('admin.analytics');
     Route::get('/analytics/export', [AnalyticsController::class, 'export'])->name('admin.analytics.export');
-    
+
     Route::get('/manajemen-admin', [AdminUserController::class, 'index'])->name('admin.manajemen-admin');
     Route::post('/manajemen-admin', [AdminUserController::class, 'store'])->name('admin.manajemen-admin.store');
     Route::get('/manajemen-admin/{user}/edit', [AdminUserController::class, 'edit'])->name('admin.manajemen-admin.edit');
@@ -70,4 +76,3 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::post('/logout', [AdminLoginController::class, 'destroy'])->name('admin.logout');
 });
-

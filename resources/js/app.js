@@ -77,6 +77,97 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ── Landing: infographic carousel ─────────────────────────────────
+    document.querySelectorAll('[data-infographic-carousel]').forEach((carousel) => {
+        const track = carousel.querySelector('[data-infographic-carousel-track]');
+        const previousButton = carousel.querySelector('[data-infographic-carousel-previous]');
+        const nextButton = carousel.querySelector('[data-infographic-carousel-next]');
+
+        const scroll = (direction) => {
+            track?.scrollBy({
+                left: direction * track.clientWidth,
+                behavior: 'smooth',
+            });
+        };
+
+        previousButton?.addEventListener('click', () => scroll(-1));
+        nextButton?.addEventListener('click', () => scroll(1));
+    });
+
+    // ── Infographics: full-size lightbox ───────────────────────────────
+    const lightbox = document.querySelector('[data-infographic-lightbox]');
+    const lightboxImage = lightbox?.querySelector('[data-infographic-lightbox-image]');
+    const lightboxCaption = lightbox?.querySelector('[data-infographic-lightbox-caption]');
+    const lightboxCloseButtons = lightbox?.querySelectorAll('[data-infographic-lightbox-close]');
+    const lightboxPreviousButton = lightbox?.querySelector('[data-infographic-lightbox-previous]');
+    const lightboxNextButton = lightbox?.querySelector('[data-infographic-lightbox-next]');
+    const infographicTriggers = Array.from(document.querySelectorAll('[data-infographic-lightbox-trigger]'));
+    let activeInfographicIndex = 0;
+    let lightboxTrigger = null;
+
+    const displayInfographic = (index) => {
+        const item = infographicTriggers[index];
+
+        if (! item || ! lightboxImage || ! lightboxCaption) {
+            return;
+        }
+
+        activeInfographicIndex = index;
+        lightboxImage.src = item.dataset.imageSrc;
+        lightboxImage.alt = item.dataset.imageAlt;
+        lightboxImage.width = Number(item.dataset.imageWidth);
+        lightboxImage.height = Number(item.dataset.imageHeight);
+        lightboxCaption.textContent = item.dataset.imageCaption;
+    };
+
+    const closeLightbox = () => {
+        if (! lightbox) {
+            return;
+        }
+
+        lightbox.classList.add('hidden');
+        lightbox.classList.remove('flex');
+        lightbox.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('overflow-hidden');
+        lightboxTrigger?.focus();
+    };
+
+    const openLightbox = (trigger) => {
+        if (! lightbox) {
+            return;
+        }
+
+        lightboxTrigger = trigger;
+        displayInfographic(infographicTriggers.indexOf(trigger));
+        lightbox.classList.remove('hidden');
+        lightbox.classList.add('flex');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('overflow-hidden');
+        lightbox?.querySelector('[data-infographic-lightbox-close]')?.focus();
+    };
+
+    infographicTriggers.forEach((trigger) => {
+        trigger.addEventListener('click', () => openLightbox(trigger));
+    });
+
+    lightboxCloseButtons?.forEach((button) => {
+        button.addEventListener('click', closeLightbox);
+    });
+
+    lightboxPreviousButton?.addEventListener('click', () => {
+        displayInfographic((activeInfographicIndex - 1 + infographicTriggers.length) % infographicTriggers.length);
+    });
+
+    lightboxNextButton?.addEventListener('click', () => {
+        displayInfographic((activeInfographicIndex + 1) % infographicTriggers.length);
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && lightbox?.getAttribute('aria-hidden') === 'false') {
+            closeLightbox();
+        }
+    });
+
     // ── Landing: FAQ accordion ────────────────────────────────────────
     const faqItems = document.querySelectorAll('[data-faq-item]');
 

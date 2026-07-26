@@ -19,6 +19,10 @@
 
             @include('components.landing.popular-questions')
 
+            @include('components.landing.infographics-preview', [
+                'items' => $infographics,
+            ])
+
             @include('components.landing.how-it-works')
 
             @include('components.landing.benefits')
