@@ -6,6 +6,7 @@ namespace Tests\Unit;
 
 use App\KnowledgeBase\KnowledgeBaseGroundedContextBuilder;
 use App\Services\GroundedChatbotResponder;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 final class GroundedChatbotResponderTest extends TestCase
@@ -109,6 +110,167 @@ final class GroundedChatbotResponderTest extends TestCase
         );
 
         self::assertSame($this->sorted($sectionPositions), $sectionPositions);
+    }
+
+    public function test_it_treats_an_alur_pengajuan_question_as_an_overview(): void
+    {
+        config(['services.groq.enabled' => false]);
+
+        $result = app(GroundedChatbotResponder::class)->answer(
+            'Saya mau bertanya mengenai alur pengajuan Magang.',
+        );
+
+        self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+        self::assertContains([
+            'document_id' => 'KB-007',
+            'document_title' => 'Alur Utama Magang / Praktik Kerja Lapang (PKL)',
+            'section_title' => 'Tahap 1: Pengajuan — Langkah 2: Koordinasi Ketersediaan Kuota',
+        ], $result['sources']);
+        self::assertContains([
+            'document_id' => 'KB-007',
+            'document_title' => 'Alur Utama Magang / Praktik Kerja Lapang (PKL)',
+            'section_title' => 'Tahap 3: Pelaksanaan — Langkah 10: Isi Form Selesai Magang / PKL',
+        ], $result['sources']);
+        self::assertSame(
+            ['KB-007'],
+            array_values(array_unique(array_column($result['sources'], 'document_id'))),
+        );
+    }
+
+    public function test_it_keeps_a_specific_question_focused_on_the_best_covered_section(): void
+    {
+        $result = app(GroundedChatbotResponder::class)->answer(
+            'Jam kerja peserta magang hari Jumat sampai pukul berapa?',
+        );
+
+        self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+        self::assertSame([
+            [
+                'document_id' => 'KB-001',
+                'document_title' => 'Ketentuan Umum Peserta Magang dan PKL',
+                'section_title' => 'Waktu Pelaksanaan',
+            ],
+        ], $result['sources']);
+        self::assertStringContainsString('Jumat: pukul 07.00 sampai 16.30 WIB.', $result['answer']);
+        self::assertStringNotContainsString('Jam Kerja Layanan', $result['answer']);
+    }
+
+    public function test_it_excludes_near_matches_from_a_specific_answer(): void
+    {
+        $result = app(GroundedChatbotResponder::class)->answer(
+            'Apa kewajiban peserta terkait etika dan tata krama?',
+        );
+
+        self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+        self::assertSame([
+            [
+                'document_id' => 'KB-001',
+                'document_title' => 'Ketentuan Umum Peserta Magang dan PKL',
+                'section_title' => 'Etika dan Tata Krama',
+            ],
+        ], $result['sources']);
+        self::assertStringContainsString(
+            'Peserta wajib menjaga etika dan tata krama terhadap seluruh pegawai dan rekan kerja.',
+            $result['answer'],
+        );
+        self::assertStringNotContainsString('Penjelasan Aturan dan Tata Tertib', $result['answer']);
+    }
+
+    public function test_it_keeps_moderately_specific_questions_focused_on_relevant_sections(): void
+    {
+        $result = app(GroundedChatbotResponder::class)->answer(
+            'Bagaimana ketentuan laporan magang?',
+        );
+
+        self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+        self::assertSame([
+            [
+                'document_id' => 'KB-007',
+                'document_title' => 'Alur Utama Magang / Praktik Kerja Lapang (PKL)',
+                'section_title' => 'Tahap 3: Pelaksanaan — Langkah 7: Susun Laporan Kegiatan',
+            ],
+            [
+                'document_id' => 'KB-001',
+                'document_title' => 'Ketentuan Umum Peserta Magang dan PKL',
+                'section_title' => 'Laporan',
+            ],
+            [
+                'document_id' => 'KB-002',
+                'document_title' => 'Penerbitan Surat Keterangan dan Sertifikat',
+                'section_title' => 'Tahap 2: Pelaksanaan — Laporan Hasil',
+            ],
+        ], $result['sources']);
+        self::assertStringContainsString('Peserta menyusun laporan hasil kegiatan Magang atau PKL', $result['answer']);
+        self::assertStringContainsString('Laporan dikirimkan dalam bentuk PDF.', $result['answer']);
+        self::assertStringContainsString('sesuai template kampus atau sekolah.', $result['answer']);
+        self::assertStringNotContainsString('Batasan Informasi', $result['answer']);
+        self::assertStringNotContainsString('Pendaftaran Magang atau PKL', $result['answer']);
+    }
+
+    public function test_it_limits_low_coverage_specific_questions_to_the_best_sections(): void
+    {
+        $result = app(GroundedChatbotResponder::class)->answer(
+            'Jika saya ingin berkoordinasi terkait kuota, adakah kontak yang bisa saya hubungi?',
+        );
+
+        self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+        self::assertSame([
+            [
+                'document_id' => 'KB-003',
+                'document_title' => 'Prosedur Pelayanan Magang / Praktik Kerja Lapang',
+                'section_title' => 'Langkah 5: Koordinasi dan Komunikasi via WhatsApp',
+            ],
+        ], $result['sources']);
+        self::assertStringContainsString('0852 53000 485', $result['answer']);
+        self::assertStringNotContainsString('Langkah 7: Susun Laporan Kegiatan', $result['answer']);
+        self::assertStringNotContainsString('Kontak Koordinasi', $result['answer']);
+    }
+
+    public function test_it_directs_current_quota_questions_to_the_official_contact_channel(): void
+    {
+        $result = app(GroundedChatbotResponder::class)->answer(
+            'Apakah masih ada kuota di bulan September?',
+        );
+
+        self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+        self::assertSame([[
+            'document_id' => 'KB-003',
+            'document_title' => 'Prosedur Pelayanan Magang / Praktik Kerja Lapang',
+            'section_title' => 'Langkah 5: Koordinasi dan Komunikasi via WhatsApp',
+        ]], $result['sources']);
+        self::assertStringContainsString('Saya belum dapat memastikan ketersediaan kuota saat ini.', $result['answer']);
+        self::assertStringContainsString('0852 53000 485', $result['answer']);
+        self::assertStringContainsString('@diskanlajatim', $result['answer']);
+        self::assertStringNotContainsString('INSUFFICIENT_INFORMATION', $result['answer']);
+    }
+
+    public function test_it_uses_the_configured_llm_to_write_the_selected_grounded_answer(): void
+    {
+        config([
+            'services.groq.enabled' => true,
+            'services.groq.api_key' => 'test-groq-key',
+        ]);
+        Http::fake([
+            'https://api.groq.com/openai/v1/chat/completions' => Http::response([
+                'choices' => [[
+                    'message' => [
+                        'content' => 'Pada hari Jumat, jam kerja peserta magang berakhir pukul 16.30 WIB.',
+                    ],
+                ]],
+            ]),
+        ]);
+
+        $result = app(GroundedChatbotResponder::class)->answer(
+            'Jam kerja peserta magang hari Jumat sampai pukul berapa?',
+        );
+
+        self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+        self::assertSame(
+            'Pada hari Jumat, jam kerja peserta magang berakhir pukul 16.30 WIB.',
+            $result['answer'],
+        );
+        self::assertSame('KB-001', $result['sources'][0]['document_id']);
+        Http::assertSentCount(1);
     }
 
     private function bodyLength(string $answer): int

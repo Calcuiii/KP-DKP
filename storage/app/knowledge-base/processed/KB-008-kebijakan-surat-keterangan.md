@@ -7,7 +7,7 @@ issuer: Dinas Kelautan dan Perikanan Provinsi Jawa Timur
 effective_date: null
 priority: 1
 status: active
-source_file: originals/images/KB-008-se-sekda-magang-pkl-penelitian.jpeg
+source_file: originals/documents/Panduan_SE_Sekda_Magang_PKL_Penelitian.pdf
 policy_relations: [{"relation": "overrides", "document_id": "KB-002", "topics": ["surat_keterangan"]}, {"relation": "overrides", "document_id": "KB-007", "topics": ["surat_keterangan"]}, {"relation": "clarifies", "document_id": "KB-002", "topics": ["sertifikat"]}, {"relation": "clarifies", "document_id": "KB-007", "topics": ["sertifikat"]}, {"relation": "clarifies", "document_id": "KB-010", "topics": ["sertifikat"]}]
 ---
 
@@ -15,32 +15,34 @@ policy_relations: [{"relation": "overrides", "document_id": "KB-002", "topics": 
 
 ## Ruang Lingkup
 
-Dokumen ini memuat informasi tindak lanjut Surat Edaran Sekretaris Daerah terkait pelaksanaan Magang, Praktik Kerja Lapangan (PKL), dan Penelitian.
+Dokumen ini memuat ketentuan yang perlu diperhatikan sebelum mengajukan permohonan Magang, PKL, atau Penelitian.
 
-## Surat Keterangan
+## Surat Keterangan Magang, PKL, atau Penelitian
 
-Sebagai tindak lanjut surat tersebut, disampaikan bahwa pihak Dinas Kelautan dan Perikanan Provinsi Jawa Timur tidak perlu lagi menerbitkan Surat Keterangan Penelitian.
-
-Dalam sumber, Surat Keterangan tersebut disebut dalam cakupan Surat Keterangan Magang, PKL, atau Penelitian.
+DKP Jawa Timur tidak lagi menerbitkan Surat Keterangan Magang, PKL, atau Penelitian berdasarkan Surat Edaran Sekretaris Daerah.
 
 ## Penerbitan Sertifikat
 
-Penerbitan Sertifikat masih dapat difasilitasi.
+Sertifikat Magang, PKL, atau Penelitian tetap dapat diterbitkan setelah peserta mengajukan surat permohonan penerbitan sertifikat.
 
-Untuk dapat diproses, penerbitan Sertifikat dilakukan dengan mengajukan Surat Permohonan terlebih dahulu.
+## Cantumkan Kebutuhan Dokumen Sejak Awal
 
-## Penyampaian Surat Edaran
+Apabila memerlukan Surat Keterangan Magang, PKL, atau Penelitian maupun Sertifikat, kebutuhan tersebut harus dicantumkan secara jelas dalam surat permohonan awal yang diajukan oleh perguruan tinggi atau sekolah.
 
-Surat Edaran dimohon untuk disampaikan kepada masing-masing Dekan dan/atau Ketua Program Studi.
+## Template Surat Permohonan
 
-Penyampaian Surat Edaran tersebut dimaksudkan sebagai pedoman pelaksanaan kegiatan Magang, PKL, atau Penelitian.
+Template Surat Permohonan dapat diakses melalui tautan berikut:
 
-## Permohonan Awal
+- https://bit.ly/Permohonan_Sertifikat_DKP
 
-Disarankan agar kebutuhan penerbitan Surat Keterangan Magang, PKL, atau Penelitian dan Sertifikat dicantumkan secara tersurat dalam Permohonan Awal.
+## Pengingat
 
-## Batasan Informasi
+Pastikan semua kebutuhan dokumen dicantumkan sejak awal agar proses permohonan berjalan lebih cepat dan lancar.
 
-Dokumen sumber yang tersedia tidak mencantumkan nomor Surat Edaran, tanggal Surat Edaran, atau identitas penandatangan dalam transkripsi yang digunakan untuk grounding.
+## Kontak Resmi DKP Jatim
 
-Dokumen ini mempertahankan perbedaan sifat ketentuan antara informasi bahwa Surat Keterangan tidak perlu lagi diterbitkan, Sertifikat masih dapat difasilitasi melalui pengajuan Surat Permohonan, permintaan penyampaian Surat Edaran, dan saran pencantuman kebutuhan dokumen dalam Permohonan Awal.
+Informasi kontak resmi Dinas Kelautan dan Perikanan Provinsi Jawa Timur:
+
+- Situs web: dkp.jatimprov.co.id
+- Instagram: @diskanlajatim
+- Facebook: diskanlajawatimur

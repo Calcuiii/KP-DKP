@@ -21,10 +21,11 @@ Markdown Knowledge Base
 → KnowledgeBaseRetrievalPipeline
 → KnowledgeBaseGroundedContextBuilder
 → GroundedChatbotResponder
+→ GroqKnowledgeBaseAnswerGenerator (when enabled)
 → ChatbotController / JSON API / Chat UI
 ```
 
-There is a provider-neutral `KnowledgeBaseAnswerGenerator` contract and result value object, but no provider implementation is bound or invoked by the active chat path. The current chatbot is not an LLM-generated-answer system.
+`KnowledgeBaseAnswerGenerator` is implemented by `GroqKnowledgeBaseAnswerGenerator` and bound through the Laravel container. When enabled, Groq's `llama-3.1-8b-instant` model writes the final natural-language response from the selected grounded context.
 
 ## Decision
 
@@ -33,6 +34,8 @@ There is a provider-neutral `KnowledgeBaseAnswerGenerator` contract and result v
 `GroundedChatbotResponder` must compose answers only from sections returned by the retrieval pipeline. It must not contain rules tied to a document ID, a particular Knowledge Base title, a named business topic, or a fixed number of steps.
 
 Responder retrieval uses `topK=20`. It includes complete eligible sections in retrieval order until the source body reaches a 5,500-character budget. A section is included whole or omitted; it must not be truncated in the middle. The budget is not an instruction to add weak candidates merely to fill remaining space.
+
+For an overview question, when the highest-ranked document contributes more than one eligible section, the responder keeps the overview context within that document. This preserves a coherent, chronologically ordered explanation instead of mixing unrelated documents into one workflow answer.
 
 ### Retrieval eligibility
 
@@ -77,7 +80,13 @@ Knowledge Base frontmatter is removed before chunking. Internal instruction fiel
 
 ### Empty context and failures
 
-When no eligible source is available, return the deterministic insufficient-information response. Unexpected errors remain failures and must not be presented as successful grounded answers.
+When no eligible source is available, return the deterministic insufficient-information response. If the model says the supplied context is insufficient, return the same status. If Groq is disabled, not configured, or unavailable, the responder safely falls back to its deterministic grounded answer instead of failing the chat request.
+
+## Groq LLM generation
+
+Groq is opt-in. `GROQ_ENABLED=false` keeps the deterministic renderer active. To enable the LLM, configure a `GROQ_API_KEY` and set `GROQ_ENABLED=true`; the default model is `llama-3.1-8b-instant`.
+
+The provider calls Groq's Chat Completions endpoint with a deterministic system prompt that requires Indonesian, natural, focused answers and prohibits facts outside the selected context. It receives only the already-selected, source-grounded sections, not the entire knowledge base. The request also supplies a coverage checklist so overview answers retain every selected step or stage. The source references returned to the UI are derived by the application, never by the model.
 
 ## Active Flow
 
@@ -87,6 +96,7 @@ Query
 → topic/policy resolution
 → top 20 eligible results
 → complete sections within 5,500-character body budget
+→ Groq answer generation from the selected grounded context
 → safe answer and source references
 → persisted JSON response and Markdown-rendered UI
 ```
@@ -102,8 +112,8 @@ Query
 
 ## Out of Scope
 
-- OpenAI or other LLM provider integration;
-- provider credentials, prompts, and provider request/response mapping;
+- other LLM providers;
+- streaming responses, provider-side conversation history, or provider fallback beyond the deterministic renderer;
 - routes, controllers, request validation, rate limiting, or UI redesign;
 - changing Knowledge Base business content or document IDs;
 - embedding/vector retrieval;

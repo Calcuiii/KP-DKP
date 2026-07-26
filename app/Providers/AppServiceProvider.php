@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\KnowledgeBase\GroqKnowledgeBaseAnswerGenerator;
+use App\KnowledgeBase\KnowledgeBaseAnswerGenerator;
 use App\KnowledgeBase\KnowledgeBaseChunker;
 use App\KnowledgeBase\KnowledgeBaseDocumentLoader;
 use App\KnowledgeBase\KnowledgeBasePolicyResolver;
@@ -23,6 +25,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(
+            KnowledgeBaseAnswerGenerator::class,
+            static fn (): KnowledgeBaseAnswerGenerator => new GroqKnowledgeBaseAnswerGenerator(
+                enabled: (bool) config('services.groq.enabled'),
+                apiKey: config('services.groq.api_key'),
+                model: config('services.groq.model'),
+                timeoutSeconds: config('services.groq.timeout_seconds'),
+                maxCompletionTokens: config('services.groq.max_completion_tokens'),
+            ),
+        );
+
         $this->app->singleton(
             KnowledgeBaseRegistry::class,
             static fn (): KnowledgeBaseRegistry => new KnowledgeBaseRegistry(

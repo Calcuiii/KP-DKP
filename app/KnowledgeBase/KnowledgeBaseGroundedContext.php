@@ -22,9 +22,11 @@ final readonly class KnowledgeBaseGroundedContext
      *     source_file: string,
      *     source_sha256: string
      * }>  $sources
+     * @param  array<string, int>  $directMatchTokenCounts
      */
     public function __construct(
         public string $query,
         public array $sources,
+        public array $directMatchTokenCounts = [],
     ) {}
 }

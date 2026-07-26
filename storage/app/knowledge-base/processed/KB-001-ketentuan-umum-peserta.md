@@ -7,23 +7,25 @@ issuer: Dinas Kelautan dan Perikanan Provinsi Jawa Timur
 effective_date: null
 priority: 3
 status: active
-source_file: originals/images/KB-001-ketentuan-umum-peserta.jpeg
+source_file: originals/documents/Ketentuan_Umum_Peserta_Magang_DKP_Jatim.pdf
 ---
 
 # Ketentuan Umum Peserta Magang dan PKL
 
 ## Ruang Lingkup
 
-Dokumen ini memuat ketentuan umum bagi peserta Magang Kerja atau Praktik Kerja Lapangan (PKL) di lingkungan Dinas Kelautan dan Perikanan Provinsi Jawa Timur.
+Dokumen ini memuat ketentuan umum yang berlaku bagi peserta Magang Kerja dan Praktik Kerja Lapangan (PKL) di lingkungan Dinas Kelautan dan Perikanan Provinsi Jawa Timur.
+
+Seluruh peserta wajib memahami dan mematuhi ketentuan berikut selama periode magang berlangsung.
 
 ## Waktu Pelaksanaan
 
 Peserta wajib mengikuti waktu Magang Kerja atau Praktik Kerja Lapangan yang berlaku di lingkungan Dinas Kelautan dan Perikanan Provinsi Jawa Timur.
 
-Jam pelaksanaan adalah:
+Jam kerja yang berlaku adalah:
 
-- Senin sampai Kamis: pukul 08.00 sampai 16.00 WIB.
-- Jumat: pukul 07.30 sampai 16.00 WIB.
+- Senin sampai Kamis: pukul 07.30 sampai 16.00 WIB.
+- Jumat: pukul 07.00 sampai 16.30 WIB.
 
 ## Kegiatan Selama Pelaksanaan
 
@@ -59,15 +61,10 @@ Laporan dikirimkan dalam bentuk PDF.
 
 Peserta melakukan presentasi hasil Magang Kerja atau Praktik Kerja Lapangan pada minggu terakhir. Pelaksanaan presentasi bersifat tentatif.
 
-## Sanksi Pelanggaran
+## Sanksi atas Pelanggaran
 
-Apabila peserta melanggar aturan yang berlaku selama periode Magang Kerja atau Praktik Kerja Lapangan, peserta bersedia menerima sanksi berupa:
+Apabila peserta Magang Kerja atau Praktik Kerja Lapangan melanggar aturan yang berlaku selama periode magang, peserta bersedia menerima sanksi berupa:
 
 - Pembinaan berupa teguran lisan untuk pelanggaran ringan.
 - Penundaan penerbitan Surat Keterangan dan Sertifikat Magang Kerja untuk pelanggaran sedang.
-
-## Batasan Informasi
-
-Dokumen ini hanya menjelaskan ketentuan umum peserta selama pelaksanaan Magang Kerja atau Praktik Kerja Lapangan.
-
-Informasi mengenai persyaratan pengajuan, alur pendaftaran, proses penyelesaian kegiatan secara rinci, dan prosedur penerbitan sertifikat dijelaskan pada dokumen knowledge base lainnya.
+- Penghentian kegiatan Magang Kerja atau Praktik Kerja Lapangan serta tidak memperoleh Surat Keterangan atau Sertifikat untuk pelanggaran berat.

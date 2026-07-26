@@ -9,5 +9,6 @@ final readonly class KnowledgeBaseSearchResult
     public function __construct(
         public KnowledgeBaseChunk $chunk,
         public int $score,
+        public int $directMatchTokenCount = 0,
     ) {}
 }

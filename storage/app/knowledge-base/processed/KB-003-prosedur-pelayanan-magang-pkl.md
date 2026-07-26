@@ -7,57 +7,46 @@ issuer: Dinas Kelautan dan Perikanan Provinsi Jawa Timur
 effective_date: null
 priority: 3
 status: active
-source_file: originals/images/KB-003-prosedur-pelayanan-magang-pkl.jpeg
+source_file: originals/documents/Prosedur_Pelayanan_Magang_PKL_DKP_Jatim.pdf
 ---
 
 # Prosedur Pelayanan Magang / Praktik Kerja Lapang
 
 ## Ruang Lingkup
 
-Dokumen ini memuat prosedur pelayanan Magang atau Praktik Kerja Lapang.
+Dokumen ini merupakan detail dari Tahap 1 pada infografis Alur Utama Magang atau Praktik Kerja Lapang (PKL).
 
-## Langkah 1: Buku Tamu
+## Langkah 1: Mengisi Buku Tamu
 
-Peserta mengisi buku tamu jika hadir langsung.
-
-## Langkah 2: Form Pendaftaran
-
-Peserta mengisi Google Form pendaftaran secara individu melalui:
+Calon peserta mengisi buku tamu secara individu melalui G-Form berikut:
 
 - bit.ly/DaftarMagangPKL_DKP_JATIM
 
-## Langkah 3: Penjelasan Aturan dan Tata Tertib
+## Langkah 2: Aturan dan Tata Tertib
 
 Peserta memperoleh penjelasan terkait aturan dan tata tertib yang berlaku, termasuk SE SEKDA terkait Magang atau PKL.
 
-## Langkah 4: Surat Permohonan Awal
+Detail Aturan dan Tata Tertib serta SE SEKDA terdapat pada Infografis ke-3 dan ke-4.
 
-Peserta membuat Surat Permohonan Magang, PKL, atau Penelitian awal yang berisi data:
+## Langkah 3: Membuat Surat Permohonan
 
-- Nama.
-- NIM.
-- Program Studi.
-- Fakultas.
-- Tema atau Judul Magang, PKL, atau Penelitian.
-- Lokasi Pelaksanaan.
-- Periode tanggal kegiatan.
+Detail informasi yang perlu dilampirkan pada Surat Permohonan terdapat pada Infografis ke-5.
 
-## Langkah 5: Form Pelaksanaan
+## Langkah 4: Mengisi Google Form Pelaksanaan Magang atau PKL
 
-Peserta mengisi Google Form Pelaksanaan Magang atau PKL.
+Peserta mengisi Google Form Pelaksanaan Magang atau PKL melalui tautan sesuai kategori pendidikan:
 
-Bagi peserta SMA atau SMK:
+- SMA atau SMK: https://tinyurl.com/DaftarMagangDKP-SM
+- Perguruan Tinggi: https://tinyurl.com/DaftarMagangDKP-PT
 
-- tinyurl.com/DaftarMagangDKP-SM
+## Langkah 5: Koordinasi dan Komunikasi via WhatsApp
 
-Bagi peserta Perguruan Tinggi:
+Bagi peserta yang ingin berkoordinasi dan berkomunikasi terkait layanan Magang atau PKL melalui WhatsApp, hubungi:
 
-- tinyurl.com/DaftarMagangDKP-PT
+- 0852 53000 485
 
-## Langkah 6: Koordinasi dan Komunikasi
+Informasi kontak resmi Dinas Kelautan dan Perikanan Provinsi Jawa Timur:
 
-Peserta berkoordinasi dan berkomunikasi melalui WhatsApp ke nomor 0852 53000 485.
-
-## Batasan Informasi
-
-Dokumen ini menjelaskan prosedur pelayanan Magang atau Praktik Kerja Lapang berdasarkan infografik resmi.
+- Instagram: @diskanlajatim
+- Situs web: dkp.jatimprov.co.id
+- Facebook: diskanlajawatimur

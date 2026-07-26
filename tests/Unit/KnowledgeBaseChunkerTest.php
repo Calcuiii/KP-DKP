@@ -41,7 +41,7 @@ final class KnowledgeBaseChunkerTest extends TestCase
 
         $chunks = (new KnowledgeBaseChunker)->chunkAll($loadedDocuments);
 
-        self::assertCount(86, $chunks);
+        self::assertCount(89, $chunks);
         self::assertContainsOnlyInstancesOf(KnowledgeBaseChunk::class, $chunks);
 
         $chunkIds = array_map(
@@ -81,7 +81,7 @@ final class KnowledgeBaseChunkerTest extends TestCase
         foreach ($chunks as $chunk) {
             if (
                 $chunk->documentId === 'KB-008'
-                && $chunk->sectionTitle === 'Surat Keterangan'
+                && $chunk->sectionTitle === 'Surat Keterangan Magang, PKL, atau Penelitian'
             ) {
                 $policyChunk = $chunk;
 

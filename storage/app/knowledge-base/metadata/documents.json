@@ -23,9 +23,9 @@
       "effective_date": null,
       "priority": 3,
       "status": "active",
-      "source_file": "originals/images/KB-001-ketentuan-umum-peserta.jpeg",
+      "source_file": "originals/documents/Ketentuan_Umum_Peserta_Magang_DKP_Jatim.pdf",
       "processed_file": "KB-001-ketentuan-umum-peserta.md",
-      "source_sha256": "c959bee662284b34d64c889d3b0e82eacc71c646f8b2c9ca0c5c4aedbff011fe"
+      "source_sha256": "e875825f6763d9a6509fefb2c2a926a2990c1f2c091d4fb20d705c7074942186"
     },
     {
       "document_id": "KB-002",
@@ -35,9 +35,9 @@
       "effective_date": null,
       "priority": 3,
       "status": "active",
-      "source_file": "originals/images/KB-002-penerbitan-surat-keterangan-dan-sertifikat.jpeg",
+      "source_file": "originals/documents/Panduan_Penerbitan_Surat_Keterangan_dan_Sertifikat.pdf",
       "processed_file": "KB-002-penerbitan-surat-keterangan-dan-sertifikat.md",
-      "source_sha256": "b0ca7f68a6f33dbe059be6929817cf5953f335ceafca50288b0a9375bfbd5a81"
+      "source_sha256": "e75c3da38800b67616efaab9f2036ec74e29a08230532253f267d0ec05d1e49a"
     },
     {
       "document_id": "KB-003",
@@ -47,21 +47,21 @@
       "effective_date": null,
       "priority": 3,
       "status": "active",
-      "source_file": "originals/images/KB-003-prosedur-pelayanan-magang-pkl.jpeg",
+      "source_file": "originals/documents/Prosedur_Pelayanan_Magang_PKL_DKP_Jatim.pdf",
       "processed_file": "KB-003-prosedur-pelayanan-magang-pkl.md",
-      "source_sha256": "621a4536e8758e2428520407d570a9f96b934c91e3887b09152d9e7bca194e8e"
+      "source_sha256": "a17c48919803896cb9f56c29d3eee69bb2e2c5f55514cff62ab873390b0c7cc5"
     },
     {
       "document_id": "KB-004",
-      "title": "Informasi yang Wajib Disampaikan dalam Surat Permohonan Magang / Praktik Kerja Lapang",
+      "title": "Informasi Wajib dalam Surat Permohonan Magang / PKL",
       "category": "pengajuan",
       "document_type": "official_infographic",
       "effective_date": null,
       "priority": 3,
       "status": "active",
-      "source_file": "originals/images/KB-004-informasi-wajib-surat-permohonan.jpeg",
+      "source_file": "originals/documents/Panduan_Informasi_Wajib_Surat_Permohonan_Magang_PKL.pdf",
       "processed_file": "KB-004-informasi-wajib-surat-permohonan.md",
-      "source_sha256": "c85afb968ef8c851609bbffc552622786996d383f28ea3b2615c519c1cb593c2"
+      "source_sha256": "cc280048884c7fab11b39fd99562f30acb5b30291278510f0e759b8af8b160e2"
     },
     {
       "document_id": "KB-005",
@@ -116,9 +116,9 @@
       "effective_date": null,
       "priority": 1,
       "status": "active",
-      "source_file": "originals/images/KB-008-se-sekda-magang-pkl-penelitian.jpeg",
+      "source_file": "originals/documents/Panduan_SE_Sekda_Magang_PKL_Penelitian.pdf",
       "processed_file": "KB-008-kebijakan-surat-keterangan.md",
-      "source_sha256": "78a233b9c02c1ddabec89e76472261511d7569b334a4d53dd26c2c50e753a44a",
+      "source_sha256": "2e8da5c4a116eba26189b8a6738f3ed257f174c6b446779c64ea969e58cb1f79",
       "policy_relations": [
         {
           "relation": "overrides",
@@ -165,9 +165,9 @@
       "effective_date": null,
       "priority": 3,
       "status": "active",
-      "source_file": "originals/images/KB-009-penelitian-permintaan-data-wawancara-observasi.jpeg",
+      "source_file": "originals/documents/Panduan_Persyaratan_Dokumen_Pengajuan_Penelitian_Permintaan_Data.pdf",
       "processed_file": "KB-009-penelitian-permintaan-data.md",
-      "source_sha256": "61ed802a8e0e951811346cc61fe1c3d391814e10a035d13f66b1bd4577b0669f"
+      "source_sha256": "3021358e4679c9bb996bf3492b807e596933fc46933a06883788198de7987532"
     },
     {
       "document_id": "KB-010",

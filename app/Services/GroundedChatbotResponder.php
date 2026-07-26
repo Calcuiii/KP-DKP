@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\KnowledgeBase\KnowledgeBaseAnswerGenerationResult;
+use App\KnowledgeBase\KnowledgeBaseAnswerGenerator;
+use App\KnowledgeBase\KnowledgeBaseGroundedContext;
 use App\KnowledgeBase\KnowledgeBaseGroundedContextBuilder;
 
 final class GroundedChatbotResponder
@@ -16,9 +19,44 @@ final class GroundedChatbotResponder
 
     private const BODY_CHARACTER_BUDGET = 5500;
 
+    private const SPECIFIC_QUESTION_COVERAGE_RATIO = 0.9;
+
+    private const MODERATE_QUESTION_SCORE_RATIO = 0.75;
+
+    private const LOW_COVERAGE_MAX_SECTIONS = 3;
+
+    private const CONTACT_LOOKUP_QUERY = 'kontak koordinasi WhatsApp layanan Magang PKL';
+
+    /** @var array<int, string> */
+    private const OVERVIEW_QUERY_TOKENS = [
+        'alur',
+        'tahap',
+        'berurutan',
+        'awal',
+        'akhir',
+        'hingga',
+        'sampai',
+    ];
+
+    /** @var array<int, string> */
+    private const OVERVIEW_SUBJECT_TOKENS = [
+        'magang',
+        'pkl',
+        'pengajuan',
+        'prosedur',
+    ];
+
+    /** @var array<int, string> */
+    private const OVERVIEW_ANCHOR_TOKENS = [
+        'alur',
+        'tahap',
+        'berurutan',
+    ];
+
     public function __construct(
         private readonly KnowledgeBaseGroundedContextBuilder $contextBuilder,
         private readonly GroundedChatbotResponseSectionOrderer $sectionOrderer,
+        private readonly KnowledgeBaseAnswerGenerator $answerGenerator,
     ) {}
 
     /**
@@ -34,16 +72,67 @@ final class GroundedChatbotResponder
      */
     public function answer(string $question): array
     {
+        if ($this->requiresCurrentAvailabilityConfirmation($question)) {
+            $contactSource = $this->contactSource();
+
+            if ($contactSource !== null) {
+                return [
+                    'status' => self::STATUS_SUCCESS,
+                    'answer' => $this->contactConfirmationAnswer($contactSource['content']),
+                    'sources' => [[
+                        'document_id' => $contactSource['document_id'],
+                        'document_title' => $contactSource['document_title'],
+                        'section_title' => $contactSource['section_title'],
+                    ]],
+                ];
+            }
+        }
+
         $context = $this->contextBuilder->build(
             $question,
             self::RETRIEVAL_TOP_K,
         );
+        $maximumDirectMatchTokenCount = max(
+            $context->directMatchTokenCounts === []
+                ? [0]
+                : $context->directMatchTokenCounts,
+        );
+        $maximumScore = max(array_map(
+            static fn (array $source): int => $source['score'],
+            $context->sources,
+        ) ?: [0]);
+        $isOverviewQuestion = $this->isOverviewQuestion($question);
+        $minimumDirectMatchTokenCount = $this->minimumDirectMatchTokenCount(
+            $maximumDirectMatchTokenCount,
+            $isOverviewQuestion,
+        );
+        $minimumScore = $maximumDirectMatchTokenCount === 3 && ! $isOverviewQuestion
+            ? (int) ceil($maximumScore * self::MODERATE_QUESTION_SCORE_RATIO)
+            : 0;
+        $shouldLimitLowCoverageSections = ! $isOverviewQuestion
+            && $maximumDirectMatchTokenCount > 0
+            && $maximumDirectMatchTokenCount <= 2;
 
         $usableSources = array_values(array_filter(
             $context->sources,
             static fn (array $source): bool => $source['score'] > 0
-                && trim($source['content']) !== '',
+                && trim($source['content']) !== ''
+                && ($minimumDirectMatchTokenCount === 0
+                    || ($context->directMatchTokenCounts[$source['chunk_id']] ?? 0) >= $minimumDirectMatchTokenCount)
+                && $source['score'] >= $minimumScore,
         ));
+
+        if ($isOverviewQuestion && $usableSources !== []) {
+            $primaryDocumentId = $usableSources[0]['document_id'];
+            $primaryDocumentSources = array_values(array_filter(
+                $usableSources,
+                static fn (array $source): bool => $source['document_id'] === $primaryDocumentId,
+            ));
+
+            if (count($primaryDocumentSources) >= 2) {
+                $usableSources = $primaryDocumentSources;
+            }
+        }
 
         if ($usableSources === []) {
             return [
@@ -58,6 +147,13 @@ final class GroundedChatbotResponder
         $bodyLength = 0;
 
         foreach ($usableSources as $source) {
+            if (
+                $shouldLimitLowCoverageSections
+                && count($selectedSections) >= self::LOW_COVERAGE_MAX_SECTIONS
+            ) {
+                break;
+            }
+
             $sourceKey = $source['document_id'].'|'.$source['section_title'];
 
             if (isset($seenSourceKeys[$sourceKey])) {
@@ -80,12 +176,7 @@ final class GroundedChatbotResponder
             }
 
             $selectedSections[] = [
-                'source' => [
-                    'document_id' => $source['document_id'],
-                    'document_title' => $source['document_title'],
-                    'section_title' => $source['section_title'],
-                    'section_index' => $source['section_index'],
-                ],
+                'source' => $source,
                 'content' => $cleanContent,
             ];
             $bodyLength += $addedLength;
@@ -113,14 +204,40 @@ final class GroundedChatbotResponder
             $orderedSections,
         );
 
-        $header = 'Berikut informasi yang tersedia pada dokumen resmi:';
-        $footer = 'Anda dapat membuka bagian sumber di bawah untuk melihat dokumen lengkap.';
+        $generation = $this->answerGenerator->generate(
+            new KnowledgeBaseGroundedContext(
+                $question,
+                array_map(
+                    static function (array $section): array {
+                        $source = $section['source'];
+                        $source['content'] = $section['content'];
 
-        $answer = $header."\n\n".implode("\n\n", $answerSections)."\n\n".$footer;
+                        return $source;
+                    },
+                    $orderedSections,
+                ),
+            ),
+        );
+
+        if ($generation->status === KnowledgeBaseAnswerGenerationResult::STATUS_SUCCESS) {
+            return [
+                'status' => self::STATUS_SUCCESS,
+                'answer' => $generation->answer,
+                'sources' => $generation->sources,
+            ];
+        }
+
+        if ($generation->status === KnowledgeBaseAnswerGenerationResult::STATUS_INSUFFICIENT_INFORMATION) {
+            return [
+                'status' => self::STATUS_INSUFFICIENT_INFORMATION,
+                'answer' => 'Maaf, saya belum menemukan informasi yang cukup untuk menjawab pertanyaan tersebut berdasarkan dokumen resmi yang tersedia.',
+                'sources' => [],
+            ];
+        }
 
         return [
             'status' => self::STATUS_SUCCESS,
-            'answer' => $answer,
+            'answer' => $this->deterministicAnswer($answerSections),
             'sources' => $publicSources,
         ];
     }
@@ -136,5 +253,108 @@ final class GroundedChatbotResponder
         $content = preg_replace('/\n{3,}/', "\n\n", $content) ?? $content;
 
         return trim($content);
+    }
+
+    /**
+     * @param  array<int, string>  $answerSections
+     */
+    private function deterministicAnswer(array $answerSections): string
+    {
+        $header = 'Berikut informasi yang tersedia pada dokumen resmi:';
+        $footer = 'Anda dapat membuka bagian sumber di bawah untuk melihat dokumen lengkap.';
+
+        return $header."\n\n".implode("\n\n", $answerSections)."\n\n".$footer;
+    }
+
+    /**
+     * Availability is not a static fact in the knowledge base. When a user
+     * asks about it, direct them to an official coordination channel rather
+     * than letting a language model infer a current status.
+     */
+    private function requiresCurrentAvailabilityConfirmation(string $question): bool
+    {
+        $tokens = preg_split(
+            '/[^\p{L}\p{N}]+/u',
+            mb_strtolower($question, 'UTF-8'),
+            -1,
+            PREG_SPLIT_NO_EMPTY,
+        );
+
+        if ($tokens === false) {
+            return false;
+        }
+
+        return array_intersect($tokens, ['kuota', 'ketersediaan']) !== [];
+    }
+
+    /**
+     * @return array{
+     *     document_id: string,
+     *     document_title: string,
+     *     section_title: string,
+     *     content: string
+     * }|null
+     */
+    private function contactSource(): ?array
+    {
+        $contactContext = $this->contextBuilder->build(
+            self::CONTACT_LOOKUP_QUERY,
+            5,
+        );
+
+        foreach ($contactContext->sources as $source) {
+            if (preg_match('/\bwhatsApp\b/ui', $source['content']) === 1) {
+                return $source;
+            }
+        }
+
+        return null;
+    }
+
+    private function contactConfirmationAnswer(string $contactContent): string
+    {
+        return "Saya belum dapat memastikan ketersediaan kuota saat ini. Untuk konfirmasi, silakan hubungi layanan resmi berikut:\n\n"
+            .$this->cleanMarkdown($contactContent);
+    }
+
+    private function isOverviewQuestion(string $question): bool
+    {
+        $normalizedQuestion = mb_strtolower($question, 'UTF-8');
+
+        if (preg_match('/\blangkah\s+\d+\b/u', $normalizedQuestion) === 1) {
+            return false;
+        }
+
+        $tokens = preg_split('/[^\p{L}\p{N}]+/u', $normalizedQuestion, -1, PREG_SPLIT_NO_EMPTY);
+
+        if ($tokens === false) {
+            return false;
+        }
+
+        $overviewTokenCount = count(array_intersect($tokens, self::OVERVIEW_QUERY_TOKENS));
+        $hasOverviewAnchor = array_intersect($tokens, self::OVERVIEW_ANCHOR_TOKENS) !== [];
+
+        return $overviewTokenCount >= 2
+            || (
+                $hasOverviewAnchor
+                && array_intersect($tokens, self::OVERVIEW_SUBJECT_TOKENS) !== []
+            );
+    }
+
+    private function minimumDirectMatchTokenCount(
+        int $maximumDirectMatchTokenCount,
+        bool $isOverviewQuestion,
+    ): int {
+        if ($isOverviewQuestion) {
+            return 0;
+        }
+
+        if ($maximumDirectMatchTokenCount >= 4) {
+            return (int) ceil(
+                $maximumDirectMatchTokenCount * self::SPECIFIC_QUESTION_COVERAGE_RATIO,
+            );
+        }
+
+        return $maximumDirectMatchTokenCount === 3 ? 2 : 0;
     }
 }

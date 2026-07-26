@@ -23,8 +23,17 @@ final class KnowledgeBaseGroundedContextBuilder
             ),
             $results,
         );
+        $directMatchTokenCounts = [];
 
-        return new KnowledgeBaseGroundedContext($query, $sources);
+        foreach ($results as $result) {
+            $directMatchTokenCounts[$result->chunk->chunkId] = $result->directMatchTokenCount;
+        }
+
+        return new KnowledgeBaseGroundedContext(
+            $query,
+            $sources,
+            $directMatchTokenCounts,
+        );
     }
 
     /**

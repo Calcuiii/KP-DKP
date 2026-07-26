@@ -6,137 +6,79 @@
   "source_provenance": {
     "source_type": "official_infographic",
     "issuer": "Dinas Kelautan dan Perikanan Provinsi Jawa Timur",
-    "source_file": "originals/images/KB-003-prosedur-pelayanan-magang-pkl.jpeg",
-    "source_sha256": "621a4536e8758e2428520407d570a9f96b934c91e3887b09152d9e7bca194e8e",
+    "source_file": "originals/documents/Prosedur_Pelayanan_Magang_PKL_DKP_Jatim.pdf",
+    "source_reference": "Prosedur Pelayanan Magang / Praktik Kerja Lapang (PKL), Seri Infografis 02/07",
+    "source_sha256": "a17c48919803896cb9f56c29d3eee69bb2e2c5f55514cff62ab873390b0c7cc5",
     "source_available_for_audit": true
   },
   "audit_notes": [
-    "Processed knowledge base disusun hanya dari informasi yang tercantum pada sumber asli.",
-    "Typo pada transkripsi dinormalisasi tanpa mengubah substansi informasi.",
-    "Setiap klaim verified memiliki source_evidence yang spesifik.",
-    "Teks tinyurl.com/DaftarMagangDKP-SM di bagian atas infografik tidak dibuat sebagai klaim terpisah karena konteksnya tidak cukup jelas dan tautan tersebut telah dinyatakan eksplisit pada Langkah 5."
+    "Processed knowledge base diperbarui berdasarkan PDF sumber yang disediakan.",
+    "Urutan langkah diselaraskan menjadi lima langkah sesuai ringkasan dan detail pada sumber.",
+    "Klaim lama mengenai rincian data Surat Permohonan dihapus karena tidak tercantum pada sumber PDF."
   ],
   "claims": [
     {
       "claim_id": "KB-003-C01",
-      "topic": "buku_tamu",
-      "claim": "Peserta mengisi buku tamu jika hadir langsung.",
+      "topic": "tahap_satu_alur_magang",
+      "claim": "Dokumen ini merupakan detail Tahap 1 pada alur utama Magang atau PKL.",
       "status": "verified",
-      "source_evidence": {
-        "source_file": "originals/images/KB-003-prosedur-pelayanan-magang-pkl.jpeg",
-        "source_section": "Langkah 1",
-        "evidence": "Mengisi buku tamu (jika hadir langsung)."
-      }
+      "source_evidence": "Pembuka dokumen."
     },
     {
       "claim_id": "KB-003-C02",
-      "topic": "form_pendaftaran",
-      "claim": "Peserta mengisi Google Form pendaftaran melalui bit.ly/DaftarMagangPKL_DKP_JATIM.",
+      "topic": "buku_tamu",
+      "claim": "Calon peserta mengisi buku tamu secara individu melalui bit.ly/DaftarMagangPKL_DKP_JATIM.",
       "status": "verified",
-      "source_evidence": {
-        "source_file": "originals/images/KB-003-prosedur-pelayanan-magang-pkl.jpeg",
-        "source_section": "Langkah 2",
-        "evidence": "Mengisi G Form: bit.ly/DaftarMagangPKL_DKP_JATIM secara individu."
-      }
+      "source_evidence": "Langkah 1: Mengisi Buku Tamu."
     },
     {
       "claim_id": "KB-003-C03",
-      "topic": "pengisian_individu",
-      "claim": "Google Form pendaftaran diisi secara individu.",
+      "topic": "aturan_dan_tata_tertib",
+      "claim": "Peserta memperoleh penjelasan aturan dan tata tertib, termasuk SE SEKDA terkait Magang atau PKL.",
       "status": "verified",
-      "source_evidence": {
-        "source_file": "originals/images/KB-003-prosedur-pelayanan-magang-pkl.jpeg",
-        "source_section": "Langkah 2",
-        "evidence": "secara individu."
-      }
+      "source_evidence": "Langkah 2: Penjelasan terkait Aturan dan Tata Tertib."
     },
     {
       "claim_id": "KB-003-C04",
-      "topic": "aturan_dan_tata_tertib",
-      "claim": "Peserta memperoleh penjelasan terkait aturan dan tata tertib yang berlaku.",
+      "topic": "rujukan_ketentuan_umum",
+      "claim": "Detail Aturan dan Tata Tertib serta SE SEKDA tersedia pada Infografis ke-3 dan ke-4.",
       "status": "verified",
-      "source_evidence": {
-        "source_file": "originals/images/KB-003-prosedur-pelayanan-magang-pkl.jpeg",
-        "source_section": "Langkah 3",
-        "evidence": "Penjelasan terkait Aturan dan Tata Tertib yang berlaku."
-      }
+      "source_evidence": "Langkah 2."
     },
     {
       "claim_id": "KB-003-C05",
-      "topic": "se_sekda",
-      "claim": "Penjelasan aturan mencakup SE SEKDA terkait Magang atau PKL.",
+      "topic": "surat_permohonan",
+      "claim": "Detail lampiran Surat Permohonan tersedia pada Infografis ke-5.",
       "status": "verified",
-      "source_evidence": {
-        "source_file": "originals/images/KB-003-prosedur-pelayanan-magang-pkl.jpeg",
-        "source_section": "Langkah 3",
-        "evidence": "termasuk SE SEKDA terkait Magang/PKL."
-      }
+      "source_evidence": "Langkah 3: Membuat Surat Permohonan."
     },
     {
       "claim_id": "KB-003-C06",
-      "topic": "surat_permohonan_awal",
-      "claim": "Peserta membuat Surat Permohonan Magang, PKL, atau Penelitian awal.",
+      "topic": "form_pelaksanaan",
+      "claim": "Peserta mengisi Google Form Pelaksanaan Magang atau PKL sesuai kategori pendidikan.",
       "status": "verified",
-      "source_evidence": {
-        "source_file": "originals/images/KB-003-prosedur-pelayanan-magang-pkl.jpeg",
-        "source_section": "Langkah 4",
-        "evidence": "Membuat Surat Permohonan Magang/PKL/Penelitian awal."
-      }
+      "source_evidence": "Langkah 4."
     },
     {
       "claim_id": "KB-003-C07",
-      "topic": "data_surat_permohonan",
-      "claim": "Surat permohonan awal memuat Nama, NIM, Prodi, Fakultas, Tema atau Judul, Lokasi Pelaksanaan, dan Periode tanggal kegiatan.",
+      "topic": "tautan_form_pelaksanaan",
+      "claim": "Tautan form pelaksanaan tersedia untuk SMA atau SMK dan Perguruan Tinggi.",
       "status": "verified",
-      "source_evidence": {
-        "source_file": "originals/images/KB-003-prosedur-pelayanan-magang-pkl.jpeg",
-        "source_section": "Langkah 4",
-        "evidence": "Nama, NIM, Prodi, Fakultas, Tema/Judul Magang, PKL/Penelitian, Lokasi Pelaksanaan, Periode tanggal kegiatan."
-      }
+      "source_evidence": "Langkah 4."
     },
     {
       "claim_id": "KB-003-C08",
-      "topic": "form_pelaksanaan",
-      "claim": "Peserta mengisi Google Form Pelaksanaan Magang atau PKL.",
+      "topic": "koordinasi_whatsapp",
+      "claim": "Peserta yang ingin berkoordinasi dan berkomunikasi terkait layanan Magang atau PKL dapat menghubungi WhatsApp 0852 53000 485.",
       "status": "verified",
-      "source_evidence": {
-        "source_file": "originals/images/KB-003-prosedur-pelayanan-magang-pkl.jpeg",
-        "source_section": "Langkah 5",
-        "evidence": "Mengisi G Form Pelaksanaan Magang/PKL."
-      }
+      "source_evidence": "Langkah 5."
     },
     {
       "claim_id": "KB-003-C09",
-      "topic": "form_pelaksanaan_sma_smk",
-      "claim": "Peserta SMA atau SMK menggunakan tinyurl.com/DaftarMagangDKP-SM.",
+      "topic": "kontak_resmi",
+      "claim": "Informasi kontak resmi mencakup Instagram, situs web, dan Facebook DKP Jatim.",
       "status": "verified",
-      "source_evidence": {
-        "source_file": "originals/images/KB-003-prosedur-pelayanan-magang-pkl.jpeg",
-        "source_section": "Langkah 5",
-        "evidence": "tinyurl.com/DaftarMagangDKP-SM bagi SMA/SMK."
-      }
-    },
-    {
-      "claim_id": "KB-003-C10",
-      "topic": "form_pelaksanaan_perguruan_tinggi",
-      "claim": "Peserta Perguruan Tinggi menggunakan tinyurl.com/DaftarMagangDKP-PT.",
-      "status": "verified",
-      "source_evidence": {
-        "source_file": "originals/images/KB-003-prosedur-pelayanan-magang-pkl.jpeg",
-        "source_section": "Langkah 5",
-        "evidence": "tinyurl.com/DaftarMagangDKP-PT bagi Perguruan Tinggi."
-      }
-    },
-    {
-      "claim_id": "KB-003-C11",
-      "topic": "koordinasi_whatsapp",
-      "claim": "Peserta berkoordinasi dan berkomunikasi melalui WhatsApp ke nomor 0852 53000 485.",
-      "status": "verified",
-      "source_evidence": {
-        "source_file": "originals/images/KB-003-prosedur-pelayanan-magang-pkl.jpeg",
-        "source_section": "Langkah 6",
-        "evidence": "Berkoordinasi dan komunikasi via WA ke nomer 0852 53000 485."
-      }
+      "source_evidence": "Informasi Kontak Dinas Kelautan dan Perikanan Provinsi Jawa Timur."
     }
   ]
 }

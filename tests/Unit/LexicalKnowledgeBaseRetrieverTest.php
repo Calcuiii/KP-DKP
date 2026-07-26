@@ -223,6 +223,25 @@ final class LexicalKnowledgeBaseRetrieverTest extends TestCase
         self::assertSame('KB-TEST-S001', $results[0]->chunk->chunkId);
     }
 
+    public function test_it_counts_unique_direct_query_token_matches(): void
+    {
+        $retriever = new LexicalKnowledgeBaseRetriever;
+
+        $results = $retriever->retrieve(
+            'jadwal peserta jumat',
+            [
+                $this->chunk(
+                    chunkId: 'KB-TEST-S001',
+                    sectionTitle: 'Jadwal Magang',
+                    content: 'Peserta mengikuti jadwal pada hari Jumat.',
+                ),
+            ],
+        );
+
+        self::assertCount(1, $results);
+        self::assertSame(3, $results[0]->directMatchTokenCount);
+    }
+
     public function test_it_rejects_empty_query(): void
     {
         $this->expectException(InvalidArgumentException::class);

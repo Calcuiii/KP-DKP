@@ -1,32 +1,54 @@
 ---
 document_id: KB-004
-title: Informasi yang Wajib Disampaikan dalam Surat Permohonan Magang / Praktik Kerja Lapang
+title: Informasi Wajib dalam Surat Permohonan Magang / PKL
 category: pengajuan
 document_type: official_infographic
 issuer: Dinas Kelautan dan Perikanan Provinsi Jawa Timur
 effective_date: null
 priority: 3
 status: active
-source_file: originals/images/KB-004-informasi-wajib-surat-permohonan.jpeg
+source_file: originals/documents/Panduan_Informasi_Wajib_Surat_Permohonan_Magang_PKL.pdf
 ---
 
-# Informasi yang Wajib Disampaikan dalam Surat Permohonan Magang / Praktik Kerja Lapang
+# Informasi Wajib dalam Surat Permohonan Magang / PKL
 
 ## Ruang Lingkup
 
-Dokumen ini memuat informasi yang wajib disampaikan dalam Surat Permohonan Magang atau Praktik Kerja Lapang.
+Dokumen ini memuat kelengkapan data yang harus dicantumkan pemohon sebelum Surat Permohonan Magang atau PKL diajukan.
 
-## Informasi Pemohon
+## Nama Lengkap
 
 Surat Permohonan memuat Nama Lengkap pemohon untuk identifikasi.
 
+## NIS atau NIM
+
 NIS atau NIM wajib ditulis untuk masing-masing individu.
+
+## Judul Kegiatan
+
+Surat Permohonan memuat judul spesifik kegiatan Magang.
+
+## Tema Kegiatan
+
+Surat Permohonan memuat tema atau topik utama yang diusulkan pemohon untuk kegiatan.
+
+## Kompetensi Keahlian
 
 Surat Permohonan memuat Kompetensi Keahlian berupa bidang keahlian atau studi pemohon.
 
-## Institusi Pendidikan
+## Periode Kegiatan
+
+Surat Permohonan memuat periode kegiatan berupa tanggal mulai dan tanggal berakhir yang diusulkan.
+
+## Sekolah atau Fakultas
 
 Surat Permohonan memuat Sekolah atau Fakultas tempat pemohon terdaftar.
+
+## Lokasi Kegiatan
+
+Surat Permohonan memuat lokasi yang dituju untuk melakukan Magang atau Praktik Kerja Lapang.
+
+## Universitas Asal
 
 Surat Permohonan memuat Universitas Asal pemohon.
 
@@ -34,26 +56,24 @@ Surat Permohonan memuat Universitas Asal pemohon.
 
 Surat Permohonan memuat jumlah peserta yang diharapkan dalam kegiatan.
 
+## Nomor WhatsApp Perwakilan
+
+Surat Permohonan melampirkan nomor WhatsApp perwakilan untuk koordinasi.
+
 ## Surat Keterangan dan Sertifikat
 
 Bagi pemohon yang membutuhkan Surat Keterangan dan Sertifikat, kebutuhan tersebut wajib disampaikan dalam Surat Permohonan.
 
-## Lokasi dan Periode Kegiatan
+## Template Surat Permohonan
 
-Surat Permohonan memuat lokasi yang diinginkan untuk kegiatan Magang atau Praktik Kerja Lapang.
+Template Surat Permohonan dapat diakses melalui tautan berikut:
 
-Surat Permohonan memuat periode kegiatan berupa tanggal mulai dan tanggal berakhir yang diusulkan.
+- https://bit.ly/Permohonan_Sertifikat_DKP
 
-## Tema dan Judul Kegiatan
+## Kontak Resmi DKP Jatim
 
-Surat Permohonan memuat tema atau topik utama kegiatan.
+Informasi kontak resmi Dinas Kelautan dan Perikanan Provinsi Jawa Timur:
 
-Surat Permohonan memuat judul spesifik kegiatan Magang.
-
-## Kontak Koordinasi
-
-Surat Permohonan memuat nomor WhatsApp perwakilan untuk koordinasi.
-
-## Batasan Informasi
-
-Dokumen ini menjelaskan informasi yang wajib disampaikan dalam Surat Permohonan Magang atau Praktik Kerja Lapang berdasarkan infografik resmi.
+- Instagram: @diskanlajatim
+- Situs web: dkp.jatimprov.co.id
+- Facebook: diskanlajawatimur

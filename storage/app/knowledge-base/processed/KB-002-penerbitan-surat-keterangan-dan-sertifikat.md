@@ -7,49 +7,51 @@ issuer: Dinas Kelautan dan Perikanan Provinsi Jawa Timur
 effective_date: null
 priority: 3
 status: active
-source_file: originals/images/KB-002-penerbitan-surat-keterangan-dan-sertifikat.jpeg
+source_file: originals/documents/Panduan_Penerbitan_Surat_Keterangan_dan_Sertifikat.pdf
 ---
 
 # Penerbitan Surat Keterangan dan Sertifikat
 
 ## Ruang Lingkup
 
-Dokumen ini memuat tahapan penerbitan Surat Keterangan dan Sertifikat Magang atau Praktik Kerja Lapangan (PKL).
+Dokumen ini menjelaskan alur resmi penerbitan Surat Keterangan dan Sertifikat Magang atau Praktik Kerja Lapangan (PKL) di Dinas Kelautan dan Perikanan Provinsi Jawa Timur.
 
-## Form Pendaftaran Awal dan Pelaksanaan
+Alur terdiri atas tiga tahap utama: pengajuan, pelaksanaan, dan konfirmasi.
 
-Peserta wajib mengisi form Pendaftaran Awal dan form Pelaksanaan Magang atau PKL.
+## Tahap 1: Pengajuan
 
-Setiap individu wajib mengisi form tersebut masing-masing.
+### Pendaftaran
 
-## Surat Permohonan Penerbitan
+Peserta mengisi Google Form Pendaftaran Awal dan Form Pelaksanaan Magang atau PKL. Setiap individu wajib mengisi form tersebut.
 
-Peserta membuat Surat Permohonan Penerbitan Surat Keterangan dan Sertifikat.
+Tautan yang harus diisi:
 
-Surat Permohonan tersebut dikeluarkan secara resmi oleh Fakultas.
+- G-Form Buku Tamu: bit.ly/DaftarMagangPKL_DKP_JATIM
+- G-Form Pelaksanaan Magang:
+  - SMA/K: https://tinyurl.com/DaftarMagangDKP-SM
+  - Perguruan Tinggi: https://tinyurl.com/DaftarMagangDKP-PT
 
-## Presentasi Kegiatan
+### Permohonan
 
-Peserta membuat presentasi paparan kegiatan yang dilaksanakan selama periode Magang atau PKL.
+Buat surat permohonan resmi dari institusi kepada Dinas. Pastikan surat tersebut menyatakan dengan jelas permintaan penerbitan Surat Keterangan atau Sertifikat.
 
-## Laporan PKL
+Detail Surat Permohonan dijelaskan pada Infografis ke-5.
 
-Peserta membuat laporan PKL dengan format penulisan sesuai arahan Fakultas.
+## Tahap 2: Pelaksanaan
 
-## Form Penyelesaian Magang atau PKL
+### Presentasi Hasil
 
-Peserta mengisi Google Form penyelesaian Magang atau PKL.
+Susun dan sampaikan paparan hasil pelaksanaan kegiatan Magang atau Praktik Kerja Lapangan pada akhir program.
 
-Tautan untuk Perguruan Tinggi:
+### Laporan Hasil
 
-- bit.ly/SelesaiMagangPKL-PT
+Buat laporan hasil kegiatan Magang atau Praktik Kerja Lapangan sesuai template kampus atau sekolah.
 
-Tautan untuk SMA atau SMK:
+## Tahap 3: Konfirmasi
 
-- bit.ly/SelesaiMagangPKL-SM
+### Pengumpulan
 
-## Batasan Informasi
+Kumpulkan hasil presentasi dan laporan melalui G-Form berikut:
 
-Dokumen ini menjelaskan tahapan penerbitan Surat Keterangan dan Sertifikat berdasarkan infografik resmi.
-
-Informasi mengenai alur pendaftaran awal, ketentuan pelaksanaan, dan persyaratan pengajuan Magang atau PKL dijelaskan pada dokumen knowledge base lainnya.
+- SMA/K: bit.ly/SelesaiMagangPKL-SM
+- Perguruan Tinggi: bit.ly/SelesaiMagangPKL-PT
