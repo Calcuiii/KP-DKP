@@ -18,6 +18,7 @@ final class GroundedChatbotResponder
 
     public function __construct(
         private readonly KnowledgeBaseGroundedContextBuilder $contextBuilder,
+        private readonly GroundedChatbotResponseSectionOrderer $sectionOrderer,
     ) {}
 
     /**
@@ -52,8 +53,7 @@ final class GroundedChatbotResponder
             ];
         }
 
-        $publicSources = [];
-        $answerSections = [];
+        $selectedSections = [];
         $seenSourceKeys = [];
         $bodyLength = 0;
 
@@ -73,28 +73,45 @@ final class GroundedChatbotResponder
             }
 
             $addedLength = mb_strlen($cleanContent)
-                + ($answerSections === [] ? 0 : 2);
+                + ($selectedSections === [] ? 0 : 2);
 
             if ($bodyLength + $addedLength > self::BODY_CHARACTER_BUDGET) {
                 break;
             }
 
-            $publicSources[] = [
-                'document_id' => $source['document_id'],
-                'document_title' => $source['document_title'],
-                'section_title' => $source['section_title'],
+            $selectedSections[] = [
+                'source' => [
+                    'document_id' => $source['document_id'],
+                    'document_title' => $source['document_title'],
+                    'section_title' => $source['section_title'],
+                    'section_index' => $source['section_index'],
+                ],
+                'content' => $cleanContent,
             ];
-            $answerSections[] = $cleanContent;
             $bodyLength += $addedLength;
         }
 
-        if ($answerSections === []) {
+        if ($selectedSections === []) {
             return [
                 'status' => self::STATUS_INSUFFICIENT_INFORMATION,
                 'answer' => 'Maaf, saya belum menemukan informasi yang cukup untuk menjawab pertanyaan tersebut berdasarkan dokumen resmi yang tersedia.',
                 'sources' => [],
             ];
         }
+
+        $orderedSections = $this->sectionOrderer->order($selectedSections);
+        $publicSources = array_map(
+            static fn (array $section): array => [
+                'document_id' => $section['source']['document_id'],
+                'document_title' => $section['source']['document_title'],
+                'section_title' => $section['source']['section_title'],
+            ],
+            $orderedSections,
+        );
+        $answerSections = array_map(
+            static fn (array $section): string => $section['content'],
+            $orderedSections,
+        );
 
         $header = 'Berikut informasi yang tersedia pada dokumen resmi:';
         $footer = 'Anda dapat membuka bagian sumber di bawah untuk melihat dokumen lengkap.';

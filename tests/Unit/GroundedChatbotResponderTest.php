@@ -80,6 +80,37 @@ final class GroundedChatbotResponderTest extends TestCase
         }
     }
 
+    public function test_it_presents_sections_from_the_same_document_in_section_order(): void
+    {
+        $question = 'Bagaimana alur utama dari pengajuan magang hingga selesai kegiatan magang?';
+        $context = app(KnowledgeBaseGroundedContextBuilder::class)->build($question, 20);
+        $result = app(GroundedChatbotResponder::class)->answer($question);
+
+        self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+
+        $documentSources = array_values(array_filter(
+            $result['sources'],
+            static fn (array $source): bool => $source['document_id'] === 'KB-007',
+        ));
+        $sectionIndexes = array_map(
+            fn (array $source): int => $this->sourceFor($context->sources, $source)['section_index'],
+            $documentSources,
+        );
+
+        self::assertGreaterThanOrEqual(2, count($sectionIndexes));
+        self::assertSame($this->sorted($sectionIndexes), $sectionIndexes);
+
+        $sectionPositions = array_map(
+            fn (array $source): int => mb_strpos(
+                $result['answer'],
+                $this->formatSection($this->sourceFor($context->sources, $source)['content']),
+            ),
+            $documentSources,
+        );
+
+        self::assertSame($this->sorted($sectionPositions), $sectionPositions);
+    }
+
     private function bodyLength(string $answer): int
     {
         $header = 'Berikut informasi yang tersedia pada dokumen resmi:';
@@ -105,6 +136,17 @@ final class GroundedChatbotResponderTest extends TestCase
         ) ?? $content;
 
         return trim(preg_replace('/\n{3,}/', "\n\n", $content) ?? $content);
+    }
+
+    /**
+     * @param  array<int, int>  $values
+     * @return array<int, int>
+     */
+    private function sorted(array $values): array
+    {
+        sort($values);
+
+        return $values;
     }
 
     /**
