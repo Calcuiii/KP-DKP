@@ -61,6 +61,8 @@ Informasi lebih detail: lihat Infografis ke-5 dalam seri ini (dokumen KB-004: In
 
 Calon peserta mengisi Google Form pelaksanaan Magang atau PKL sesuai kategori institusi pendidikan.
 
+Pengisian formulir ini belum berarti permohonan Magang atau PKL diterima. Dinas akan memproses permohonan dan menyampaikan keputusan melalui Surat Balasan.
+
 - SMA/K: https://tinyurl.com/DaftarMagangDKP-SM
 - Perguruan Tinggi: https://tinyurl.com/DaftarMagangDKP-PT
 

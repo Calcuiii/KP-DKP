@@ -25,7 +25,7 @@ final class KnowledgeBaseRegistryTest extends TestCase
     {
         $documents = (new KnowledgeBaseRegistry($this->registryPath))->all();
 
-        self::assertCount(10, $documents);
+        self::assertCount(9, $documents);
         self::assertContainsOnlyInstancesOf(KnowledgeBaseDocument::class, $documents);
 
         self::assertSame(
@@ -34,7 +34,6 @@ final class KnowledgeBaseRegistryTest extends TestCase
                 'KB-002',
                 'KB-003',
                 'KB-004',
-                'KB-005',
                 'KB-006',
                 'KB-007',
                 'KB-008',

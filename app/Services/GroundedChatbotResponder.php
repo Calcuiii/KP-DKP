@@ -27,6 +27,8 @@ final class GroundedChatbotResponder
 
     private const CONTACT_LOOKUP_QUERY = 'kontak koordinasi WhatsApp layanan Magang PKL';
 
+    private const SUBMISSION_FORM_LOOKUP_QUERY = 'alur Magang PKL form pelaksanaan';
+
     /** @var array<int, string> */
     private const OVERVIEW_QUERY_TOKENS = [
         'alur',
@@ -70,8 +72,28 @@ final class GroundedChatbotResponder
      *     }>
      * }
      */
-    public function answer(string $question): array
-    {
+    public function answer(
+        string $question,
+        ?string $previousQuestion = null,
+    ): array {
+        $isSubmissionDestinationQuestion = $this->requiresSubmissionDestinationConfirmation($question);
+
+        if ($isSubmissionDestinationQuestion) {
+            $submissionFormSource = $this->submissionFormSource();
+
+            if ($submissionFormSource !== null) {
+                return [
+                    'status' => self::STATUS_SUCCESS,
+                    'answer' => $this->submissionDestinationAnswer($submissionFormSource['content']),
+                    'sources' => [[
+                        'document_id' => $submissionFormSource['document_id'],
+                        'document_title' => $submissionFormSource['document_title'],
+                        'section_title' => $submissionFormSource['section_title'],
+                    ]],
+                ];
+            }
+        }
+
         if ($this->requiresCurrentAvailabilityConfirmation($question)) {
             $contactSource = $this->contactSource();
 
@@ -88,8 +110,14 @@ final class GroundedChatbotResponder
             }
         }
 
+        $isFollowUpQuestion = $this->isFollowUpQuestion($question, $previousQuestion);
+        $retrievalQuestion = $isFollowUpQuestion ? $previousQuestion : $question;
+        $questionForAnswer = $isFollowUpQuestion
+            ? "Pertanyaan sebelumnya: {$previousQuestion}\nPertanyaan lanjutan: {$question}"
+            : $question;
+
         $context = $this->contextBuilder->build(
-            $question,
+            $retrievalQuestion,
             self::RETRIEVAL_TOP_K,
         );
         $maximumDirectMatchTokenCount = max(
@@ -101,7 +129,8 @@ final class GroundedChatbotResponder
             static fn (array $source): int => $source['score'],
             $context->sources,
         ) ?: [0]);
-        $isOverviewQuestion = $this->isOverviewQuestion($question);
+        $isOverviewQuestion = $this->isOverviewQuestion($retrievalQuestion);
+        $isCollectionQuestion = $this->isCollectionQuestion($retrievalQuestion);
         $minimumDirectMatchTokenCount = $this->minimumDirectMatchTokenCount(
             $maximumDirectMatchTokenCount,
             $isOverviewQuestion,
@@ -110,6 +139,7 @@ final class GroundedChatbotResponder
             ? (int) ceil($maximumScore * self::MODERATE_QUESTION_SCORE_RATIO)
             : 0;
         $shouldLimitLowCoverageSections = ! $isOverviewQuestion
+            && ! $isCollectionQuestion
             && $maximumDirectMatchTokenCount > 0
             && $maximumDirectMatchTokenCount <= 2;
 
@@ -122,7 +152,7 @@ final class GroundedChatbotResponder
                 && $source['score'] >= $minimumScore,
         ));
 
-        if ($isOverviewQuestion && $usableSources !== []) {
+        if (($isOverviewQuestion || $isCollectionQuestion) && $usableSources !== []) {
             $primaryDocumentId = $usableSources[0]['document_id'];
             $primaryDocumentSources = array_values(array_filter(
                 $usableSources,
@@ -206,7 +236,7 @@ final class GroundedChatbotResponder
 
         $generation = $this->answerGenerator->generate(
             new KnowledgeBaseGroundedContext(
-                $question,
+                $questionForAnswer,
                 array_map(
                     static function (array $section): array {
                         $source = $section['source'];
@@ -287,6 +317,39 @@ final class GroundedChatbotResponder
         return array_intersect($tokens, ['kuota', 'ketersediaan']) !== [];
     }
 
+    private function requiresSubmissionDestinationConfirmation(string $question): bool
+    {
+        $tokens = preg_split(
+            '/[^\p{L}\p{N}]+/u',
+            mb_strtolower($question, 'UTF-8'),
+            -1,
+            PREG_SPLIT_NO_EMPTY,
+        );
+
+        if ($tokens === false) {
+            return false;
+        }
+
+        $asksForSubmissionDestination = array_intersect($tokens, [
+            'kirim',
+            'kirimkan',
+            'dikirim',
+            'unggah',
+            'upload',
+            'tujuan',
+            'kemana',
+            'dimana',
+        ]) !== [];
+        $mentionsMagangSubmission = array_intersect($tokens, [
+            'magang',
+            'pkl',
+            'surat',
+            'permohonan',
+        ]) !== [];
+
+        return $asksForSubmissionDestination && $mentionsMagangSubmission;
+    }
+
     /**
      * @return array{
      *     document_id: string,
@@ -309,6 +372,39 @@ final class GroundedChatbotResponder
         }
 
         return null;
+    }
+
+    /**
+     * @return array{
+     *     document_id: string,
+     *     document_title: string,
+     *     section_title: string,
+     *     content: string
+     * }|null
+     */
+    private function submissionFormSource(): ?array
+    {
+        $context = $this->contextBuilder->build(
+            self::SUBMISSION_FORM_LOOKUP_QUERY,
+            5,
+        );
+
+        foreach ($context->sources as $source) {
+            if (
+                preg_match('/form pelaksanaan/ui', $source['content']) === 1
+                && preg_match('/https?:\/\//ui', $source['content']) === 1
+            ) {
+                return $source;
+            }
+        }
+
+        return null;
+    }
+
+    private function submissionDestinationAnswer(string $submissionFormContent): string
+    {
+        return "Form Pelaksanaan Magang atau PKL yang digunakan adalah sebagai berikut:\n\n"
+            .$this->cleanMarkdown($submissionFormContent);
     }
 
     private function contactConfirmationAnswer(string $contactContent): string
@@ -339,6 +435,54 @@ final class GroundedChatbotResponder
                 $hasOverviewAnchor
                 && array_intersect($tokens, self::OVERVIEW_SUBJECT_TOKENS) !== []
             );
+    }
+
+    private function isCollectionQuestion(string $question): bool
+    {
+        $normalizedQuestion = mb_strtolower($question, 'UTF-8');
+
+        if (str_contains($normalizedQuestion, 'apa saja')) {
+            return true;
+        }
+
+        $tokens = preg_split('/[^\p{L}\p{N}]+/u', $normalizedQuestion, -1, PREG_SPLIT_NO_EMPTY);
+
+        if ($tokens === false) {
+            return false;
+        }
+
+        return array_intersect($tokens, [
+            'sebutkan',
+            'rincian',
+            'lengkap',
+            'kelengkapan',
+            'persyaratan',
+        ]) !== [];
+    }
+
+    private function isFollowUpQuestion(string $question, ?string $previousQuestion): bool
+    {
+        if ($previousQuestion === null || trim($previousQuestion) === '') {
+            return false;
+        }
+
+        $normalizedQuestion = mb_strtolower(trim($question), 'UTF-8');
+
+        foreach ([
+            'hanya itu',
+            'itu saja',
+            'apakah itu saja',
+            'apakah hanya itu',
+            'bagaimana dengan',
+            'lebih lanjut',
+            'jelaskan lagi',
+        ] as $followUpPhrase) {
+            if (str_contains($normalizedQuestion, $followUpPhrase)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function minimumDirectMatchTokenCount(
