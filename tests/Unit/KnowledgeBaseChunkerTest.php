@@ -41,7 +41,7 @@ final class KnowledgeBaseChunkerTest extends TestCase
 
         $chunks = (new KnowledgeBaseChunker)->chunkAll($loadedDocuments);
 
-        self::assertCount(89, $chunks);
+        self::assertCount(86, $chunks);
         self::assertContainsOnlyInstancesOf(KnowledgeBaseChunk::class, $chunks);
 
         $chunkIds = array_map(
@@ -97,10 +97,18 @@ final class KnowledgeBaseChunkerTest extends TestCase
             $policyChunk->documentType,
         );
 
-        self::assertSame(
-            $loadedDocuments[7]->policyRelations,
-            $policyChunk->policyRelations,
-        );
+        $policyDocument = null;
+
+        foreach ($loadedDocuments as $document) {
+            if ($document->documentId === 'KB-008') {
+                $policyDocument = $document;
+
+                break;
+            }
+        }
+
+        self::assertInstanceOf(LoadedKnowledgeBaseDocument::class, $policyDocument);
+        self::assertSame($policyDocument->policyRelations, $policyChunk->policyRelations);
     }
 
     public function test_it_preserves_section_order_and_content(): void

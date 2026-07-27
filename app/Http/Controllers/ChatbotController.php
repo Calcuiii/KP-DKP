@@ -15,11 +15,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 use Throwable;
 
 final class ChatbotController extends Controller
 {
-    public function index(): \Illuminate\View\View
+    public function index(): View
     {
         return view('pages.chatbot');
     }
@@ -76,7 +77,14 @@ final class ChatbotController extends Controller
         $startedAt = hrtime(true);
 
         try {
-            $result = $responder->answer($validated['message']);
+            $existingConversation = $this->existingConversation(
+                $validated['session_key'],
+                $validated['conversation_id'] ?? null,
+            );
+            $result = $responder->answer(
+                $validated['message'],
+                $this->previousUserQuestion($existingConversation),
+            );
 
             $payload = DB::transaction(function () use ($validated, $result, $startedAt): array {
                 $conversation = $this->resolveConversation(
@@ -192,6 +200,33 @@ final class ChatbotController extends Controller
             'title' => Str::limit(trim($question), 90),
             'last_message_at' => now(),
         ]);
+    }
+
+    private function existingConversation(
+        string $sessionKey,
+        ?int $conversationId,
+    ): ?ChatConversation {
+        if ($conversationId === null) {
+            return null;
+        }
+
+        return ChatConversation::query()
+            ->whereKey($conversationId)
+            ->where('session_key', $sessionKey)
+            ->first();
+    }
+
+    private function previousUserQuestion(?ChatConversation $conversation): ?string
+    {
+        if ($conversation === null) {
+            return null;
+        }
+
+        return ChatMessage::query()
+            ->where('chat_conversation_id', $conversation->id)
+            ->where('role', ChatMessage::ROLE_USER)
+            ->latest('id')
+            ->value('content');
     }
 
     private function serializeMessage(ChatMessage $message): array

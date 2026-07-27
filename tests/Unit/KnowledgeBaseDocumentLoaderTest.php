@@ -38,7 +38,7 @@ final class KnowledgeBaseDocumentLoaderTest extends TestCase
             $this->processedDirectory,
         ))->loadAll($documents);
 
-        self::assertCount(10, $loadedDocuments);
+        self::assertCount(9, $loadedDocuments);
         self::assertContainsOnlyInstancesOf(
             LoadedKnowledgeBaseDocument::class,
             $loadedDocuments,

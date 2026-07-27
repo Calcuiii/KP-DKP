@@ -226,6 +226,44 @@ final class GroundedChatbotResponderTest extends TestCase
         self::assertStringNotContainsString('Kontak Koordinasi', $result['answer']);
     }
 
+    public function test_it_returns_the_complete_submission_requirements_without_mixing_in_workflow_steps(): void
+    {
+        config(['services.groq.enabled' => false]);
+
+        $result = app(GroundedChatbotResponder::class)->answer(
+            'Apa saja persyaratan pengajuan magang?',
+        );
+
+        self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+        self::assertSame(
+            ['KB-004'],
+            array_values(array_unique(array_column($result['sources'], 'document_id'))),
+        );
+        self::assertStringContainsString('Nama Lengkap pemohon', $result['answer']);
+        self::assertStringContainsString('NIS atau NIM wajib ditulis', $result['answer']);
+        self::assertStringContainsString('nomor WhatsApp perwakilan', $result['answer']);
+        self::assertStringNotContainsString('Isi Buku Tamu Magang', $result['answer']);
+        self::assertStringNotContainsString('Isi Form Pelaksanaan Magang', $result['answer']);
+    }
+
+    public function test_it_uses_the_previous_question_for_an_explicit_follow_up(): void
+    {
+        config(['services.groq.enabled' => false]);
+
+        $result = app(GroundedChatbotResponder::class)->answer(
+            'Apakah hanya itu?',
+            'Apa saja persyaratan pengajuan magang?',
+        );
+
+        self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+        self::assertSame(
+            ['KB-004'],
+            array_values(array_unique(array_column($result['sources'], 'document_id'))),
+        );
+        self::assertStringContainsString('Kompetensi Keahlian', $result['answer']);
+        self::assertStringContainsString('Jumlah Peserta', $result['answer']);
+    }
+
     public function test_it_directs_current_quota_questions_to_the_official_contact_channel(): void
     {
         $result = app(GroundedChatbotResponder::class)->answer(
@@ -242,6 +280,27 @@ final class GroundedChatbotResponderTest extends TestCase
         self::assertStringContainsString('0852 53000 485', $result['answer']);
         self::assertStringContainsString('@diskanlajatim', $result['answer']);
         self::assertStringNotContainsString('INSUFFICIENT_INFORMATION', $result['answer']);
+    }
+
+    public function test_it_directs_submission_destination_questions_to_the_official_submission_form(): void
+    {
+        $result = app(GroundedChatbotResponder::class)->answer(
+            'Surat permohonan itu nanti dikirim ke mana?',
+        );
+
+        self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+        self::assertSame([[
+            'document_id' => 'KB-007',
+            'document_title' => 'Alur Utama Magang / Praktik Kerja Lapang (PKL)',
+            'section_title' => 'Tahap 1: Pengajuan — Langkah 4: Isi Form Pelaksanaan Magang / PKL',
+        ]], $result['sources']);
+        self::assertStringContainsString('belum berarti permohonan Magang atau PKL diterima', $result['answer']);
+        self::assertStringContainsString('Surat Balasan', $result['answer']);
+        self::assertSame(1, substr_count($result['answer'], 'belum berarti permohonan Magang atau PKL diterima'));
+        self::assertStringContainsString('https://tinyurl.com/DaftarMagangDKP-SM', $result['answer']);
+        self::assertStringContainsString('https://tinyurl.com/DaftarMagangDKP-PT', $result['answer']);
+        self::assertStringNotContainsString('0852 53000 485', $result['answer']);
+        self::assertStringNotContainsString('https://bit.ly/WOPPS', $result['answer']);
     }
 
     public function test_it_uses_the_configured_llm_to_write_the_selected_grounded_answer(): void
