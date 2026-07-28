@@ -1,84 +1,107 @@
 ---
 document_id: KB-UPLOAD-000001
-title: Alur Utama Magang / Praktik Kerja Lapang (PKL)
-category: panduan
+title: FAQ Dinas Periknan dan Kelautan Provinsi Jawa Timur
+category: faq
 document_type: uploaded_document
-effective_date: 2026-07-23
+effective_date: 2026-07-17
 priority: 3
 status: active
-source_file: public/knowledge-base/uaiWxSn5iKVNLlUBqoI7xw1SIPUDSl75UMgpX64V.pdf
+source_file: public/knowledge-base/9D5h3sY4yujeSkxPzWKoFzsluBsMjZ2jIfDWKon8.docx
 policy_relations: []
 ---
 
-# Alur Utama Magang / Praktik Kerja Lapang (PKL)
+# FAQ Dinas Periknan dan Kelautan Provinsi Jawa Timur
 
 ## Isi Dokumen
 
-LAYANAN KERJA PRAKTIK & MAGANG
-Alur Utama Magang / Praktik Kerja Lapang (PKL)
-Dinas Kelautan dan Perikanan Provinsi Jawa Timur (DKP Jatim)
-Panduan tahapan pengajuan, pelaksanaan, hingga penyelesaian kegiatan Magang dan Praktik Kerja
-Lapangan (PKL).
-Ringkasan Tahapan
-Tahap Nama Tahap Langkah
-1 Pengajuan Langkah 1 - 4
-2 Konfirmasi Langkah 5 - 6
-3 Pelaksanaan Langkah 7 - 10
-- Penerbitan Dokumen Akhir Langkah 11
-TAHAP 1 — PENGAJUAN
-Langkah 1: Isi Buku Tamu Magang / PKL
-[Calon Peserta]
-Calon peserta mengisi Google Form Buku Tamu sebagai tahap awal pendataan permohonan Magang /
-PKL.
-Link: bit.ly/DaftarMagangPKL_DKP_JATIM
-Langkah 2: Koordinasi Ketersediaan Kuota
-[Calon Peserta]
-Calon peserta berkoordinasi mengenai ketersediaan kuota dan kesesuaian Program Studi atau Jurusan.
-Catatan: Calon peserta memperoleh informasi awal mengenai aturan dan tata tertib.
-Langkah 3: Ajukan Surat Permohonan
-[Calon Peserta]
-Calon peserta mengajukan Surat Permohonan Magang / PKL setelah memperoleh persetujuan awal.
-Informasi lebih detail: lihat Infografis ke-5 dalam seri ini.
-Langkah 4: Isi Form Pelaksanaan Magang / PKL
-[Calon Peserta]
-Calon peserta mengisi Google Form pelaksanaan Magang / PKL sesuai kategori institusi pendidikan.
-SMA/K: https://tinyurl.com/DaftarMagangDKP-SM
-Perguruan Tinggi: https://tinyurl.com/DaftarMagangDKP-PT
-TAHAP 2 — KONFIRMASI
+FAQ Dinas Perikanan dan Kelautan Provinsi Jawa Timur (DKP Jatim)
+Dokumen ini berisi informasi mengenai Magang Kerja, Praktek Kerja Lapangan, Wawancara, Observasi, Penelitian, Permintaan Data, dan S
+Surat Edaran Sekretaris Daerah (SE SEKDA)
+Question: Apa isi surat edaran SEKDA Jawa Timur mengenai Surat Keterangan Magang/Praktek Kerja Lapangan (PKL)/Penelitian?
+Answer:
+Menunjuk Pasal 5 Peraturan Menteri Dalam Negeri Nomor 3 Tahun 2018 tentang Penerbitan Surat Keterangan Penelitian bahwa terdapat kualifikasi bagi peneliti atau pemohon Surat Keterangan Penelitian (SKP) antara lain :
+Setiap peneliti dalam melakukan penelitian harus memiliki SKP.
+SKP sebagaimana dimaksud pada nomor (1) dikecualikan terhadap:
+Penelitian yang dilakukan dalam rangka tugas akhir pendidikan/sekolah dari tempat pendidikan/sekolah di dalam negeri;
+Penelitian yang dilakukan instansi pemerintah yang sumber pendanaan penelitiannya bersumber dari Anggaran Pendapatan dan Belanja Negara/Anggaran Pendapatan dan Belanja Daerah;
+Praktek Kerja Lapangan (PKL)/ magang.
+Sehubungan dengan hal tersebut, disampaikan bahwa siswa/mahasiswa/peneliti yang sedang melakukan penelitian untuk tugas akhir dan Praktek Kerja Lapangan (PKL)/ Magang tidak memerlukan SKP.
 
-Langkah 5: Penerbitan Surat Balasan
-[Proses Dinas]
-Dinas memproses dan menerbitkan Surat Balasan sebagai tindak lanjut atas permohonan Magang / PKL.
-Langkah 6: Pelaksanaan Magang / PKL
-[Peserta]
-Peserta melaksanakan kegiatan Magang / PKL sesuai periode, lokasi, aturan, dan tata tertib yang telah
-ditentukan.
-TAHAP 3 — PELAKSANAAN
-Langkah 7: Susun Laporan Kegiatan
-[Peserta]
-Peserta menyusun laporan hasil kegiatan Magang / PKL menggunakan format sesuai ketentuan institusi
-terkait.
-Langkah 8: Siapkan Bahan Presentasi
-[Peserta]
-Peserta menyusun bahan presentasi yang merangkum hasil pelaksanaan kegiatan Magang / PKL.
-Langkah 9: Presentasi Hasil Kegiatan
-[Peserta]
-Peserta melakukan presentasi hasil kegiatan di lokasi pelaksanaan Magang / PKL.
-Langkah 10: Isi Form Selesai Magang / PKL
-[Peserta]
-Setelah kegiatan selesai, peserta mengisi Google Form sebagai konfirmasi penyelesaian Magang / PKL.
-SMA/K: bit.ly/SelesaiMagangPKL-SM
-Perguruan Tinggi: bit.ly/SelesaiMagangPKL-PT
-PENERBITAN DOKUMEN AKHIR
-Langkah 11: Penerbitan Surat Keterangan & Sertifikat
-[Proses Dinas]
-Dinas menerbitkan Surat Keterangan dan Sertifikat apabila peserta telah melampirkan keterangan
-tersebut di Surat Permohonan.
-Informasi Kontak Dinas Kelautan dan Perikanan Provinsi Jawa Timur
-Instagram @diskanlajatim
-Situs Web dkp.jatimprov.co.id
-Facebook diskanlajawatimur
-Dokumen ini merupakan alih bentuk teks dari infografis "Alur Utama Magang / Praktik Kerja Lapang (PKL)" (Seri Infografis
-01/07) yang diterbitkan oleh Dinas Kelautan dan Perikanan Provinsi Jawa Timur (DKP Jatim), disusun ulang sebagai
+Question: Apakah pihak Dinas Perikanan dan Kelautan Provinsi Jawa Timur (DKP Jatim) menerbitkan Suart Keterangan Penelitian (Surat Keterangan Maganag/PKL/Penelitian)?
+Answer:
+Tidak perlu, sebagaimana penjelasan dari Surat Edaran Sekretaris Daerah (SE SEKDA) Nomor 1573 Tahun 2025 Tentang Surat Keterangan Penelitian (SKP) dan Praktek Kerja Lapangan (PKL)
 
-dokumen panduan berbasis teks.
+Question: Apakah Dinas Perikanan dan Kelautan Provinsi Jawa Timur (DKP Jatim) akan menerbitkan Surat Keterangan dan sertifikat sebagai bukti penyelesaian Magang Kerja/Praktek Kerja Lapangan?
+Answer:
+Iya, pihak Dinas Perikanan dan Kelautan Provinsi Jawa Timur (DKP Jatim) akan menerbitkan Surat Keterangan dan sertifikat penyelesaian Magang/Kerja Praktek Lapangan namun harus mengajukan Surat Permohonan terlebih dahulu untuk dapat diproses dengan menunangkan pernyataan tersebut secara tersurat.
+
+Ketentuan Umum Peserta Magang Kerja/Praktek Kerja Lapangan
+Question: Apa saja ketentuan umum peserta Magang Kerja/Praktek Kerja Lapangan di Dinas Perikanan dan Kelautan Provinsi Jawa Timur (DKP Jatim)?
+Answer:
+Berikut ini ketentuan umum peserta Magang Kerja/Praktek Kerja Lapangan di Dinas Perikanan dan Kelautan Provinsi Jawa Timur (DKP Jatim):
+Mengikuti waktu magang kerja / Praktek Kerja Lapangan yang berlaku di lingkungan Dinas Kelautan dan Perikanan Provinsi Jawa Timur (Senin-Kamis pukul 08.00-16.00 WIB, Jumat pukul 07.30-16.00 WIB)
+Mengikuti seluruh kegiatan yang berlaku saat periode magang dan Praktek kerja Lapangan seperti Upacara dan kegiatan insidentil lainnya tanpa terkecuali
+Memenuhi seluruh aturan yang berlaku di lingkungan kantor Dinas Kelautan dan Perikanan Provinsi Jawa Timur
+Wajib menjaga etika dan tata krama terhadap seluruh pegawai rekan kerja
+Seluruh biaya yang dikeluarkan oleh peserta magang kerja / Praktek Kerja Lapangan menjadi tanggung jawab individu masing-masing peserta magang kerja
+Bersedia untuk ditempatkan di Unit kerja mana saja yang membutuhkan
+Turut serta menjaga keamanan dan kerahasiaan dokumen negara yang bersifat rahasia
+Membuat laporan Magang Kerja / Praktek Kerja Lapangan sesuai dengan format institusi asal dan mengirimkannya ke dalam bentuk pdf
+Melakukan presentasi hasil magang kerja / Praktek Kerja Lapangan di minggu terakhir (tentative)
+Apabila selama periode magang kerja dilaksanakan peserta magang kerja / Praktek Kerja Lapangan melanggar aturan berlaku, maka bersedia untuk menerima sanksi berupa:
+Pembinaan berupa teguran lisan (ringan)
+Penundaan penerbitan Surat Keterangan & Sertifikat Magang Kerja (sedang)
+
+Question: Siapa saja yang dapat melakukan magang dan Kerja Praktek di Dinas Perikanan dan Kelautan Provinsi Jawa Timur (DKP Jatim)?
+Answer:
+Siswa dan Mahasiswa
+
+Prosedur Pelayanan Magang / Praktek Kerja Lapangan
+Question: Bagaimana prosedur magang / Praktek Kerja Lapangan di Dinas Perikanan dan Kelautan Provinsi Jawa Timur?
+Answer:
+Mengisi buku tamu (jika hadir langsung di kantor)
+Mengisi Google Form secara individu: bit.ly/DaftarMagangPKL_DKP_JATIM
+Penjelasan terkait aturan dan tata tertib yang berlaku termasuk SE SEKDA terkait magang dan kerja praktek
+Membuat Surat Permohonan Magang / Kerja Praktek Lapangan (PKL) / Penelitian Awal
+Mengisi Google Form berdasarkan jenjang pendidikan
+Bagi SMA / SMK: tinyurl.com/DaftarMagangDKP-SM
+Bagi Mahasiswa: tinyurl.com/DaftarMagangDKP-PT
+Berkoordinasi dengan nomor WhatsApp 0852 53000 485
+
+Question: Apa saja isi atau kewajiban isi dari surat permohonan Magang Kerja / Praktek Kerja Lapangan?
+Answer:
+Berikut ini isi dari surat permohonan Magang Kerja / Praktek Kerja Lapangan
+Bagi Siswa
+Nama Siswa
+Nomor Induk Sekolah Nasional (NISN)
+Jurusan
+Nama Sekolah
+Nama Guru Pembimbing / Penanggnung Jawab beserta nomor Whatssapp
+Batas waktu
+Tujuan
+Bagi Mahasiswa
+Nama Mahasiswa
+Nomor Induk Mahasiswa (NIM)
+Semester
+Program Studi
+Fakultas
+Nama Universitas
+Nama Dosen Pembimbing beserta nomor WhatsApp
+Batas waktu
+Tujuan
+
+Question: Siapa yang menerbitkan Surat Permohonan Magang Kerja / Praktek Kerja Lapangan?
+Answer:
+Surat Permohonan Resmi berasal dari Institusi Pendidikan asal
+
+Persyaratan Dokumen Pengajuan Penelitian / Permintaan Data / Informasi / Wawancara / Observasi
+Qusetion: Bagaimana persyaratan pengajuan penelitian / permintaan data / informasi / wawancara / observasi?
+Answer:
+Menyiapkan identitas diri yang masih berlaku: Kartu Tanda Mahasiswa (KTM), atau Kartu Tanda Pelajar, atau Kartu Tanda Penduduk (KTP), atau Surat Izin Mengemudi (SIM)
+Membuat Surat Permohonan resmi dari institusi pendidikan asal
+Mengisi Google Form “Etichal Clearance”: https://bit.ly/EASL-DKP
+Membuat Proposal Kegiatan (Format sesuai institusi asal)
+
+Alur Magang Kerja / Kerja Praktek Lapangan (PKL)
+Question: Bagaimana alur magang kerja / kerja praktek lapangan di Dinas Perikanan dan Kelautan Provinsi Jawa Timur?
+Answer:

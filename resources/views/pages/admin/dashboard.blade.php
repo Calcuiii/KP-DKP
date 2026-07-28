@@ -39,32 +39,23 @@
         </div>
     </div>
 
-    {{-- Category bar + unanswered list --}}
-    <div class="grid gap-5 lg:grid-cols-2">
-        <div class="rounded-2xl border border-border bg-card p-5 shadow-sm">
-            <h3 class="mb-4 text-sm font-semibold text-navy">Kategori Pertanyaan Terbanyak</h3>
-            <canvas id="categoryChart" height="120"></canvas>
+    {{-- Unanswered list --}}
+    <div class="rounded-2xl border border-border bg-card p-5 shadow-sm">
+        <div class="mb-4 flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-navy">Pertanyaan Tidak Terjawab Terbaru</h3>
+            <a href="#" class="text-xs font-medium text-ocean">Lihat Semua →</a>
         </div>
-
-        <div class="rounded-2xl border border-border bg-card p-5 shadow-sm">
-            <div class="mb-4 flex items-center justify-between">
-                <h3 class="text-sm font-semibold text-navy">Pertanyaan Tidak Terjawab Terbaru</h3>
-                <a href="#" class="text-xs font-medium text-ocean">Lihat Semua →</a>
+        @forelse ($unansweredList as $u)
+            <div class="mb-2 flex items-start gap-2 rounded-xl border border-border bg-[#F4F7FB] p-2.5 last:mb-0">
+                <i data-lucide="alert-circle" class="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-amber-500" aria-hidden="true"></i>
+                <div class="min-w-0">
+                    <p class="truncate text-xs font-medium text-navy">{{ $u['question'] }}</p>
+                    <p class="mt-0.5 text-[10px] text-muted-foreground">{{ $u['time'] }}</p>
+                </div>
             </div>
-            <div class="space-y-2.5">
-                @foreach ($unanswered as $u)
-                    <div class="flex items-start gap-2 rounded-xl border border-border bg-[#F4F7FB] p-2.5">
-                        <i data-lucide="alert-circle" class="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-amber-500" aria-hidden="true"></i>
-                        <div class="min-w-0">
-                            <p class="truncate text-xs font-medium text-navy">{{ $u['question'] }}</p>
-                            <p class="mt-0.5 flex items-center gap-1 text-[10px] text-muted-foreground">
-                                Ditanyakan {{ $u['freq'] }}x · <x-admin.status-badge :status="$u['status']" />
-                            </p>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
+        @empty
+            <p class="text-xs text-muted-foreground">Belum ada pertanyaan yang tidak terjawab.</p>
+        @endforelse
     </div>
 
     {{-- Recent questions table --}}
@@ -83,20 +74,25 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($recentQuestions as $row)
+                    @forelse ($recentQuestions as $row)
                         <tr class="border-t border-border transition-colors hover:bg-[#F8FAFC]">
                             <td class="max-w-[220px] truncate px-4 py-3">{{ $row['question'] }}</td>
                             <td class="px-4 py-3"><x-admin.badge>{{ $row['category'] }}</x-admin.badge></td>
                             <td class="px-4 py-3"><x-admin.status-badge :status="$row['status']" /></td>
                             <td class="px-4 py-3 text-muted-foreground">{{ $row['time'] }}</td>
-                            <td class="px-4 py-3">
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="px-4 py-10 text-center text-muted-foreground">
+                                Belum ada percakapan.
                             </td>
                         </tr>
-                    @endforeach
+                    @endforelse
                 </tbody>
             </table>
         </div>
     </div>
+
 </div>
 
 @push('scripts')
@@ -104,7 +100,6 @@
     window.dashboardData = {
         trend: @json($trend),
         statusData: @json($statusData),
-        categoryData: @json($categoryData),
     };
 </script>
 @endpush
