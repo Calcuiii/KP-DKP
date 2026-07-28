@@ -25,6 +25,7 @@ import {
     TrendingUp,
     ChevronDown,
     ChevronUp,
+    ChevronLeft,
     BarChart2,
     Inbox,
     ThumbsUp,
@@ -45,6 +46,10 @@ import {
     Trash2,
     Upload,
     XCircle,
+    Download,
+    Edit2,
+    Home,
+    HelpCircle,
 } from 'lucide';
 
 createIcons({
@@ -52,9 +57,10 @@ createIcons({
         Fish, MessageSquare, Menu, X, Zap, ChevronRight, FileText, Send,
         Shield, ArrowRight, BookOpen, CheckCircle, Award, MessageCircle,
         Search, Database, Info, Layers, FileCheck, RefreshCw, TrendingUp,
-        ChevronDown, ChevronUp, BarChart2, Inbox, ThumbsUp, Settings,
+        ChevronDown, ChevronUp, ChevronLeft, BarChart2, Inbox, ThumbsUp, Settings,
         Users, Activity, LogOut, Bell, Eye, EyeOff, Lock, AlertCircle,
         Hash, Clock, Star, Plus, RotateCcw, Trash2, Upload, XCircle,
+        Download, Edit2, Home, HelpCircle,
     },
 });
 

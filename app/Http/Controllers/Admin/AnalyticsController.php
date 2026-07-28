@@ -55,4 +55,33 @@ class AnalyticsController extends Controller
             'days', 'totalConversations', 'totalQuestions', 'answerRate', 'questionTrend', 'categoryData', 'kbUsage'
         ));
     }
+
+    public function export(Request $request)
+{
+    $days = (int) ($request->period ?? 30);
+    $from = Carbon::now()->subDays($days);
+
+    $messages = ChatMessage::where('role', 'user')
+        ->where('created_at', '>=', $from)
+        ->with(['conversation.messages'])
+        ->get();
+
+    $csv = "Tanggal,Pertanyaan,Status,Waktu Respons (s)\n";
+
+    foreach ($messages as $userMsg) {
+        $answer = $userMsg->conversation->messages->where('role', 'assistant')->first();
+
+        $csv .= implode(',', [
+            $userMsg->created_at->format('Y-m-d H:i'),
+            '"' . str_replace('"', '""', $userMsg->content) . '"',
+            $answer?->status === 'success' ? 'Dijawab' : 'Tidak Ditemukan',
+            $answer?->response_time_ms ? round($answer->response_time_ms / 1000, 1) : '0',
+        ]) . "\n";
+    }
+
+    return response($csv, 200, [
+        'Content-Type' => 'text/csv',
+        'Content-Disposition' => 'attachment; filename="analytics-report-' . now()->format('Y-m-d') . '.csv"',
+    ]);
+}
 }
