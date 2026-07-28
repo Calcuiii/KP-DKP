@@ -31,7 +31,9 @@ class InfographicsPageTest extends TestCase
             $previousPosition = $position;
         }
 
-        self::assertSame(8, substr_count($content, 'loading="lazy"'));
+        self::assertSame(8, substr_count($content, 'data-infographic-lightbox-trigger'));
+        self::assertStringContainsString('Pusat Informasi Visual', $content);
+        self::assertStringContainsString('Akses Cepat', $content);
     }
 
     public function test_the_landing_page_includes_the_infographics_preview(): void

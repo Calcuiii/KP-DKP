@@ -40,31 +40,10 @@
                 </a>
 
                 <a
-                    href="{{ route('landing') }}#informasi"
-                    class="text-sm font-medium text-muted-foreground transition-colors hover:text-ocean"
-                >
-                    Informasi
-                </a>
-
-                <a
-                    href="{{ route('landing') }}#cara-kerja"
-                    class="text-sm font-medium text-muted-foreground transition-colors hover:text-ocean"
-                >
-                    Cara Kerja
-                </a>
-
-                <a
                     href="{{ route('landing') }}#faq"
                     class="text-sm font-medium text-muted-foreground transition-colors hover:text-ocean"
                 >
                     FAQ
-                </a>
-
-                <a
-                    href="{{ route('landing') }}#tentang"
-                    class="text-sm font-medium text-muted-foreground transition-colors hover:text-ocean"
-                >
-                    Tentang
                 </a>
 
                 <a
@@ -139,31 +118,10 @@
             </a>
 
             <a
-                href="{{ route('landing') }}#informasi"
-                class="block py-2 text-sm font-medium text-muted-foreground"
-            >
-                Informasi
-            </a>
-
-            <a
-                href="{{ route('landing') }}#cara-kerja"
-                class="block py-2 text-sm font-medium text-muted-foreground"
-            >
-                Cara Kerja
-            </a>
-
-            <a
                 href="{{ route('landing') }}#faq"
                 class="block py-2 text-sm font-medium text-muted-foreground"
             >
                 FAQ
-            </a>
-
-            <a
-                href="{{ route('landing') }}#tentang"
-                class="block py-2 text-sm font-medium text-muted-foreground"
-            >
-                Tentang
             </a>
 
             <a
