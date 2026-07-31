@@ -35,31 +35,46 @@ class KnowledgeBaseController extends Controller
         return view('pages.admin.knowledge-base', compact('documents', 'metrics'));
     }
 
-    public function store(
-        StoreKnowledgeBaseDocumentRequest $request,
-        KnowledgeBaseDocumentIndexer $indexer,
-    ): RedirectResponse {
-        $file = $request->file('file');
-        $path = $file->store('knowledge-base', 'public');
+    public function store(StoreKnowledgeBaseDocumentRequest $request, KnowledgeBaseDocumentIndexer $indexer): RedirectResponse
+{
+    $file = $request->file('file');
+    $path = $file->store('knowledge-base', 'public');
 
-        $document = KnowledgeBaseDocument::create([
-            'name' => $request->name,
-            'category' => $request->category,
-            'type' => strtoupper($file->getClientOriginalExtension()),
-            'version' => $request->version,
-            'description' => $request->description,
-            'effective_date' => $request->effective_date,
-            'file_path' => $path,
-            'status' => 'Pending',
-            'index_status' => 'Pending',
-            'chunks_count' => 0,
-            'uploaded_by' => auth()->id(),
+    $document = KnowledgeBaseDocument::create([
+        'name' => $request->name,
+        'category' => $request->category,
+        'type' => strtoupper($file->getClientOriginalExtension()),
+        'version' => $request->version,
+        'description' => $request->description,
+        'effective_date' => $request->effective_date,
+        'file_path' => $path,
+        'status' => 'Processing',
+        'index_status' => 'Processing',
+        'chunks_count' => 0,
+        'uploaded_by' => auth()->id(),
+    ]);
+
+    try {
+        $chunksCount = $indexer->index($document);
+
+        $document->update([
+            'status' => 'Ready',
+            'index_status' => 'Ready',
+            'chunks_count' => $chunksCount,
         ]);
 
-        ActivityLog::record('Upload', 'Knowledge Base', "Mengunggah dokumen \"{$request->name}\"");
+        return redirect()->route('admin.knowledge-base')
+            ->with('status', "Dokumen berhasil diunggah dan diproses ({$chunksCount} bagian). Chatbot sekarang bisa menjawab dari dokumen ini.");
+    } catch (\Throwable $exception) {
+        $document->update([
+            'status' => 'Failed',
+            'index_status' => 'Failed',
+        ]);
 
-        return $this->process($document, $indexer, 'Dokumen berhasil diunggah');
+        return redirect()->route('admin.knowledge-base')
+            ->with('status', 'Dokumen tersimpan, tetapi gagal diproses: ' . $exception->getMessage());
     }
+}
 
     public function destroy(KnowledgeBaseDocument $document): RedirectResponse
     {
