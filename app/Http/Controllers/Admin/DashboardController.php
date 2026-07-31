@@ -3,58 +3,88 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ChatConversation;
+use App\Models\ChatFeedback;
+use App\Models\ChatMessage;
+use App\Models\KnowledgeBaseDocument;
+use App\Support\KnowledgeBaseCategoryResolver;
+use Illuminate\Support\Carbon;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(KnowledgeBaseCategoryResolver $resolver): View
     {
+        $totalConversations = ChatConversation::count();
+        $totalQuestions = ChatMessage::where('role', 'user')->count();
+        $today = ChatMessage::where('role', 'user')->whereDate('created_at', today())->count();
+
+        $unanswered = ChatMessage::where('role', 'assistant')->where('status', 'insufficient_information')->count();
+
+        $totalFeedback = ChatFeedback::count();
+        $positiveFeedback = ChatFeedback::where('rating', 'positive')->count();
+        $satisfaction = $totalFeedback > 0 ? round(($positiveFeedback / $totalFeedback) * 100) : 0;
+
+        $avgResponseMs = ChatMessage::where('role', 'assistant')->whereNotNull('response_time_ms')->avg('response_time_ms');
+        $avgResponseSeconds = $avgResponseMs ? round($avgResponseMs / 1000, 1) : 0;
+
         $metrics = [
-            ['icon' => 'message-square', 'label' => 'Total Percakapan', 'value' => '1,284', 'sub' => '+12% bulan ini', 'color' => 'ocean'],
-            ['icon' => 'hash', 'label' => 'Total Pertanyaan', 'value' => '3,571', 'sub' => '↑ 8% dari bulan lalu', 'color' => 'teal'],
-            ['icon' => 'activity', 'label' => 'Pertanyaan Hari Ini', 'value' => '47', 'sub' => 'Diperbarui real-time', 'color' => 'indigo'],
-            ['icon' => 'database', 'label' => 'Knowledge Base Aktif', 'value' => '6', 'sub' => '2 dalam proses', 'color' => 'amber'],
-            ['icon' => 'inbox', 'label' => 'Pertanyaan Tidak Terjawab', 'value' => '42', 'sub' => '4 baru hari ini', 'color' => 'red'],
-            ['icon' => 'clock', 'label' => 'Rata-rata Response Time', 'value' => '1.3s', 'sub' => 'Stabil minggu ini', 'color' => 'ocean'],
-            ['icon' => 'star', 'label' => 'Satisfaction Rate', 'value' => '4.2/5', 'sub' => 'Berdasarkan rating', 'color' => 'amber'],
+            ['icon' => 'message-square', 'label' => 'Total Percakapan', 'value' => number_format($totalConversations), 'sub' => null, 'color' => 'ocean'],
+            ['icon' => 'hash', 'label' => 'Total Pertanyaan', 'value' => number_format($totalQuestions), 'sub' => null, 'color' => 'teal'],
+            ['icon' => 'activity', 'label' => 'Pertanyaan Hari Ini', 'value' => (string) $today, 'sub' => 'Diperbarui real-time', 'color' => 'indigo'],
+            ['icon' => 'database', 'label' => 'Knowledge Base Aktif', 'value' => (string) KnowledgeBaseDocument::where('status', 'Ready')->count(), 'sub' => null, 'color' => 'amber'],
+            ['icon' => 'inbox', 'label' => 'Pertanyaan Tidak Terjawab', 'value' => (string) $unanswered, 'sub' => null, 'color' => 'red'],
+            ['icon' => 'thumbs-up', 'label' => 'Feedback Positif', 'value' => $satisfaction . '%', 'sub' => "Dari {$totalFeedback} feedback", 'color' => 'teal'],
+            ['icon' => 'clock', 'label' => 'Rata-rata Response Time', 'value' => $avgResponseSeconds . 's', 'sub' => null, 'color' => 'ocean'],
         ];
 
-        $trend = collect(range(1, 30))->map(fn ($day) => [
-            'day' => (string) $day,
-            'pertanyaan' => rand(20, 80),
-            'dijawab' => rand(15, 65),
-        ]);
+        $trend = collect(range(29, 0))->map(function ($daysAgo) {
+            $date = Carbon::now()->subDays($daysAgo);
+            return [
+                'day' => $date->format('d'),
+                'pertanyaan' => ChatMessage::where('role', 'user')->whereDate('created_at', $date)->count(),
+                'dijawab' => ChatMessage::where('role', 'assistant')->where('status', 'success')->whereDate('created_at', $date)->count(),
+            ];
+        });
+
+        $successCount = ChatMessage::where('role', 'assistant')->where('status', 'success')->count();
+        $insufficientCount = ChatMessage::where('role', 'assistant')->where('status', 'insufficient_information')->count();
+        $totalAnswered = $successCount + $insufficientCount;
 
         $statusData = [
-            ['name' => 'Berhasil', 'value' => 72, 'color' => '#0D9E8A'],
-            ['name' => 'Tidak Ditemukan', 'value' => 18, 'color' => '#F59E0B'],
-            ['name' => 'Error', 'value' => 10, 'color' => '#EF4444'],
+            ['name' => 'Berhasil', 'value' => $totalAnswered > 0 ? round(($successCount / $totalAnswered) * 100) : 0, 'color' => '#0D9E8A'],
+            ['name' => 'Tidak Ditemukan', 'value' => $totalAnswered > 0 ? round(($insufficientCount / $totalAnswered) * 100) : 0, 'color' => '#F59E0B'],
         ];
 
-        $categoryData = [
-            ['name' => 'Persyaratan KP', 'value' => 38],
-            ['name' => 'Alur Pengajuan', 'value' => 27],
-            ['name' => 'Dokumen', 'value' => 19],
-            ['name' => 'Pelaksanaan', 'value' => 11],
-            ['name' => 'Sertifikat', 'value' => 5],
-        ];
+        $unansweredList = ChatMessage::where('role', 'assistant')
+            ->where('status', 'insufficient_information')
+            ->with('conversation')
+            ->latest()
+            ->take(3)
+            ->get()
+            ->map(fn ($m) => [
+                'question' => optional($m->conversation->messages->where('role', 'user')->last())->content ?? '-',
+                'time' => $m->created_at->diffForHumans(),
+            ]);
 
-        $unanswered = [
-            ['question' => 'Apakah ada kuota magang per semester?', 'freq' => 12, 'status' => 'Baru'],
-            ['question' => 'Bagaimana prosedur jika pembimbing lapangan berhalangan?', 'freq' => 8, 'status' => 'Ditinjau'],
-            ['question' => 'Apakah ada tunjangan untuk peserta magang?', 'freq' => 6, 'status' => 'Baru'],
-        ];
+        $recentQuestions = ChatMessage::where('role', 'user')
+            ->with(['conversation.messages' => fn ($q) => $q->where('role', 'assistant')])
+            ->latest()
+            ->take(5)
+            ->get()
+            ->map(function ($userMsg) use ($resolver) {
+                $answer = $userMsg->conversation->messages->where('role', 'assistant')->first();
 
-        $recentQuestions = [
-            ['question' => 'Apa saja persyaratan untuk mengajukan magang di DKP?', 'category' => 'Persyaratan', 'status' => 'Dijawab', 'time' => '2024-04-10 14:32'],
-            ['question' => 'Bagaimana alur pengajuan Kerja Praktik?', 'category' => 'Alur', 'status' => 'Dijawab', 'time' => '2024-04-10 13:15'],
-            ['question' => 'Apakah siswa SMK bisa magang di DKP Jatim?', 'category' => 'Umum', 'status' => 'Dijawab', 'time' => '2024-04-10 11:44'],
-            ['question' => 'Berapa lama proses verifikasi dokumen pengajuan?', 'category' => 'Alur', 'status' => 'Tidak Ditemukan', 'time' => '2024-04-10 10:02'],
-            ['question' => 'Dokumen apa saja yang harus disiapkan untuk KP?', 'category' => 'Dokumen', 'status' => 'Dijawab', 'time' => '2024-04-09 16:30'],
-        ];
-
-        return view('pages.admin.dashboard', compact(
-            'metrics', 'trend', 'statusData', 'categoryData', 'unanswered', 'recentQuestions'
-        ));
+                return [
+                    'question' => $userMsg->content,
+                    'category' => $answer && $answer->sources->first()
+                        ? $resolver->categoryFor($answer->sources->first()->document_id)
+                        : 'Umum',
+                    'status' => $answer?->status === 'success' ? 'Dijawab' : 'Tidak Ditemukan',
+                    'time' => $userMsg->created_at->format('Y-m-d H:i'),
+                ];
+            });
+            return view('pages.admin.dashboard', compact('metrics', 'trend', 'statusData', 'unansweredList', 'recentQuestions'
+            ));
     }
 }

@@ -3,7 +3,7 @@ import Chart from 'chart.js/auto';
 document.addEventListener('DOMContentLoaded', () => {
     // ── Dashboard page ──────────────────────────────────────────────
     if (window.dashboardData) {
-        const { trend, statusData, categoryData } = window.dashboardData;
+        const { trend, statusData} = window.dashboardData;
 
         const trendCanvas = document.getElementById('trendChart');
         if (trendCanvas) {
@@ -57,29 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 options: {
                     plugins: { legend: { display: false } },
                     cutout: '65%',
-                },
-            });
-        }
-
-        const categoryCanvas = document.getElementById('categoryChart');
-        if (categoryCanvas) {
-            new Chart(categoryCanvas, {
-                type: 'bar',
-                data: {
-                    labels: categoryData.map((c) => c.name),
-                    datasets: [{
-                        data: categoryData.map((c) => c.value),
-                        backgroundColor: '#1A5FA8',
-                        borderRadius: 4,
-                    }],
-                },
-                options: {
-                    indexAxis: 'y',
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { ticks: { font: { size: 10 } } },
-                        y: { ticks: { font: { size: 10 } } },
-                    },
                 },
             });
         }

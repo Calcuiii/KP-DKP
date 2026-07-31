@@ -218,15 +218,73 @@ final class KnowledgeBaseDocumentIndexer
     }
 
     private function toMarkdown(RegistryDocument $document, string $content): string
-    {
-        return implode("\n", [
-            '---', 'document_id: '.$document->documentId, 'title: '.$document->title,
-            'category: '.$document->category, 'document_type: '.$document->documentType,
-            'effective_date: '.($document->effectiveDate ?? 'null'), 'priority: '.$document->priority,
-            'status: '.$document->status, 'source_file: '.$document->sourceFile,
-            'policy_relations: []', '---', '', '# '.$document->title, '', '## Isi Dokumen', '', $content, '',
-        ]);
+{
+    $body = $this->splitIntoSections($content);
+
+    return implode("\n", [
+        '---', 'document_id: '.$document->documentId, 'title: '.$document->title,
+        'category: '.$document->category, 'document_type: '.$document->documentType,
+        'effective_date: '.($document->effectiveDate ?? 'null'), 'priority: '.$document->priority,
+        'status: '.$document->status, 'source_file: '.$document->sourceFile,
+        'policy_relations: []', '---', '', '# '.$document->title, '', $body, '',
+    ]);
+}
+
+/**
+ * Memecah dokumen jadi beberapa bagian (## heading) berdasarkan pola
+ * "Question: ..." supaya tiap topik jadi chunk terpisah, bukan satu
+ * blok raksasa yang bisa melebihi batas konteks jawaban AI.
+ */
+private function splitIntoSections(string $content): string
+{
+    $lines = preg_split('/\r\n|\r|\n/', $content);
+    $sections = [];
+    $currentHeading = 'Ringkasan';
+    $currentBody = [];
+    $hasQuestionBlocks = false;
+
+    foreach ($lines as $line) {
+        if (preg_match('/^\s*Qu?u?estion\s*:\s*(.+)$/i', $line, $matches)) {
+            $hasQuestionBlocks = true;
+
+            if ($currentBody !== []) {
+                $sections[] = ['heading' => $currentHeading, 'body' => $currentBody];
+            }
+
+            $currentHeading = trim($matches[1]);
+            $currentBody = [];
+
+            continue;
+        }
+
+        $currentBody[] = $line;
     }
+
+    if ($currentBody !== []) {
+        $sections[] = ['heading' => $currentHeading, 'body' => $currentBody];
+    }
+
+    if (! $hasQuestionBlocks) {
+        return "## Isi Dokumen\n\n".$content;
+    }
+
+    $markdown = [];
+
+    foreach ($sections as $section) {
+        $body = trim(implode("\n", $section['body']));
+
+        if ($body === '') {
+            continue;
+        }
+
+        $markdown[] = '## '.$section['heading'];
+        $markdown[] = '';
+        $markdown[] = $body;
+        $markdown[] = '';
+    }
+
+    return implode("\n", $markdown);
+}
 
     private function updateRegistry(RegistryDocument $document): void
     {

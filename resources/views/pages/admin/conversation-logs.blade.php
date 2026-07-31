@@ -48,7 +48,6 @@
                         <th class="whitespace-nowrap px-4 py-3 text-left font-semibold">Kategori</th>
                         <th class="whitespace-nowrap px-4 py-3 text-left font-semibold">Status</th>
                         <th class="whitespace-nowrap px-4 py-3 text-left font-semibold">Sumber</th>
-                        <th class="whitespace-nowrap px-4 py-3 text-left font-semibold">Score</th>
                         <th class="whitespace-nowrap px-4 py-3 text-left font-semibold">Waktu</th>
                         <th class="whitespace-nowrap px-4 py-3 text-left font-semibold">Tanggal</th>
                         <th class="whitespace-nowrap px-4 py-3 text-left font-semibold">Aksi</th>
@@ -62,20 +61,17 @@
                             <td class="px-4 py-3"><x-admin.badge>{{ $log->category }}</x-admin.badge></td>
                             <td class="px-4 py-3"><x-admin.status-badge :status="$log->status" /></td>
                             <td class="px-4 py-3 text-muted-foreground">{{ $log->sources }} dok</td>
-                            <td class="px-4 py-3 font-semibold {{ $log->score > 0.8 ? 'text-teal' : 'text-amber-500' }}">
-                                {{ number_format($log->score, 2) }}
-                            </td>
                             <td class="px-4 py-3 text-muted-foreground">{{ $log->response_time }}s</td>
                             <td class="whitespace-nowrap px-4 py-3 text-muted-foreground">{{ $log->created_at->format('Y-m-d H:i') }}</td>
                             <td class="px-4 py-3">
-                                <button type="button" class="rounded-lg p-1.5 hover:bg-accent" title="Lihat Detail">
+                                <button type="button" data-open-modal="log-detail-{{ $log->id }}" class="rounded-lg p-1.5 hover:bg-accent" title="Lihat Detail">
                                     <i data-lucide="eye" class="h-3 w-3" aria-hidden="true"></i>
                                 </button>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="10" class="px-4 py-10 text-center text-muted-foreground">
+                            <td colspan="8" class="px-4 py-10 text-center text-muted-foreground">
                                 Belum ada log percakapan.
                             </td>
                         </tr>
@@ -90,4 +86,80 @@
         </div>
     </div>
 </div>
+@foreach ($logs as $log)
+    <div data-modal="log-detail-{{ $log->id }}" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+        <div class="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl">
+            <div class="mb-5 flex items-center justify-between">
+                <h3 class="text-base font-bold text-navy">Detail Percakapan {{ $log->code }}</h3>
+                <button type="button" data-close-modal="log-detail-{{ $log->id }}" class="rounded-xl p-2 hover:bg-accent">
+                    <i data-lucide="x" class="h-4 w-4" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <p class="mb-1.5 text-xs font-semibold text-navy">Pertanyaan</p>
+                    <div class="rounded-xl border border-border bg-[#F4F7FB] p-3 text-xs">
+                        {{ $log->question }}
+                    </div>
+                </div>
+
+                <div>
+                    <p class="mb-1.5 text-xs font-semibold text-navy">Jawaban Chatbot</p>
+                    <div class="rounded-xl border border-border bg-[#F4F7FB] p-3 text-xs leading-relaxed">
+                        {{ $log->answer }}
+                    </div>
+                </div>
+
+                @if (count($log->source_list) > 0)
+                    <div>
+                        <p class="mb-1.5 text-xs font-semibold text-navy">Sumber Dokumen ({{ count($log->source_list) }})</p>
+                        <ul class="space-y-1">
+                            @foreach ($log->source_list as $source)
+                                <li class="flex items-start gap-1.5 text-xs text-muted-foreground">
+                                    <i data-lucide="file-text" class="mt-0.5 h-3 w-3 flex-shrink-0" aria-hidden="true"></i>
+                                    {{ $source }}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <p class="text-muted-foreground">Status</p>
+                        <x-admin.status-badge :status="$log->status" />
+                    </div>
+                    <div>
+                        <p class="text-muted-foreground">Kategori</p>
+                        <x-admin.badge>{{ $log->category }}</x-admin.badge>
+                    </div>
+                    <div>
+                        <p class="text-muted-foreground">Waktu Respons</p>
+                        <p class="font-semibold">{{ $log->response_time }}s</p>
+                    </div>
+                    <div>
+                        <p class="text-muted-foreground">Feedback</p>
+                        @if ($log->feedback !== 'Belum Dinilai')
+                            <x-admin.status-badge :status="$log->feedback" />
+                        @else
+                            <span class="text-muted-foreground">-</span>
+                        @endif
+                    </div>
+                </div>
+
+                @if ($log->feedback_reason)
+                    <div>
+                        <p class="mb-1.5 text-xs font-semibold text-navy">Alasan Feedback</p>
+                        <p class="rounded-xl border border-border bg-[#F4F7FB] p-3 text-xs italic text-muted-foreground">
+                            "{{ $log->feedback_reason }}"
+                        </p>
+                    </div>
+                @endif
+
+                <p class="text-right text-[11px] text-muted-foreground">{{ $log->created_at->format('Y-m-d H:i') }}</p>
+            </div>
+        </div>
+    </div>
+@endforeach
 @endsection
