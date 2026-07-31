@@ -14,7 +14,19 @@ final class KnowledgeBaseGroundedContextBuilder
         string $query,
         int $topK = 5,
     ): KnowledgeBaseGroundedContext {
-        $results = $this->pipeline->retrieve($query, $topK);
+        return $this->context($query, $this->pipeline->retrieve($query, $topK));
+    }
+
+    public function buildAll(string $query): KnowledgeBaseGroundedContext
+    {
+        return $this->context($query, $this->pipeline->retrieveAll($query));
+    }
+
+    /**
+     * @param  array<int, KnowledgeBaseSearchResult>  $results
+     */
+    private function context(string $query, array $results): KnowledgeBaseGroundedContext
+    {
 
         $sources = array_map(
             static fn (KnowledgeBaseSearchResult $result): array => self::source(
