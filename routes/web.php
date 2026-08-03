@@ -10,18 +10,25 @@ use App\Http\Controllers\Admin\KnowledgeBaseController;
 use App\Http\Controllers\Admin\UnansweredQuestionController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\GuestbookCheckinController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'pages.landing')->name('landing');
 
 Route::view('/infografis', 'pages.infographics')->name('infographics');
 
+Route::get('/buku-tamu', [GuestbookCheckinController::class, 'show'])
+    ->name('guestbook.checkin');
+Route::post('/buku-tamu/selesai', [GuestbookCheckinController::class, 'complete'])
+    ->name('guestbook.complete');
+
 Route::get('/chatbot', [ChatbotController::class, 'index'])
+    ->middleware('guestbook')
     ->name('chatbot');
 
 Route::prefix('api/chatbot')
     ->name('chatbot.api.')
-    ->middleware('throttle:60,1')
+    ->middleware(['throttle:60,1', 'guestbook'])
     ->group(function (): void {
         Route::get('/history', [ChatbotController::class, 'history'])
             ->name('history');

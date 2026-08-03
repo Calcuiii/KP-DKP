@@ -15,8 +15,6 @@ final class GroundedChatbotResponder
 
     public const STATUS_INSUFFICIENT_INFORMATION = 'insufficient_information';
 
-    private const RETRIEVAL_TOP_K = 20;
-
     private const BODY_CHARACTER_BUDGET = 5500;
 
     private const SPECIFIC_QUESTION_COVERAGE_RATIO = 0.9;
@@ -57,6 +55,7 @@ final class GroundedChatbotResponder
 
     public function __construct(
         private readonly KnowledgeBaseGroundedContextBuilder $contextBuilder,
+        private readonly GroundedChatbotContextSourcePrioritizer $sourcePrioritizer,
         private readonly GroundedChatbotResponseSectionOrderer $sectionOrderer,
         private readonly KnowledgeBaseAnswerGenerator $answerGenerator,
     ) {}
@@ -116,10 +115,7 @@ final class GroundedChatbotResponder
             ? "Pertanyaan sebelumnya: {$previousQuestion}\nPertanyaan lanjutan: {$question}"
             : $question;
 
-        $context = $this->contextBuilder->build(
-            $retrievalQuestion,
-            self::RETRIEVAL_TOP_K,
-        );
+        $context = $this->contextBuilder->buildAll($retrievalQuestion);
         $maximumDirectMatchTokenCount = max(
             $context->directMatchTokenCounts === []
                 ? [0]
@@ -152,7 +148,9 @@ final class GroundedChatbotResponder
                 && $source['score'] >= $minimumScore,
         ));
 
-        if (($isOverviewQuestion || $isCollectionQuestion) && $usableSources !== []) {
+        if ($isOverviewQuestion && $usableSources !== []) {
+            $usableSources = $this->sourcePrioritizer->prioritize($usableSources);
+        } elseif ($isCollectionQuestion && $usableSources !== []) {
             $primaryDocumentId = $usableSources[0]['document_id'];
             $primaryDocumentSources = array_values(array_filter(
                 $usableSources,
