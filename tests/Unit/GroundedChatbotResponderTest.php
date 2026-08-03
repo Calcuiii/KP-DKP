@@ -44,7 +44,7 @@ final class GroundedChatbotResponderTest extends TestCase
     public function test_it_preserves_every_selected_section_without_mid_section_truncation(): void
     {
         $question = 'Apa saja persyaratan pengajuan magang?';
-        $context = app(KnowledgeBaseGroundedContextBuilder::class)->build($question, 20);
+        $context = app(KnowledgeBaseGroundedContextBuilder::class)->buildAll($question);
         $result = app(GroundedChatbotResponder::class)->answer($question);
 
         self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
@@ -84,7 +84,7 @@ final class GroundedChatbotResponderTest extends TestCase
     public function test_it_presents_sections_from_the_same_document_in_section_order(): void
     {
         $question = 'Bagaimana alur utama dari pengajuan magang hingga selesai kegiatan magang?';
-        $context = app(KnowledgeBaseGroundedContextBuilder::class)->build($question, 20);
+        $context = app(KnowledgeBaseGroundedContextBuilder::class)->buildAll($question);
         $result = app(GroundedChatbotResponder::class)->answer($question);
 
         self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
@@ -131,10 +131,38 @@ final class GroundedChatbotResponderTest extends TestCase
             'document_title' => 'Alur Utama Magang / Praktik Kerja Lapang (PKL)',
             'section_title' => 'Tahap 3: Pelaksanaan — Langkah 10: Isi Form Selesai Magang / PKL',
         ], $result['sources']);
-        self::assertSame(
-            ['KB-007'],
-            array_values(array_unique(array_column($result['sources'], 'document_id'))),
+        self::assertSame('KB-007', $result['sources'][0]['document_id']);
+        self::assertLessThanOrEqual(
+            3,
+            count(array_unique(array_column($result['sources'], 'document_id'))),
         );
+    }
+
+    public function test_it_keeps_all_eligible_sections_from_the_dominant_overview_document(): void
+    {
+        config(['services.groq.enabled' => false]);
+
+        $result = app(GroundedChatbotResponder::class)->answer(
+            'Bagaimana alur pengajuan Magang / PKL?',
+        );
+
+        self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+        self::assertSame('KB-007', $result['sources'][0]['document_id']);
+        self::assertContains([
+            'document_id' => 'KB-007',
+            'document_title' => 'Alur Utama Magang / Praktik Kerja Lapang (PKL)',
+            'section_title' => 'Tahap 1: Pengajuan — Langkah 2: Koordinasi Ketersediaan Kuota',
+        ], $result['sources']);
+        self::assertContains([
+            'document_id' => 'KB-007',
+            'document_title' => 'Alur Utama Magang / Praktik Kerja Lapang (PKL)',
+            'section_title' => 'Tahap 2: Konfirmasi — Langkah 5: Penerbitan Surat Balasan',
+        ], $result['sources']);
+        self::assertContains([
+            'document_id' => 'KB-007',
+            'document_title' => 'Alur Utama Magang / Praktik Kerja Lapang (PKL)',
+            'section_title' => 'Tahap 3: Pelaksanaan — Langkah 8: Siapkan Bahan Presentasi',
+        ], $result['sources']);
     }
 
     public function test_it_keeps_a_specific_question_focused_on_the_best_covered_section(): void

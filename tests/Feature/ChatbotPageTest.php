@@ -14,18 +14,26 @@ class ChatbotPageTest extends TestCase
 
     public function test_the_chatbot_page_renders_successfully(): void
     {
-        $response = $this->get(route('chatbot'));
+        $response = $this
+            ->withCookie('dkp_guestbook_completed', '1')
+            ->get(route('chatbot'));
 
         $response
             ->assertOk()
             ->assertSee('data-chatbot-app', false)
             ->assertSee('data-chat-message-list', false)
+            ->assertSee('Halo, selamat datang di DKP Assistant!')
+            ->assertSee('Magang / PKL')
+            ->assertSee('WOPPS')
             ->assertDontSee('fixed bottom-6 left-1/2', false);
     }
 
     public function test_the_chat_message_endpoint_uses_its_form_request(): void
     {
-        $response = $this->postJson(route('chatbot.api.messages.send'));
+        $response = $this
+            ->withCookie('dkp_guestbook_completed', '1')
+            ->withCredentials()
+            ->postJson(route('chatbot.api.messages.send'));
 
         $response
             ->assertUnprocessable()
@@ -52,11 +60,14 @@ class ChatbotPageTest extends TestCase
             'status' => 'submitted',
         ]);
 
-        $response = $this->postJson(route('chatbot.api.messages.send'), [
-            'session_key' => $sessionKey,
-            'conversation_id' => $conversation->id,
-            'message' => 'Apakah hanya itu?',
-        ]);
+        $response = $this
+            ->withCookie('dkp_guestbook_completed', '1')
+            ->withCredentials()
+            ->postJson(route('chatbot.api.messages.send'), [
+                'session_key' => $sessionKey,
+                'conversation_id' => $conversation->id,
+                'message' => 'Apakah hanya itu?',
+            ]);
 
         $response
             ->assertCreated()

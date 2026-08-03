@@ -133,6 +133,8 @@ const initializeChatbot = () => {
     const historyEmpty = app.querySelector('[data-chat-history-empty]');
     const historyList = app.querySelector('[data-chat-history-list]');
     const newChatButton = app.querySelector('[data-chat-new]');
+    const topicOptions = app.querySelector('[data-chat-topic-options]');
+    const topicPanels = app.querySelectorAll('[data-chat-topic-panel]');
     const sidebar = app.querySelector('[data-chat-sidebar]');
     const sidebarOpenButton = app.querySelector('[data-chat-sidebar-open]');
     const sidebarCloseButton = app.querySelector('[data-chat-sidebar-close]');
@@ -242,6 +244,22 @@ const initializeChatbot = () => {
     const setConversationVisible = (visible) => {
         emptyState.classList.toggle('hidden', visible);
         messagesSection.classList.toggle('hidden', !visible);
+    };
+
+    const selectTopic = (topic) => {
+        topicOptions?.classList.toggle('hidden', topic !== null);
+
+        topicPanels.forEach((panel) => {
+            panel.classList.toggle('hidden', panel.dataset.chatTopicPanel !== topic);
+        });
+
+        if (topic !== null) {
+            input.placeholder = topic === 'wopps'
+                ? 'Tanyakan informasi tentang WOPPS...'
+                : 'Tanyakan informasi tentang Magang / PKL...';
+        } else {
+            input.placeholder = 'Tanyakan informasi tentang layanan DKP...';
+        }
     };
 
     const createUserMessage = (content, createdAt = new Date().toISOString()) => {
@@ -418,6 +436,7 @@ const initializeChatbot = () => {
         messageList.innerHTML = '';
         setConversationVisible(false);
         input.value = '';
+        selectTopic(null);
         clearError();
         updateInputState();
         input.focus();
@@ -581,12 +600,24 @@ const initializeChatbot = () => {
         button.addEventListener('click', () => sendQuestion(button.dataset.chatSuggested ?? ''));
     });
 
+    app.querySelectorAll('[data-chat-topic]').forEach((button) => {
+        button.addEventListener('click', () => {
+            selectTopic(button.dataset.chatTopic ?? null);
+            refreshIcons(emptyState);
+        });
+    });
+
+    app.querySelectorAll('[data-chat-topic-reset]').forEach((button) => {
+        button.addEventListener('click', () => selectTopic(null));
+    });
+
     newChatButton?.addEventListener('click', resetConversation);
     sidebarOpenButton?.addEventListener('click', openSidebar);
     sidebarCloseButton?.addEventListener('click', closeSidebar);
     sidebarOverlay?.addEventListener('click', closeSidebar);
 
     updateInputState();
+    selectTopic(null);
     loadHistory();
     refreshIcons(app);
 

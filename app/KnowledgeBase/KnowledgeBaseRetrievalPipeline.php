@@ -32,34 +32,31 @@ final class KnowledgeBaseRetrievalPipeline
             throw new InvalidArgumentException('Query must not be empty.');
         }
 
+        return array_slice($this->retrieveAll($query), 0, $topK);
+    }
+
+    /**
+     * @return array<int, KnowledgeBaseSearchResult>
+     */
+    public function retrieveAll(string $query): array
+    {
+        if (trim($query) === '') {
+            throw new InvalidArgumentException('Query must not be empty.');
+        }
+
         $topic = $this->topicResolver->resolve($query);
-
         $documents = $this->registry->all();
-
         $loadedDocuments = $this->documentLoader->loadAll($documents);
-
         $chunks = $this->chunker->chunkAll($loadedDocuments);
 
         if ($chunks === []) {
             return [];
         }
 
-        $retrieved = $this->retriever->retrieve(
-            $query,
-            $chunks,
-            count($chunks),
-        );
+        $retrieved = $this->retriever->retrieve($query, $chunks, count($chunks));
 
-        if ($topic === null) {
-            return array_slice($retrieved, 0, $topK);
-        }
-
-        $resolved = $this->policyResolver->resolve(
-            $topic,
-            $retrieved,
-        );
-
-        return array_slice($resolved, 0, $topK);
+        return $topic === null
+            ? $retrieved
+            : $this->policyResolver->resolve($topic, $retrieved);
     }
-
 }
