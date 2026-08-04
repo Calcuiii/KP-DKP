@@ -33,7 +33,7 @@ Apabila memerlukan Surat Keterangan Magang, PKL, atau Penelitian maupun Sertifik
 
 Template Surat Permohonan dapat diakses melalui tautan berikut:
 
-- https://bit.ly/Permohonan_Sertifikat_DKP
+- https://bit.ly/Surat_Permohonan_DKP
 
 ## Pengingat
 
