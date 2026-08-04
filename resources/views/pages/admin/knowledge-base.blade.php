@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Knowledge Base - DKP Assistant')
+@section('title', 'Knowledge Base - Si-Molek')
 
 @section('content')
 <div class="space-y-5">
@@ -88,8 +88,11 @@
                             <td class="px-4 py-3"><x-admin.status-badge :status="$doc->status" /></td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-1">
-                                    <a href="{{ Storage::url($doc->file_path) }}" target="_blank" class="rounded-lg p-1.5 hover:bg-accent" title="Lihat">
+                                    <a href="{{ route('admin.knowledge-base.show', $doc) }}" class="rounded-lg p-1.5 hover:bg-accent" title="Lihat detail dokumen">
                                         <i data-lucide="eye" class="h-3 w-3" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="{{ route('admin.knowledge-base.download', $doc) }}" class="rounded-lg p-1.5 hover:bg-accent" title="Unduh file asli">
+                                        <i data-lucide="download" class="h-3 w-3" aria-hidden="true"></i>
                                     </a>
                                     <form method="POST" action="{{ route('admin.knowledge-base.reindex', $doc) }}">
                                         @csrf

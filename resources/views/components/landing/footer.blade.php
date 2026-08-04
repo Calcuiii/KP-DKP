@@ -16,7 +16,7 @@
 
                     <div>
                         <div class="text-sm font-bold leading-tight text-navy">
-                            DKP Assistant
+                            Si-Molek
                         </div>
 
                         <div class="text-[10px] leading-tight text-muted-foreground">
@@ -123,4 +123,3 @@
         </div>
     </div>
 </footer>
-

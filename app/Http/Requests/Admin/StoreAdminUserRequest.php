@@ -8,7 +8,7 @@ class StoreAdminUserRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->isSuperAdmin() ?? false;
     }
 
     public function rules(): array
@@ -17,7 +17,6 @@ class StoreAdminUserRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8'],
-            'role' => ['required', 'in:admin,superadmin'],
         ];
     }
 }

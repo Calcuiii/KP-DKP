@@ -54,15 +54,6 @@ Route::middleware('guest')->group(function (): void {
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
-    Route::get('/knowledge-base', [KnowledgeBaseController::class, 'index'])->name('admin.knowledge-base');
-    Route::post('/knowledge-base', [KnowledgeBaseController::class, 'store'])->name('admin.knowledge-base.store');
-    Route::delete('/knowledge-base/{document}', [KnowledgeBaseController::class, 'destroy'])->name('admin.knowledge-base.destroy');
-    Route::post('/knowledge-base/{document}/reindex', [KnowledgeBaseController::class, 'reindex'])->name('admin.knowledge-base.reindex');
-
-    Route::get('/infografis', [InfographicController::class, 'index'])->name('admin.infographics');
-    Route::get('/infografis/{infographic}/edit', [InfographicController::class, 'edit'])->name('admin.infographics.edit');
-    Route::put('/infografis/{infographic}', [InfographicController::class, 'update'])->name('admin.infographics.update');
-
     Route::get('/conversation-logs', [ConversationLogController::class, 'index'])->name('admin.conversation-logs');
     Route::get('/conversation-logs/export', [ConversationLogController::class, 'export'])->name('admin.conversation-logs.export');
 
@@ -72,14 +63,27 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('admin.analytics');
     Route::get('/analytics/export', [AnalyticsController::class, 'export'])->name('admin.analytics.export');
 
-    Route::get('/manajemen-admin', [AdminUserController::class, 'index'])->name('admin.manajemen-admin');
-    Route::post('/manajemen-admin', [AdminUserController::class, 'store'])->name('admin.manajemen-admin.store');
-    Route::get('/manajemen-admin/{user}/edit', [AdminUserController::class, 'edit'])->name('admin.manajemen-admin.edit');
-    Route::put('/manajemen-admin/{user}', [AdminUserController::class, 'update'])->name('admin.manajemen-admin.update');
-    Route::post('/manajemen-admin/{user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('admin.manajemen-admin.toggle-status');
-    Route::delete('/manajemen-admin/{user}', [AdminUserController::class, 'destroy'])->name('admin.manajemen-admin.destroy');
-
     Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('admin.activity-log');
+
+    Route::middleware('superadmin')->group(function (): void {
+        Route::get('/knowledge-base', [KnowledgeBaseController::class, 'index'])->name('admin.knowledge-base');
+        Route::post('/knowledge-base', [KnowledgeBaseController::class, 'store'])->name('admin.knowledge-base.store');
+        Route::get('/knowledge-base/{document}', [KnowledgeBaseController::class, 'show'])->name('admin.knowledge-base.show');
+        Route::get('/knowledge-base/{document}/download', [KnowledgeBaseController::class, 'download'])->name('admin.knowledge-base.download');
+        Route::delete('/knowledge-base/{document}', [KnowledgeBaseController::class, 'destroy'])->name('admin.knowledge-base.destroy');
+        Route::post('/knowledge-base/{document}/reindex', [KnowledgeBaseController::class, 'reindex'])->name('admin.knowledge-base.reindex');
+
+        Route::get('/infografis', [InfographicController::class, 'index'])->name('admin.infographics');
+        Route::get('/infografis/{infographic}/edit', [InfographicController::class, 'edit'])->name('admin.infographics.edit');
+        Route::put('/infografis/{infographic}', [InfographicController::class, 'update'])->name('admin.infographics.update');
+
+        Route::get('/manajemen-admin', [AdminUserController::class, 'index'])->name('admin.manajemen-admin');
+        Route::post('/manajemen-admin', [AdminUserController::class, 'store'])->name('admin.manajemen-admin.store');
+        Route::get('/manajemen-admin/{user}/edit', [AdminUserController::class, 'edit'])->name('admin.manajemen-admin.edit');
+        Route::put('/manajemen-admin/{user}', [AdminUserController::class, 'update'])->name('admin.manajemen-admin.update');
+        Route::post('/manajemen-admin/{user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('admin.manajemen-admin.toggle-status');
+        Route::delete('/manajemen-admin/{user}', [AdminUserController::class, 'destroy'])->name('admin.manajemen-admin.destroy');
+    });
 
     Route::post('/logout', [AdminLoginController::class, 'destroy'])->name('admin.logout');
 });

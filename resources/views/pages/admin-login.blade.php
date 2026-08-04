@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Masuk Admin - DKP Assistant')
+@section('title', 'Masuk Admin - Si-Molek')
 
 @section('content')
 <div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-navy to-ocean px-4 py-10">
@@ -14,7 +14,7 @@
             </div>
 
             <h1 class="mb-1 text-center text-xl font-bold text-navy">Masuk Admin</h1>
-            <p class="mb-6 text-center text-xs text-muted-foreground">Panel Manajemen DKP Assistant</p>
+            <p class="mb-6 text-center text-xs text-muted-foreground">Panel Manajemen Si-Molek</p>
 
             @if (session('status'))
                 <div class="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-700">

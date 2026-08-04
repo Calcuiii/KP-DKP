@@ -9,7 +9,7 @@
             </h2>
 
             <p class="mx-auto mb-8 max-w-lg text-blue-200">
-                Gunakan DKP Assistant untuk menemukan informasi berdasarkan dokumen resmi yang tersedia.
+                Gunakan Si-Molek untuk menemukan informasi berdasarkan dokumen resmi yang tersedia.
             </p>
 
             <a
@@ -27,4 +27,3 @@
         </div>
     </div>
 </section>
-

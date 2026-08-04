@@ -54,7 +54,7 @@ class InfographicsPageTest extends TestCase
     public function test_an_admin_can_update_an_infographic_caption_and_image(): void
     {
         $admin = User::factory()->create([
-            'role' => 'admin',
+            'role' => 'superadmin',
             'status' => 'Aktif',
         ]);
         $infographic = Infographic::query()->ordered()->firstOrFail();

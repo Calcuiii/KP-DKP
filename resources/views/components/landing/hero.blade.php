@@ -156,7 +156,7 @@
                     <div>
                         <span id="chatbot" class="sr-only" aria-hidden="true"></span>
 <div class="text-xs font-semibold text-white">
-                            DKP Assistant
+                            Si-Molek
                         </div>
 
                         <div class="flex items-center gap-1">
@@ -297,4 +297,3 @@
         </div>
     </div>
 </section>
-

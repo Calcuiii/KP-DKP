@@ -1,4 +1,4 @@
-<div class="shrink-0 border-t border-border bg-white px-4 py-3 sm:px-6">
+<div class="shrink-0 border-t border-border bg-white/95 px-4 py-3 backdrop-blur-sm sm:px-6">
     <form data-chat-form class="mx-auto max-w-3xl">
         @csrf
 
@@ -30,7 +30,7 @@
         <div data-chat-error class="mt-2 hidden rounded-xl border border-destructive/20 bg-red-50 px-3 py-2 text-xs text-destructive" role="alert"></div>
 
         <p class="mt-2 text-center text-[10px] leading-4 text-muted-foreground">
-            DKP Assistant dapat menghasilkan jawaban yang kurang tepat. Pastikan kembali informasi penting melalui layanan resmi.
+            Si-Molek dapat menghasilkan jawaban yang kurang tepat. Pastikan kembali informasi penting melalui layanan resmi.
         </p>
     </form>
 </div>

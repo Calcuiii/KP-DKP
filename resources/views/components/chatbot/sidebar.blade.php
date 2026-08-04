@@ -9,7 +9,7 @@
             </span>
 
             <span class="min-w-0">
-                <span class="block truncate text-sm font-semibold">DKP Assistant</span>
+                <span class="block truncate text-sm font-semibold">Si-Molek</span>
                 <span class="block truncate text-[10px] text-blue-300">Provinsi Jawa Timur</span>
             </span>
         </a>

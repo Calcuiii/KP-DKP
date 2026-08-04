@@ -1,14 +1,14 @@
 <section
     data-chat-empty
-    class="flex min-h-0 flex-1 overflow-y-auto px-4 py-8 sm:px-6"
+    class="chatbot-pattern-surface flex min-h-0 flex-1 overflow-y-auto px-4 py-8 sm:px-6"
 >
-    <div class="m-auto w-full max-w-2xl text-center">
+    <div class="chatbot-pattern-content m-auto w-full max-w-2xl text-center">
         <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-ocean text-white shadow-md">
             <i data-lucide="fish" class="h-8 w-8"></i>
         </div>
 
         <h1 class="mt-5 text-2xl font-bold tracking-tight text-navy sm:text-3xl">
-            Halo, selamat datang di DKP Assistant!
+            Halo, selamat datang di Si-Molek!
         </h1>
 
         <p class="mx-auto mt-3 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
@@ -90,7 +90,7 @@
         <div class="mx-auto mt-7 flex max-w-xl items-start gap-3 rounded-2xl border border-ocean/10 bg-secondary/60 p-4 text-left">
             <i data-lucide="info" class="mt-0.5 h-5 w-5 shrink-0 text-ocean"></i>
             <p class="text-xs leading-5 text-muted-foreground sm:text-sm">
-                Jika informasi tidak tersedia di knowledge base resmi, DKP Assistant akan menyampaikan bahwa informasi belum ditemukan dan tidak akan mengarang jawaban.
+                Jika informasi tidak tersedia di knowledge base resmi, Si-Molek akan menyampaikan bahwa informasi belum ditemukan dan tidak akan mengarang jawaban.
             </p>
         </div>
     </div>

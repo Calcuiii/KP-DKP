@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Buku Tamu | DKP Assistant')
+@section('title', 'Buku Tamu | Si-Molek')
 
-@section('meta_description', 'Check-in Buku Tamu sebelum menggunakan layanan DKP Assistant.')
+@section('meta_description', 'Check-in Buku Tamu sebelum menggunakan layanan Si-Molek.')
 
 @section('hide_dev_nav', 'true')
 

@@ -8,7 +8,7 @@ class UpdateAdminUserRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->isSuperAdmin() ?? false;
     }
 
     public function rules(): array
@@ -17,8 +17,7 @@ class UpdateAdminUserRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email,' . $userId],
-            'role' => ['required', 'in:admin,superadmin'],
+            'email' => ['required', 'email', 'unique:users,email,'.$userId],
             'password' => ['nullable', 'string', 'min:8'],
         ];
     }

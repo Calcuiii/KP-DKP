@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Activity Log - DKP Assistant')
+@section('title', 'Activity Log - Si-Molek')
 
 @section('content')
 <div class="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
@@ -51,7 +51,7 @@
                         <td class="px-4 py-3"><x-admin.status-badge :status="$log->action" /></td>
                         <td class="px-4 py-3 text-ocean">{{ $log->module }}</td>
                         <td class="max-w-[280px] truncate px-4 py-3 text-muted-foreground">{{ $log->description }}</td>
-                        <td class="whitespace-nowrap px-4 py-3 text-muted-foreground">{{ $log->created_at->format('Y-m-d H:i') }}</td>
+                        <td class="whitespace-nowrap px-4 py-3 text-muted-foreground">{{ $log->created_at->copy()->timezone('Asia/Jakarta')->format('Y-m-d H:i') }} WIB</td>
                         <td class="px-4 py-3 text-muted-foreground">{{ $log->ip_address ?? '-' }}</td>
                     </tr>
                 @empty

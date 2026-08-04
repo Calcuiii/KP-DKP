@@ -1,12 +1,12 @@
 @php
     $faqs = [
         [
-            'question' => 'Apa itu DKP Assistant?',
-            'answer' => 'DKP Assistant adalah layanan chatbot berbasis AI yang membantu mahasiswa dan siswa SMK menemukan informasi seputar Kerja Praktik dan Magang di Dinas Kelautan dan Perikanan Provinsi Jawa Timur.',
+            'question' => 'Apa itu Si-Molek?',
+            'answer' => 'Si-Molek adalah layanan chatbot berbasis AI yang membantu mahasiswa dan siswa SMK menemukan informasi seputar Kerja Praktik dan Magang di Dinas Kelautan dan Perikanan Provinsi Jawa Timur.',
         ],
         [
             'question' => 'Apakah jawaban chatbot merupakan keputusan resmi Dinas?',
-            'answer' => 'Tidak. Jawaban yang diberikan DKP Assistant bersifat informatif dan berdasarkan dokumen resmi yang dikelola administrator. Untuk keputusan resmi, silakan hubungi petugas Dinas secara langsung.',
+            'answer' => 'Tidak. Jawaban yang diberikan Si-Molek bersifat informatif dan berdasarkan dokumen resmi yang dikelola administrator. Untuk keputusan resmi, silakan hubungi petugas Dinas secara langsung.',
         ],
         [
             'question' => 'Informasi apa saja yang dapat ditanyakan?',
@@ -14,11 +14,11 @@
         ],
         [
             'question' => 'Dari mana chatbot mendapatkan informasi?',
-            'answer' => 'DKP Assistant menggunakan teknologi Retrieval-Augmented Generation (RAG) yang mencari informasi dari knowledge base berisi dokumen resmi yang telah diverifikasi dan dikelola oleh administrator Dinas.',
+            'answer' => 'Si-Molek menggunakan teknologi Retrieval-Augmented Generation (RAG) yang mencari informasi dari knowledge base berisi dokumen resmi yang telah diverifikasi dan dikelola oleh administrator Dinas.',
         ],
         [
             'question' => 'Apa yang terjadi jika chatbot tidak menemukan jawaban?',
-            'answer' => 'Jika tidak ditemukan informasi yang relevan, DKP Assistant akan memberitahu Anda dan menyarankan untuk menghubungi petugas Dinas secara langsung. Pertanyaan tersebut juga akan dicatat untuk pembaruan knowledge base.',
+            'answer' => 'Jika tidak ditemukan informasi yang relevan, Si-Molek akan memberitahu Anda dan menyarankan untuk menghubungi petugas Dinas secara langsung. Pertanyaan tersebut juga akan dicatat untuk pembaruan knowledge base.',
         ],
         [
             'question' => 'Bagaimana cara menghubungi petugas?',

@@ -6,15 +6,12 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureUserIsAdmin
+class EnsureUserIsSuperAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (
-            ! $request->user()?->isAdmin()
-            || $request->user()->status !== 'Aktif'
-        ) {
-            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
+        if (! $request->user()?->isSuperAdmin()) {
+            abort(403, 'Fitur ini hanya dapat diakses oleh Super Admin.');
         }
 
         return $next($request);

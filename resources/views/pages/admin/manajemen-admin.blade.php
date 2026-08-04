@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Manajemen Admin - DKP Assistant')
+@section('title', 'Manajemen Admin - Si-Molek')
 
 @section('content')
 <div class="space-y-5">
@@ -47,7 +47,7 @@
                             <td class="px-4 py-3"><x-admin.status-badge :status="$admin->role_label" /></td>
                             <td class="px-4 py-3"><x-admin.status-badge :status="$admin->status" /></td>
                             <td class="px-4 py-3 text-muted-foreground">
-                                {{ $admin->last_login_at?->format('Y-m-d H:i') ?? '-' }}
+                                {{ $admin->last_login_at?->copy()->timezone('Asia/Jakarta')->format('Y-m-d H:i').' WIB' ?? '-' }}
                             </td>
                             <td class="px-4 py-3 text-muted-foreground">{{ $admin->created_at->format('Y-m-d') }}</td>
                             <td class="px-4 py-3">
@@ -106,14 +106,6 @@
                 <label class="mb-1.5 block text-xs font-semibold">Password</label>
                 <input type="password" name="password" class="w-full rounded-xl border border-border bg-input-background px-3 py-2 text-xs" placeholder="Minimal 8 karakter">
                 @error('password') <p class="mt-1 text-xs text-destructive">{{ $message }}</p> @enderror
-            </div>
-
-            <div>
-                <label class="mb-1.5 block text-xs font-semibold">Role</label>
-                <select name="role" class="w-full rounded-xl border border-border bg-input-background px-3 py-2 text-xs">
-                    <option value="admin">Admin</option>
-                    <option value="superadmin">Super Admin</option>
-                </select>
             </div>
 
             <button type="submit" class="w-full rounded-xl bg-ocean py-3 text-sm font-semibold text-white hover:opacity-90">

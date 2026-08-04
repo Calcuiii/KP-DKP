@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreAdminUserRequest;
 use App\Http\Requests\Admin\UpdateAdminUserRequest;
+use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
@@ -27,11 +28,11 @@ class AdminUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'role' => 'admin',
             'status' => 'Aktif',
         ]);
 
-        \App\Models\ActivityLog::record('Tambah Admin', 'Manajemen Admin', "Menambahkan admin baru \"{$request->name}\"");
+        ActivityLog::record('Tambah Admin', 'Manajemen Admin', "Menambahkan admin baru \"{$request->name}\"");
 
         return redirect()->route('admin.manajemen-admin')
             ->with('status', 'Admin baru berhasil ditambahkan.');
@@ -47,11 +48,10 @@ class AdminUserController extends Controller
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'role' => $request->role,
             'password' => $request->password ? Hash::make($request->password) : $user->password,
         ]);
 
-        \App\Models\ActivityLog::record('Edit', 'Manajemen Admin', "Memperbarui data admin \"{$user->name}\"");
+        ActivityLog::record('Edit', 'Manajemen Admin', "Memperbarui data admin \"{$user->name}\"");
 
         return redirect()->route('admin.manajemen-admin')
             ->with('status', 'Data admin berhasil diperbarui.');
@@ -76,7 +76,7 @@ class AdminUserController extends Controller
             return back()->with('status', 'Anda tidak bisa menghapus akun sendiri.');
         }
 
-        \App\Models\ActivityLog::record('Delete', 'Manajemen Admin', "Menghapus admin \"{$user->name}\"");
+        ActivityLog::record('Delete', 'Manajemen Admin', "Menghapus admin \"{$user->name}\"");
 
         $user->delete();
 

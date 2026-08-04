@@ -3,7 +3,7 @@
 !public/
 !.gitignore
 
-# Track DKP Assistant knowledge base
+# Track Si-Molek knowledge base
 !knowledge-base/
 !knowledge-base/**/
 !knowledge-base/**/*.md

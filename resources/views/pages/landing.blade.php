@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'DKP Assistant | Informasi KP dan Magang')
+@section('title', 'Si-Molek | Informasi KP dan Magang')
 
 @section(
     'meta_description',
-    'Temukan informasi Kerja Praktik dan Magang melalui DKP Assistant berbasis informasi resmi Dinas Kelautan dan Perikanan Provinsi Jawa Timur.'
+    'Temukan informasi Kerja Praktik dan Magang melalui Si-Molek berbasis informasi resmi Dinas Kelautan dan Perikanan Provinsi Jawa Timur.'
 )
 
 @section('content')
