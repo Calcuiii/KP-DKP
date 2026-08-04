@@ -14,7 +14,7 @@ final class GroundedChatbotResponderTest extends TestCase
     public function test_it_returns_a_bounded_grounded_answer_without_markdown_headings(): void
     {
         $result = app(GroundedChatbotResponder::class)->answer(
-            'Apa saja persyaratan pengajuan magang?',
+            'Sebutkan kelengkapan surat permohonan magang.',
         );
 
         self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
@@ -31,6 +31,61 @@ final class GroundedChatbotResponderTest extends TestCase
         self::assertLessThanOrEqual(5500, $this->bodyLength($result['answer']));
     }
 
+    public function test_it_returns_the_approved_structured_answer_for_each_magang_quick_question(): void
+    {
+        $answers = [
+            'Apa saja persyaratan pengajuan magang?' => [
+                'nama lengkap;',
+                'https://bit.ly/Surat_Permohonan_DKP',
+                'KB-004',
+            ],
+            'Bagaimana alur pengajuan Magang / PKL?' => [
+                '1. Isi Buku Tamu Magang / PKL.',
+                '11. Proses dokumen akhir dilakukan sesuai ketentuan yang berlaku.',
+                'KB-007',
+            ],
+            'Bagaimana ketentuan peserta selama magang?' => [
+                'Jumat pukul 07.00–16.30 WIB',
+                'Pelanggaran dapat dikenai pembinaan',
+                'KB-001',
+            ],
+            'Bagaimana penerbitan surat keterangan dan sertifikat?' => [
+                'tidak lagi menerbitkan Surat Keterangan Magang, PKL, atau Penelitian.',
+                'https://bit.ly/Surat_Permohonan_DKP',
+                'KB-008',
+            ],
+            'Apa saja persyaratan pengajuan penelitian atau permintaan data?' => [
+                'Form Ethical Clearance atau Persetujuan Etik',
+                'https://bit.ly/EASL-DKP',
+                'KB-009',
+            ],
+            'Bagaimana cara mengajukan wawancara atau observasi?' => [
+                'Unggah dokumen pengajuan melalui formulir layanan WOPPS',
+                'https://bit.ly/WOPPS',
+                'KB-009',
+            ],
+            'Dokumen apa saja yang perlu disiapkan untuk WOPPS?' => [
+                'Nama dosen pembimbing atau dosen lapangan',
+                'Proposal kegiatan sesuai format institusi asal.',
+                'KB-009',
+            ],
+            'Ke mana saya mengirimkan dokumen pengajuan?' => [
+                'https://bit.ly/WOPPS',
+                '0852-53000-485',
+                'KB-009',
+            ],
+        ];
+
+        foreach ($answers as $question => [$firstExpectedText, $secondExpectedText, $documentId]) {
+            $result = app(GroundedChatbotResponder::class)->answer($question);
+
+            self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+            self::assertStringContainsString($firstExpectedText, $result['answer']);
+            self::assertStringContainsString($secondExpectedText, $result['answer']);
+            self::assertSame($documentId, $result['sources'][0]['document_id']);
+        }
+    }
+
     public function test_it_keeps_the_insufficient_information_response_when_no_source_matches(): void
     {
         $result = app(GroundedChatbotResponder::class)->answer(
@@ -43,7 +98,7 @@ final class GroundedChatbotResponderTest extends TestCase
 
     public function test_it_preserves_every_selected_section_without_mid_section_truncation(): void
     {
-        $question = 'Apa saja persyaratan pengajuan magang?';
+        $question = 'Sebutkan kelengkapan surat permohonan magang.';
         $context = app(KnowledgeBaseGroundedContextBuilder::class)->buildAll($question);
         $result = app(GroundedChatbotResponder::class)->answer($question);
 
@@ -117,7 +172,7 @@ final class GroundedChatbotResponderTest extends TestCase
         config(['services.groq.enabled' => false]);
 
         $result = app(GroundedChatbotResponder::class)->answer(
-            'Saya mau bertanya mengenai alur pengajuan Magang.',
+            'Saya mau bertanya mengenai tahapan pengajuan Magang.',
         );
 
         self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
@@ -143,7 +198,7 @@ final class GroundedChatbotResponderTest extends TestCase
         config(['services.groq.enabled' => false]);
 
         $result = app(GroundedChatbotResponder::class)->answer(
-            'Bagaimana alur pengajuan Magang / PKL?',
+            'Jelaskan alur pengajuan Magang / PKL secara lengkap.',
         );
 
         self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
@@ -259,7 +314,7 @@ final class GroundedChatbotResponderTest extends TestCase
         config(['services.groq.enabled' => false]);
 
         $result = app(GroundedChatbotResponder::class)->answer(
-            'Apa saja persyaratan pengajuan magang?',
+            'Sebutkan rincian persyaratan pengajuan magang.',
         );
 
         self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);

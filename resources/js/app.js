@@ -83,21 +83,196 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ── Landing: infographic carousel ─────────────────────────────────
-    document.querySelectorAll('[data-infographic-carousel]').forEach((carousel) => {
-        const track = carousel.querySelector('[data-infographic-carousel-track]');
-        const previousButton = carousel.querySelector('[data-infographic-carousel-previous]');
-        const nextButton = carousel.querySelector('[data-infographic-carousel-next]');
+    // ── Landing: 3D infographic coverflow ─────────────────────────────
+    document.querySelectorAll('[data-infographic-coverflow]').forEach((coverflow) => {
+        const frame = coverflow.querySelector('[data-infographic-coverflow-frame]');
+        const cards = Array.from(coverflow.querySelectorAll('[data-infographic-coverflow-card]'));
+        const previousButton = coverflow.querySelector('[data-infographic-coverflow-previous]');
+        const nextButton = coverflow.querySelector('[data-infographic-coverflow-next]');
+        const pagination = coverflow.querySelector('[data-infographic-coverflow-pagination]');
+        const caption = coverflow.querySelector('[data-infographic-coverflow-caption]');
+        const detail = coverflow.querySelector('[data-infographic-coverflow-detail]');
 
-        const scroll = (direction) => {
-            track?.scrollBy({
-                left: direction * track.clientWidth,
-                behavior: 'smooth',
+        if (! frame || ! cards.length || ! pagination || ! caption || ! detail) {
+            return;
+        }
+
+        const count = cards.length;
+        let position = 0;
+        let target = 0;
+        let animationFrame = null;
+        let cardWidth = 0;
+        let drag = null;
+        let didDrag = false;
+        const paginationButtons = cards.map((card, index) => {
+            const button = document.createElement('button');
+
+            button.type = 'button';
+            button.className = 'h-2 w-2 rounded-full bg-ocean/25 transition-all hover:bg-ocean/60 focus:outline-none focus:ring-2 focus:ring-ocean';
+            button.setAttribute('aria-label', `Tampilkan infografis ${index + 1}`);
+            button.addEventListener('click', () => goTo(index));
+            pagination.append(button);
+
+            return button;
+        });
+
+        const indexAt = (value) => ((Math.round(value) % count) + count) % count;
+        const shortestOffset = (index, value) => {
+            let offset = index - value;
+
+            offset = ((offset % count) + count) % count;
+
+            return offset > count / 2 ? offset - count : offset;
+        };
+
+        const render = () => {
+            if (! cardWidth) {
+                return;
+            }
+
+            const activeIndex = indexAt(position);
+            const pitch = cardWidth * 1.05;
+
+            cards.forEach((card, index) => {
+                const offset = shortestOffset(index, position);
+                const distance = Math.abs(offset);
+                const ramp = Math.pow(distance, 0.58);
+                const tilt = Math.min(44 * ramp, 78) * Math.sign(offset);
+                const opacity = Math.max(0, 1 - (0.13 * distance));
+
+                card.style.transform = `translateX(calc(-50% + ${offset * pitch}px)) translateZ(${-0.58 * cardWidth * ramp}px) rotateY(${-tilt}deg)`;
+                card.style.opacity = String(opacity);
+                card.style.zIndex = String(100 - Math.round(distance));
+                card.tabIndex = index === activeIndex ? 0 : -1;
+                card.setAttribute('aria-hidden', String(distance > 3));
+            });
+
+            const activeCard = cards[activeIndex];
+            caption.textContent = activeCard.dataset.imageCaption ?? '';
+            detail.textContent = activeCard.querySelector('span')?.textContent?.trim() ?? '';
+
+            paginationButtons.forEach((button, index) => {
+                const isActive = index === activeIndex;
+
+                button.classList.toggle('w-5', isActive);
+                button.classList.toggle('bg-ocean', isActive);
+                button.classList.toggle('bg-ocean/25', ! isActive);
+                button.setAttribute('aria-current', String(isActive));
             });
         };
 
-        previousButton?.addEventListener('click', () => scroll(-1));
-        nextButton?.addEventListener('click', () => scroll(1));
+        const settle = (nextTarget) => {
+            target = nextTarget;
+
+            if (animationFrame !== null) {
+                window.cancelAnimationFrame(animationFrame);
+            }
+
+            const animate = () => {
+                const remaining = target - position;
+
+                if (Math.abs(remaining) < 0.001) {
+                    position = target;
+                    render();
+                    animationFrame = null;
+
+                    return;
+                }
+
+                position += remaining * 0.16;
+                render();
+                animationFrame = window.requestAnimationFrame(animate);
+            };
+
+            animationFrame = window.requestAnimationFrame(animate);
+        };
+
+        const goTo = (index) => {
+            const nearestTarget = index + Math.round((target - index) / count) * count;
+
+            settle(nearestTarget);
+        };
+
+        const nudge = (amount) => settle(Math.round(target) + amount);
+
+        const measure = () => {
+            cardWidth = cards[0].offsetWidth;
+            render();
+        };
+
+        frame.addEventListener('pointerdown', (event) => {
+            if (animationFrame !== null) {
+                window.cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+
+            frame.setPointerCapture(event.pointerId);
+            target = position;
+            didDrag = false;
+            drag = {
+                id: event.pointerId,
+                startX: event.clientX,
+                startPosition: position,
+                lastPosition: position,
+                velocity: 0,
+                time: performance.now(),
+            };
+        });
+
+        frame.addEventListener('pointermove', (event) => {
+            if (! drag || drag.id !== event.pointerId || ! cardWidth) {
+                return;
+            }
+
+            const nextPosition = drag.startPosition - ((event.clientX - drag.startX) / (cardWidth * 1.05));
+            const now = performance.now();
+
+            didDrag = didDrag || Math.abs(event.clientX - drag.startX) > 6;
+            drag.velocity = ((nextPosition - drag.lastPosition) / Math.max(now - drag.time, 1)) * 1000;
+            drag.lastPosition = nextPosition;
+            drag.time = now;
+            position = nextPosition;
+            target = nextPosition;
+            render();
+        });
+
+        const endDrag = (event) => {
+            if (! drag || drag.id !== event.pointerId) {
+                return;
+            }
+
+            const carried = Math.max(-2, Math.min(2, drag.velocity * 0.18));
+            drag = null;
+            settle(Math.round(position + carried));
+        };
+
+        frame.addEventListener('pointerup', endDrag);
+        frame.addEventListener('pointercancel', endDrag);
+        frame.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                nudge(-1);
+            }
+
+            if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                nudge(1);
+            }
+        });
+
+        cards.forEach((card) => {
+            card.addEventListener('click', (event) => {
+                if (didDrag) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                }
+            }, true);
+        });
+
+        previousButton?.addEventListener('click', () => nudge(-1));
+        nextButton?.addEventListener('click', () => nudge(1));
+        window.addEventListener('resize', measure);
+        measure();
     });
 
     // ── Infographics: full-size lightbox ───────────────────────────────

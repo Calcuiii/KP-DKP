@@ -68,7 +68,7 @@ Bagi pemohon yang membutuhkan Surat Keterangan dan Sertifikat, kebutuhan tersebu
 
 Template Surat Permohonan dapat diakses melalui tautan berikut:
 
-- https://bit.ly/Permohonan_Sertifikat_DKP
+- https://bit.ly/Surat_Permohonan_DKP
 
 ## Persyaratan Pengajuan — Kontak Resmi DKP Jatim
 

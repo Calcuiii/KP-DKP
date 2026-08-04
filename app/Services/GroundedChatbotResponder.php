@@ -58,6 +58,7 @@ final class GroundedChatbotResponder
         private readonly GroundedChatbotContextSourcePrioritizer $sourcePrioritizer,
         private readonly GroundedChatbotResponseSectionOrderer $sectionOrderer,
         private readonly KnowledgeBaseAnswerGenerator $answerGenerator,
+        private readonly OfficialChatbotFaqResponder $faqResponder,
     ) {}
 
     /**
@@ -75,6 +76,12 @@ final class GroundedChatbotResponder
         string $question,
         ?string $previousQuestion = null,
     ): array {
+        $faqAnswer = $this->faqResponder->answer($question);
+
+        if ($faqAnswer !== null) {
+            return $faqAnswer;
+        }
+
         $isSubmissionDestinationQuestion = $this->requiresSubmissionDestinationConfirmation($question);
 
         if ($isSubmissionDestinationQuestion) {
