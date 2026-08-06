@@ -7,7 +7,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| DKP Assistant Design Foundation
+| Si-Molek Design Foundation
 |--------------------------------------------------------------------------
 */
 
@@ -203,4 +203,106 @@
 .chat-markdown a {
     color: var(--ocean);
     text-decoration: underline;
+}
+
+.chatbot-pattern-surface {
+    position: relative;
+    isolation: isolate;
+    background-color: #F7FAFE;
+    background-image:
+        linear-gradient(to right, rgba(26, 95, 168, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(26, 95, 168, 0.07) 1px, transparent 1px);
+    background-size: 6rem 4rem;
+}
+
+.chatbot-pattern-surface::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    content: '';
+    background:
+        radial-gradient(circle 42rem at 100% 0%, rgba(56, 189, 248, 0.17), transparent 62%),
+        radial-gradient(circle 32rem at 0% 100%, rgba(13, 158, 138, 0.09), transparent 65%);
+}
+
+.chatbot-pattern-content {
+    position: relative;
+    z-index: 1;
+}
+
+@layer components {
+    .participant-auth-scene {
+        background:
+            radial-gradient(circle at 12% 16%, rgba(56, 189, 248, 0.15), transparent 28rem),
+            radial-gradient(circle at 89% 82%, rgba(13, 158, 138, 0.12), transparent 26rem),
+            var(--background);
+    }
+
+    .participant-auth-card {
+        animation: participant-auth-enter 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .auth-fade-up {
+        animation: participant-auth-fade-up 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .auth-delay-1 {
+        animation-delay: 100ms;
+    }
+
+    .auth-delay-2 {
+        animation-delay: 180ms;
+    }
+
+    .auth-delay-3 {
+        animation-delay: 260ms;
+    }
+
+    .participant-auth-wave {
+        transform-origin: center;
+        animation: participant-auth-wave 7s ease-in-out infinite alternate;
+    }
+}
+
+@keyframes participant-auth-enter {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes participant-auth-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes participant-auth-wave {
+    from {
+        transform: translateX(-5px) translateY(0);
+    }
+
+    to {
+        transform: translateX(6px) translateY(-3px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .participant-auth-card,
+    .auth-fade-up,
+    .participant-auth-wave {
+        animation: none;
+    }
 }

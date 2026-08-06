@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureGuestbookCheckin;
 use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Http\Middleware\EnsureUserIsSuperAdmin;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,8 +15,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: env('TRUSTED_PROXIES', '127.0.0.1'));
+
+        $middleware->redirectGuestsTo(function (Request $request): string {
+            return $request->is('peserta/*')
+                ? route('peserta.login')
+                : route('admin.login');
+        });
+
         $middleware->alias([
             'admin' => EnsureUserIsAdmin::class,
+            'superadmin' => EnsureUserIsSuperAdmin::class,
             'guestbook' => EnsureGuestbookCheckin::class,
         ]);
     })

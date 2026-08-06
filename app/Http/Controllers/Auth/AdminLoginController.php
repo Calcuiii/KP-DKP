@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\AdminLoginRequest;
+use App\Models\ActivityLog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,8 @@ class AdminLoginController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-        \App\Models\ActivityLog::record('Login', 'Auth', 'Login ke sistem admin');
+        $request->user()->forceFill(['last_login_at' => now()])->save();
+        ActivityLog::record('Login', 'Auth', 'Login ke sistem admin');
 
         return redirect()->intended(route('admin.dashboard'));
     }

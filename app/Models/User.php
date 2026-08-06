@@ -18,17 +18,19 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-    'name',
-    'email',
-    'password',
-    'role',
-    'status',
-];
+        'name',
+        'email',
+        'password',
+        'role',
+        'status',
+        'super_admin_slot',
+        'last_login_at',
+    ];
 
-public function getRoleLabelAttribute(): string
-{
-    return $this->role === 'superadmin' ? 'Super Admin' : 'Admin';
-}
+    public function getRoleLabelAttribute(): string
+    {
+        return $this->role === 'superadmin' ? 'Super Admin' : 'Admin';
+    }
 
     /**
      * Kolom yang disembunyikan saat model di-serialize (mis. jadi JSON).
@@ -45,6 +47,18 @@ public function getRoleLabelAttribute(): string
         return in_array($this->role, ['admin', 'superadmin']);
     }
 
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'superadmin';
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $user): void {
+            $user->super_admin_slot = $user->isSuperAdmin() ? 1 : null;
+        });
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -54,6 +68,7 @@ public function getRoleLabelAttribute(): string
     {
         return [
             'email_verified_at' => 'datetime',
+            'last_login_at' => 'datetime',
             'password' => 'hashed',
         ];
     }

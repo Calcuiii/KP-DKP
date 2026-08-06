@@ -11,6 +11,7 @@ import {
     FileText,
     Send,
     Shield,
+    ArrowLeft,
     ArrowRight,
     BookOpen,
     CheckCircle,
@@ -50,17 +51,18 @@ import {
     Edit2,
     Home,
     HelpCircle,
+    Compass,
 } from 'lucide';
 
 createIcons({
     icons: {
         Fish, MessageSquare, Menu, X, Zap, ChevronRight, FileText, Send,
-        Shield, ArrowRight, BookOpen, CheckCircle, Award, MessageCircle,
+        Shield, ArrowLeft, ArrowRight, BookOpen, CheckCircle, Award, MessageCircle,
         Search, Database, Info, Layers, FileCheck, RefreshCw, TrendingUp,
         ChevronDown, ChevronUp, ChevronLeft, BarChart2, Inbox, ThumbsUp, Settings,
         Users, Activity, LogOut, Bell, Eye, EyeOff, Lock, AlertCircle,
         Hash, Clock, Star, Plus, RotateCcw, Trash2, Upload, XCircle,
-        Download, Edit2, Home, HelpCircle,
+        Download, Edit2, Home, HelpCircle, Compass,
     },
 });
 
@@ -423,6 +425,39 @@ document.addEventListener('DOMContentLoaded', () => {
             if (label && input.files[0]) {
                 label.textContent = input.files[0].name;
             }
+        });
+    });
+
+    // ── Portal peserta: password visibility dan loading form ─────────
+    document.querySelectorAll('[data-participant-password-toggle]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const input = document.getElementById(button.dataset.passwordTarget);
+
+            if (! input) {
+                return;
+            }
+
+            const isPassword = input.getAttribute('type') === 'password';
+
+            input.setAttribute('type', isPassword ? 'text' : 'password');
+            button.querySelector('[data-password-eye-open]')?.classList.toggle('hidden', isPassword);
+            button.querySelector('[data-password-eye-closed]')?.classList.toggle('hidden', ! isPassword);
+            button.setAttribute('aria-label', isPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
+        });
+    });
+
+    document.querySelectorAll('[data-participant-auth-form]').forEach((form) => {
+        form.addEventListener('submit', () => {
+            const submitButton = form.querySelector('[data-participant-submit]');
+
+            if (! submitButton) {
+                return;
+            }
+
+            submitButton.disabled = true;
+            submitButton.querySelector('[data-participant-submit-label]').textContent = 'Memproses...';
+            submitButton.querySelector('[data-participant-submit-icon]')?.classList.add('hidden');
+            submitButton.querySelector('[data-participant-submit-spinner]')?.classList.remove('hidden');
         });
     });
 });

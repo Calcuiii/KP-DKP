@@ -14,15 +14,16 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-{
-    \App\Models\User::factory()->create([
-        'name' => 'Administrator DKP',
-        'email' => 'admin@dkp.jatimprov.go.id',
-        'password' => bcrypt('password123'),
-        'role' => 'superadmin',
-    ]);
+    {
+        User::factory()->create([
+            'name' => 'Administrator DKP',
+            'email' => 'admin@dkp.jatimprov.go.id',
+            'password' => bcrypt('password123'),
+            'role' => 'superadmin',
+            'super_admin_slot' => 1,
+        ]);
 
-    $this->call(ConversationLogSeeder::class);
-    $this->call(UnansweredQuestionSeeder::class);
-}
+        $this->call(ConversationLogSeeder::class);
+        $this->call(UnansweredQuestionSeeder::class);
+    }
 }

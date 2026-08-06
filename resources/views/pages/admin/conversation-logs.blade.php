@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Conversation Logs - DKP Assistant')
+@section('title', 'Conversation Logs - Si-Molek')
 
 @section('content')
 <div class="space-y-5">
@@ -62,7 +62,7 @@
                             <td class="px-4 py-3"><x-admin.status-badge :status="$log->status" /></td>
                             <td class="px-4 py-3 text-muted-foreground">{{ $log->sources }} dok</td>
                             <td class="px-4 py-3 text-muted-foreground">{{ $log->response_time }}s</td>
-                            <td class="whitespace-nowrap px-4 py-3 text-muted-foreground">{{ $log->created_at->format('Y-m-d H:i') }}</td>
+                            <td class="whitespace-nowrap px-4 py-3 text-muted-foreground">{{ $log->formatted_created_at }} WIB</td>
                             <td class="px-4 py-3">
                                 <button type="button" data-open-modal="log-detail-{{ $log->id }}" class="rounded-lg p-1.5 hover:bg-accent" title="Lihat Detail">
                                     <i data-lucide="eye" class="h-3 w-3" aria-hidden="true"></i>
@@ -157,7 +157,7 @@
                     </div>
                 @endif
 
-                <p class="text-right text-[11px] text-muted-foreground">{{ $log->created_at->format('Y-m-d H:i') }}</p>
+                <p class="text-right text-[11px] text-muted-foreground">{{ $log->formatted_created_at }} WIB</p>
             </div>
         </div>
     </div>

@@ -9,9 +9,4 @@
         Chat
     </a>
 
-    <a href="{{ route('admin.login') }}"
-       class="rounded-full px-4 py-2 text-sm font-semibold transition-colors {{ request()->routeIs('admin.login') ? 'bg-navy text-white' : 'text-muted-foreground hover:text-navy' }}">
-        Admin Login
-    </a>
-
 </div>

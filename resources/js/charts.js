@@ -83,8 +83,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     }],
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    scales: { x: { ticks: { font: { size: 10 } } }, y: { ticks: { font: { size: 10 } } } },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+                        y: { beginAtZero: true, ticks: { precision: 0, font: { size: 10 } } },
+                    },
                 },
             });
         }
@@ -98,9 +103,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     datasets: [{ data: categoryData.map((c) => c.value), backgroundColor: '#1A5FA8', borderRadius: 4 }],
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     indexAxis: 'y',
                     plugins: { legend: { display: false } },
-                    scales: { x: { ticks: { font: { size: 10 } } }, y: { ticks: { font: { size: 10 } } } },
+                    scales: {
+                        x: { beginAtZero: true, ticks: { precision: 0, font: { size: 10 } } },
+                        y: { grid: { display: false }, ticks: { font: { size: 10 } } },
+                    },
                 },
             });
         }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ChatConversation;
-use App\Models\ChatFeedback;
 use App\Models\ChatMessage;
 use App\Models\KnowledgeBaseDocument;
 use App\Support\KnowledgeBaseCategoryResolver;
@@ -21,10 +20,6 @@ class DashboardController extends Controller
 
         $unanswered = ChatMessage::where('role', 'assistant')->where('status', 'insufficient_information')->count();
 
-        $totalFeedback = ChatFeedback::count();
-        $positiveFeedback = ChatFeedback::where('rating', 'positive')->count();
-        $satisfaction = $totalFeedback > 0 ? round(($positiveFeedback / $totalFeedback) * 100) : 0;
-
         $avgResponseMs = ChatMessage::where('role', 'assistant')->whereNotNull('response_time_ms')->avg('response_time_ms');
         $avgResponseSeconds = $avgResponseMs ? round($avgResponseMs / 1000, 1) : 0;
 
@@ -34,12 +29,12 @@ class DashboardController extends Controller
             ['icon' => 'activity', 'label' => 'Pertanyaan Hari Ini', 'value' => (string) $today, 'sub' => 'Diperbarui real-time', 'color' => 'indigo'],
             ['icon' => 'database', 'label' => 'Knowledge Base Aktif', 'value' => (string) KnowledgeBaseDocument::where('status', 'Ready')->count(), 'sub' => null, 'color' => 'amber'],
             ['icon' => 'inbox', 'label' => 'Pertanyaan Tidak Terjawab', 'value' => (string) $unanswered, 'sub' => null, 'color' => 'red'],
-            ['icon' => 'thumbs-up', 'label' => 'Feedback Positif', 'value' => $satisfaction . '%', 'sub' => "Dari {$totalFeedback} feedback", 'color' => 'teal'],
-            ['icon' => 'clock', 'label' => 'Rata-rata Response Time', 'value' => $avgResponseSeconds . 's', 'sub' => null, 'color' => 'ocean'],
+            ['icon' => 'clock', 'label' => 'Rata-rata Response Time', 'value' => $avgResponseSeconds.'s', 'sub' => null, 'color' => 'ocean'],
         ];
 
         $trend = collect(range(29, 0))->map(function ($daysAgo) {
             $date = Carbon::now()->subDays($daysAgo);
+
             return [
                 'day' => $date->format('d'),
                 'pertanyaan' => ChatMessage::where('role', 'user')->whereDate('created_at', $date)->count(),
@@ -84,7 +79,8 @@ class DashboardController extends Controller
                     'time' => $userMsg->created_at->format('Y-m-d H:i'),
                 ];
             });
-            return view('pages.admin.dashboard', compact('metrics', 'trend', 'statusData', 'unansweredList', 'recentQuestions'
-            ));
+
+        return view('pages.admin.dashboard', compact('metrics', 'trend', 'statusData', 'unansweredList', 'recentQuestions'
+        ));
     }
 }

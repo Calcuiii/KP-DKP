@@ -1,4 +1,4 @@
-<header class="flex h-16 shrink-0 items-center gap-3 border-b border-border bg-white px-4 sm:px-6">
+<header class="flex h-16 shrink-0 items-center gap-3 border-b border-border bg-white/95 px-4 backdrop-blur-sm sm:px-6">
     <button
         type="button"
         data-chat-sidebar-open
@@ -15,7 +15,7 @@
         </span>
 
         <span>
-            <span class="block text-sm font-semibold text-navy">DKP Assistant</span>
+            <span class="block text-sm font-semibold text-navy">Asisten Si-Molek</span>
             <span class="flex items-center gap-1 text-[10px] text-muted-foreground">
                 <span class="inline-block h-1.5 w-1.5 rounded-full bg-teal"></span>
                 Berdasarkan dokumen resmi

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Edit Admin - DKP Assistant')
+@section('title', 'Edit Admin - Si-Molek')
 
 @section('content')
 <div class="mx-auto max-w-lg">
@@ -27,14 +27,6 @@
                 <label class="mb-1.5 block text-xs font-semibold">Password Baru (opsional)</label>
                 <input type="password" name="password" class="w-full rounded-xl border border-border bg-input-background px-3 py-2 text-xs" placeholder="Kosongkan jika tidak ingin diubah">
                 @error('password') <p class="mt-1 text-xs text-destructive">{{ $message }}</p> @enderror
-            </div>
-
-            <div>
-                <label class="mb-1.5 block text-xs font-semibold">Role</label>
-                <select name="role" class="w-full rounded-xl border border-border bg-input-background px-3 py-2 text-xs">
-                    <option value="admin" @selected($user->role === 'admin')>Admin</option>
-                    <option value="superadmin" @selected($user->role === 'superadmin')>Super Admin</option>
-                </select>
             </div>
 
             <div class="flex gap-3">

@@ -10,7 +10,10 @@ class EnsureUserIsAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user()?->isAdmin()) {
+        if (
+            ! $request->user('web')?->isAdmin()
+            || $request->user('web')->status !== 'Aktif'
+        ) {
             abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
