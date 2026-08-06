@@ -30,7 +30,7 @@
         <div data-chat-error class="mt-2 hidden rounded-xl border border-destructive/20 bg-red-50 px-3 py-2 text-xs text-destructive" role="alert"></div>
 
         <p class="mt-2 text-center text-[10px] leading-4 text-muted-foreground">
-            Si-Molek dapat menghasilkan jawaban yang kurang tepat. Pastikan kembali informasi penting melalui layanan resmi.
+            Asisten Si-Molek dapat menghasilkan jawaban yang kurang tepat. Pastikan kembali informasi penting melalui layanan resmi.
         </p>
     </form>
 </div>

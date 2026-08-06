@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('title', 'Si-Molek | Chatbot')
+@section('title', 'Asisten Si-Molek | Informasi Layanan')
  
 @section(
     'meta_description',
-    'Tanyakan informasi Kerja Praktik dan Magang melalui Si-Molek berdasarkan dokumen resmi.'
+    'Tanyakan informasi layanan Kerja Praktik, Magang, PKL, dan WOPPS melalui Asisten Si-Molek berdasarkan dokumen resmi.'
 )
 @section('hide_dev_nav', true)
 

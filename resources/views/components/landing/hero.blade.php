@@ -16,14 +16,14 @@
                     aria-hidden="true"
                 ></i>
 
-                Asisten Informasi KP & Magang Berbasis AI
+                Asisten Si-Molek · Informasi Layanan Resmi
             </span>
 
             {{-- Heading --}}
             <h1
                 class="mb-4 text-4xl font-bold leading-tight text-navy lg:text-5xl"
             >
-                Temukan Informasi Kerja Praktik dan Magang
+                Temukan Informasi Layanan KP, Magang, PKL, dan WOPPS
 
                 <span class="relative inline-block">
                     <span class="text-ocean">
@@ -54,7 +54,7 @@
             >
                 Tanyakan informasi seputar persyaratan, alur pengajuan,
                 dokumen, pelaksanaan, dan layanan Kerja Praktik serta Magang
-                melalui chatbot berbasis informasi resmi Dinas Kelautan dan
+                melalui Asisten Si-Molek berbasis informasi resmi Dinas Kelautan dan
                 Perikanan Provinsi Jawa Timur.
             </p>
 
@@ -71,7 +71,7 @@
                         aria-hidden="true"
                     ></i>
 
-                    Mulai Bertanya
+                    Tanya Asisten Si-Molek
                 </a>
 
                 <a
@@ -88,6 +88,16 @@
                 </a>
 
             </div>
+
+            @guest('peserta')
+                <p class="mt-4 text-sm text-muted-foreground">
+                    Sedang mempersiapkan Magang atau PKL?
+                    <a href="{{ route('peserta.register') }}" class="font-semibold text-ocean hover:underline">Daftar akun peserta</a>
+                    atau
+                    <a href="{{ route('peserta.login') }}" class="font-semibold text-ocean hover:underline">masuk</a>
+                    untuk melanjutkan layanan Anda.
+                </p>
+            @endguest
 
             {{-- Feature Highlights --}}
             <div class="mt-10 flex flex-wrap gap-4">
@@ -156,7 +166,7 @@
                     <div>
                         <span id="chatbot" class="sr-only" aria-hidden="true"></span>
 <div class="text-xs font-semibold text-white">
-                            Si-Molek
+                            Asisten Si-Molek
                         </div>
 
                         <div class="flex items-center gap-1">

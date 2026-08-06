@@ -26,7 +26,7 @@
                 </div>
 
                 <p class="mt-3 max-w-[180px] text-xs leading-relaxed text-muted-foreground">
-                    Layanan chatbot AI untuk informasi Kerja Praktik dan Magang berbasis dokumen resmi.
+                    Sistem informasi layanan Kerja Praktik, Magang, PKL, dan WOPPS berbasis dokumen resmi.
                 </p>
             </div>
 
@@ -80,6 +80,29 @@
                     Chatbot
                 </a>
 
+                @auth('peserta')
+                    <a
+                        href="{{ route('peserta.dashboard') }}"
+                        class="block py-1 text-xs text-muted-foreground hover:text-foreground"
+                    >
+                        Dashboard Peserta
+                    </a>
+                @else
+                    <a
+                        href="{{ route('peserta.login') }}"
+                        class="block py-1 text-xs text-muted-foreground hover:text-foreground"
+                    >
+                        Masuk Peserta
+                    </a>
+
+                    <a
+                        href="{{ route('peserta.register') }}"
+                        class="block py-1 text-xs text-muted-foreground hover:text-foreground"
+                    >
+                        Daftar Akun Peserta
+                    </a>
+                @endauth
+
                 <a
                     href="#kontak-layanan"
                     class="block py-1 text-xs text-muted-foreground hover:text-foreground"
@@ -110,7 +133,7 @@
                 © {{ date('Y') }} Dinas Kelautan dan Perikanan Provinsi Jawa Timur. Hak cipta dilindungi.
             </p>
 
-            <div class="flex gap-4">
+            <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
                 <span class="text-xs text-muted-foreground">
                     Kebijakan Privasi
                 </span>
@@ -118,6 +141,13 @@
                 <span class="text-xs text-muted-foreground">
                     Disclaimer
                 </span>
+
+                <a
+                    href="{{ route('admin.login') }}"
+                    class="text-xs text-muted-foreground transition hover:text-ocean"
+                >
+                    Akses Administrator
+                </a>
             </div>
 
         </div>

@@ -10,7 +10,7 @@
 
     <meta
         name="description"
-        content="@yield('meta_description', 'Si-Molek adalah layanan informasi Kerja Praktik dan Magang Dinas Kelautan dan Perikanan Provinsi Jawa Timur.')"
+        content="@yield('meta_description', 'Si-Molek adalah Sistem Informasi Manajemen Otomatisasi Layanan Kerja Praktik, Magang, PKL, dan WOPPS Dinas Kelautan dan Perikanan Provinsi Jawa Timur.')"
     >
 
     <title>@yield('title', 'Si-Molek')</title>

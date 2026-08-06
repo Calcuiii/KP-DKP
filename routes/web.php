@@ -9,8 +9,11 @@ use App\Http\Controllers\Admin\InfographicController;
 use App\Http\Controllers\Admin\KnowledgeBaseController;
 use App\Http\Controllers\Admin\UnansweredQuestionController;
 use App\Http\Controllers\Auth\AdminLoginController;
+use App\Http\Controllers\Auth\ParticipantAuthController;
+use App\Http\Controllers\Auth\ParticipantEmailVerificationController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\GuestbookCheckinController;
+use App\Http\Controllers\Peserta\ParticipantApplicationController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'pages.landing')->name('landing');
@@ -43,6 +46,36 @@ Route::prefix('api/chatbot')
             ->name('messages.feedback');
     });
 
+Route::prefix('akun')->name('peserta.')->middleware('guest:peserta')->group(function (): void {
+    Route::get('/masuk', [ParticipantAuthController::class, 'createLogin'])->name('login');
+    Route::post('/masuk', [ParticipantAuthController::class, 'storeLogin'])->name('login.store');
+    Route::get('/daftar', [ParticipantAuthController::class, 'createRegister'])->name('register');
+    Route::post('/daftar', [ParticipantAuthController::class, 'storeRegister'])->name('register.store');
+});
+
+Route::middleware('auth:peserta')->group(function (): void {
+    Route::prefix('akun')->group(function (): void {
+        Route::get('/verifikasi-email', [ParticipantEmailVerificationController::class, 'notice'])
+            ->name('verification.notice');
+        Route::get('/verifikasi-email/{id}/{hash}', [ParticipantEmailVerificationController::class, 'verify'])
+            ->middleware(['signed', 'throttle:6,1'])
+            ->name('verification.verify');
+        Route::post('/email/verification-notification', [ParticipantEmailVerificationController::class, 'send'])
+            ->middleware('throttle:3,1')
+            ->name('verification.send');
+    });
+
+    Route::prefix('peserta')->name('peserta.')->group(function (): void {
+        Route::get('/dashboard', [ParticipantAuthController::class, 'dashboard'])
+            ->middleware('verified')
+            ->name('dashboard');
+        Route::post('/persiapan-pengajuan', [ParticipantApplicationController::class, 'store'])
+            ->middleware('verified')
+            ->name('application.store');
+        Route::post('/keluar', [ParticipantAuthController::class, 'destroy'])->name('logout');
+    });
+});
+
 Route::middleware('guest')->group(function (): void {
     Route::get('/admin-login', [AdminLoginController::class, 'create'])
         ->name('admin.login');
@@ -51,7 +84,7 @@ Route::middleware('guest')->group(function (): void {
         ->name('admin-login.store');
 });
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('/conversation-logs', [ConversationLogController::class, 'index'])->name('admin.conversation-logs');

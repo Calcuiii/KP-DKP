@@ -9,7 +9,7 @@
             </h2>
 
             <p class="mx-auto mb-8 max-w-lg text-blue-200">
-                Gunakan Si-Molek untuk menemukan informasi berdasarkan dokumen resmi yang tersedia.
+                Gunakan Asisten Si-Molek untuk menemukan informasi berdasarkan dokumen resmi yang tersedia.
             </p>
 
             <a
@@ -22,7 +22,7 @@
                     aria-hidden="true"
                 ></i>
 
-                Mulai Bertanya
+                Tanya Asisten Si-Molek
             </a>
         </div>
     </div>

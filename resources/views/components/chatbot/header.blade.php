@@ -15,7 +15,7 @@
         </span>
 
         <span>
-            <span class="block text-sm font-semibold text-navy">Si-Molek</span>
+            <span class="block text-sm font-semibold text-navy">Asisten Si-Molek</span>
             <span class="flex items-center gap-1 text-[10px] text-muted-foreground">
                 <span class="inline-block h-1.5 w-1.5 rounded-full bg-teal"></span>
                 Berdasarkan dokumen resmi

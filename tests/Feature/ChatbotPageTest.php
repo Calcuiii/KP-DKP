@@ -22,7 +22,7 @@ class ChatbotPageTest extends TestCase
             ->assertOk()
             ->assertSee('data-chatbot-app', false)
             ->assertSee('data-chat-message-list', false)
-            ->assertSee('Halo, selamat datang di Si-Molek!')
+            ->assertSee('Halo, selamat datang di Asisten Si-Molek!')
             ->assertSee('Magang / PKL')
             ->assertSee('WOPPS')
             ->assertDontSee('fixed bottom-6 left-1/2', false);

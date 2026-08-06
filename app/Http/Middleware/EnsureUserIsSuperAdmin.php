@@ -10,7 +10,7 @@ class EnsureUserIsSuperAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user()?->isSuperAdmin()) {
+        if (! $request->user('web')?->isSuperAdmin()) {
             abort(403, 'Fitur ini hanya dapat diakses oleh Super Admin.');
         }
 
