@@ -232,6 +232,105 @@
 }
 
 @layer components {
+    .participant-workspace {
+        background:
+            radial-gradient(circle at 82% 8%, rgba(56, 189, 248, 0.10), transparent 24rem),
+            radial-gradient(circle at 6% 38%, rgba(13, 158, 138, 0.07), transparent 22rem),
+            var(--background);
+    }
+
+    .participant-sidebar::before {
+        position: absolute;
+        width: 11rem;
+        height: 11rem;
+        right: -5rem;
+        top: -5rem;
+        border-radius: 9999px;
+        background: rgba(56, 189, 248, 0.15);
+        content: '';
+        animation: participant-float 7s ease-in-out infinite;
+    }
+
+    .participant-sidebar-link {
+        position: relative;
+        z-index: 1;
+    }
+
+    .participant-sidebar-link:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.10);
+        transform: translateX(3px);
+    }
+
+    .participant-sidebar-link.is-active {
+        color: var(--navy);
+        background: white;
+        box-shadow: 0 10px 28px rgba(5, 25, 55, 0.22);
+    }
+
+    .participant-sidebar-link.is-active > span:first-child {
+        color: white;
+        background: linear-gradient(135deg, var(--ocean), var(--teal));
+    }
+
+    .participant-mobile-nav.is-active {
+        color: white;
+        border-color: var(--ocean);
+        background: var(--ocean);
+    }
+
+    .participant-dashboard-content > section,
+    .participant-dashboard-content > div,
+    .participant-dashboard-content > article {
+        scroll-margin-top: 7rem;
+    }
+
+    .participant-reveal {
+        opacity: 0;
+        transform: translateY(22px) scale(0.985);
+        transition:
+            opacity 650ms cubic-bezier(0.22, 1, 0.36, 1),
+            transform 650ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .participant-reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    #kenali-si-molek::after {
+        position: absolute;
+        width: 14rem;
+        height: 14rem;
+        right: -5rem;
+        bottom: -6rem;
+        border: 2rem solid rgba(255, 255, 255, 0.08);
+        border-radius: 9999px;
+        content: '';
+        animation: participant-orbit 14s linear infinite;
+    }
+
+    #kenali-si-molek > div:nth-last-child(2) {
+        animation: participant-dashboard-hover 5s ease-in-out infinite;
+    }
+
+    #cara-penggunaan li {
+        transition: transform 250ms ease, background-color 250ms ease;
+    }
+
+    #cara-penggunaan li:hover {
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateY(-5px);
+    }
+
+    #cara-penggunaan li span:first-child {
+        animation: participant-pulse 2.8s ease-in-out infinite;
+    }
+
+    #cara-penggunaan li:nth-child(2) span:first-child { animation-delay: 200ms; }
+    #cara-penggunaan li:nth-child(3) span:first-child { animation-delay: 400ms; }
+    #cara-penggunaan li:nth-child(4) span:first-child { animation-delay: 600ms; }
+
     .participant-auth-scene {
         background:
             radial-gradient(circle at 12% 16%, rgba(56, 189, 248, 0.15), transparent 28rem),
@@ -262,6 +361,39 @@
     .participant-auth-wave {
         transform-origin: center;
         animation: participant-auth-wave 7s ease-in-out infinite alternate;
+    }
+}
+
+@keyframes participant-float {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50% { transform: translate3d(-12px, 16px, 0); }
+}
+
+@keyframes participant-dashboard-hover {
+    0%, 100% { transform: translateY(1.5rem); }
+    50% { transform: translateY(1.15rem); }
+}
+
+@keyframes participant-orbit {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes participant-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(13, 158, 138, 0); }
+    50% { box-shadow: 0 0 0 7px rgba(13, 158, 138, 0.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .participant-reveal,
+    .participant-reveal.is-visible,
+    .participant-sidebar::before,
+    #kenali-si-molek::after,
+    #kenali-si-molek > div:nth-last-child(2),
+    #cara-penggunaan li span:first-child {
+        animation: none;
+        opacity: 1;
+        transform: none;
+        transition: none;
     }
 }
 

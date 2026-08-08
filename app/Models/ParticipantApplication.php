@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ParticipantApplication extends Model
 {
@@ -20,6 +21,13 @@ class ParticipantApplication extends Model
     protected $fillable = [
         'service_type',
         'status',
+        'guestbook_confirmed_at',
+        'letter_submitted_at',
+        'google_form_confirmed_at',
+        'official_started_at',
+        'official_ended_at',
+        'decision',
+        'response_letter_path',
     ];
 
     /**
@@ -29,6 +37,10 @@ class ParticipantApplication extends Model
     {
         return [
             'google_form_confirmed_at' => 'datetime',
+            'guestbook_confirmed_at' => 'datetime',
+            'letter_submitted_at' => 'datetime',
+            'official_started_at' => 'datetime',
+            'official_ended_at' => 'datetime',
         ];
     }
 
@@ -38,6 +50,21 @@ class ParticipantApplication extends Model
     public function participant(): BelongsTo
     {
         return $this->belongsTo(Participant::class);
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(ParticipantApplicationDocument::class);
+    }
+
+    public function latestDocument(string $type): ?ParticipantApplicationDocument
+    {
+        return $this->documents->where('type', $type)->sortByDesc('version')->first();
+    }
+
+    public function requestLetterApproved(): bool
+    {
+        return $this->latestDocument(ParticipantApplicationDocument::TYPE_REQUEST_LETTER)?->review_status === ParticipantApplicationDocument::REVIEW_APPROVED;
     }
 
     /**

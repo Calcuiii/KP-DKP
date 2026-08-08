@@ -72,6 +72,14 @@ Route::middleware('auth:peserta')->group(function (): void {
         Route::post('/persiapan-pengajuan', [ParticipantApplicationController::class, 'store'])
             ->middleware('verified')
             ->name('application.store');
+        Route::post('/bukti-buku-tamu', [ParticipantApplicationController::class, 'storeGuestbookProof'])
+            ->middleware('verified')->name('guestbook-proof.store');
+        Route::post('/surat-permohonan', [ParticipantApplicationController::class, 'storeRequestLetter'])
+            ->middleware('verified')->name('request-letter.store');
+        Route::post('/konfirmasi-google-form', [ParticipantApplicationController::class, 'confirmGoogleForm'])
+            ->middleware('verified')->name('google-form.confirm');
+        Route::get('/dokumen/{document}/unduh', [ParticipantApplicationController::class, 'downloadDocument'])
+            ->middleware('verified')->name('document.download');
         Route::post('/keluar', [ParticipantAuthController::class, 'destroy'])->name('logout');
     });
 });

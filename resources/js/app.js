@@ -52,6 +52,9 @@ import {
     Home,
     HelpCircle,
     Compass,
+    ArrowDown,
+    ClipboardList,
+    Images,
 } from 'lucide';
 
 createIcons({
@@ -62,11 +65,55 @@ createIcons({
         ChevronDown, ChevronUp, ChevronLeft, BarChart2, Inbox, ThumbsUp, Settings,
         Users, Activity, LogOut, Bell, Eye, EyeOff, Lock, AlertCircle,
         Hash, Clock, Star, Plus, RotateCcw, Trash2, Upload, XCircle,
-        Download, Edit2, Home, HelpCircle, Compass,
+        Download, Edit2, Home, HelpCircle, Compass, ArrowDown, ClipboardList, Images,
     },
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    // ── Participant portal: guided navigation and reveal animations ───
+    const participantContent = document.querySelector('.participant-dashboard-content');
+
+    if (participantContent) {
+        const sections = Array.from(participantContent.querySelectorAll(':scope > section[id]'));
+        const navigationLinks = Array.from(document.querySelectorAll('[data-participant-nav]'));
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        Array.from(participantContent.children).forEach((element, index) => {
+            element.classList.add('participant-reveal');
+            element.style.transitionDelay = reducedMotion ? '0ms' : `${Math.min(index * 55, 220)}ms`;
+        });
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08 });
+
+        Array.from(participantContent.children).forEach((element) => revealObserver.observe(element));
+
+        const setActiveNavigation = (id) => {
+            navigationLinks.forEach((link) => {
+                link.classList.toggle('is-active', link.getAttribute('href') === `#${id}`);
+            });
+        };
+
+        const sectionObserver = new IntersectionObserver((entries) => {
+            const visible = entries
+                .filter((entry) => entry.isIntersecting)
+                .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+            if (visible?.target.id) {
+                setActiveNavigation(visible.target.id);
+            }
+        }, { rootMargin: '-18% 0px -62% 0px', threshold: [0, 0.2, 0.5] });
+
+        sections.forEach((section) => sectionObserver.observe(section));
+        setActiveNavigation(sections[0]?.id ?? 'kenali-si-molek');
+    }
+
     // ── Landing: mobile menu ──────────────────────────────────────────
     const mobileMenuButton = document.querySelector('[data-mobile-menu-button]');
     const mobileMenu = document.querySelector('[data-mobile-menu]');

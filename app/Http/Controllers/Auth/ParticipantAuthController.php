@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\ParticipantLoginRequest;
 use App\Http\Requests\Auth\RegisterParticipantRequest;
 use App\Models\Participant;
 use App\Models\ParticipantApplication;
+use App\Models\InternshipLocation;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -52,9 +53,13 @@ final class ParticipantAuthController extends Controller
         /** @var Participant $participant */
         $participant = Auth::guard('peserta')->user();
 
+        $application = $participant->applications()->with('documents')->latest()->first();
+
         return view('pages.peserta.dashboard', [
-            'application' => $participant->applications()->latest()->first(),
+            'application' => $application,
             'serviceOptions' => ParticipantApplication::serviceOptions(),
+            'internshipLocations' => InternshipLocation::query()->orderBy('display_order')->get(),
+            'internshipGuestbookUrl' => config('services.dkp.internship_guestbook_url'),
         ]);
     }
 

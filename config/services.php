@@ -2,6 +2,10 @@
 
 return [
 
+    'dkp' => [
+        'internship_guestbook_url' => env('DKP_INTERNSHIP_GUESTBOOK_URL', 'https://bit.ly/DaftarMagangPKL_DKP_JATIM'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Third Party Services

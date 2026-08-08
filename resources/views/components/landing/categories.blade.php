@@ -1,257 +1,46 @@
-<section id="layanan" class="bg-background py-16">
+<section id="layanan" class="bg-background py-16 sm:py-20">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
-        {{-- Section Header --}}
-        <div class="mb-10 text-center">
-            <span
-                class="mb-4 inline-flex items-center gap-1.5 rounded-full bg-ocean/[0.08] px-3 py-1 text-xs font-semibold text-ocean"
-            >
-                Layanan Informasi
-            </span>
-
-            <h2 class="mb-3 text-3xl font-bold text-navy">
-                Informasi yang Bisa Ditanyakan Melalui Chatbot
-            </h2>
-
-            <p class="mx-auto max-w-xl text-muted-foreground">
-                Pilih kategori informasi Kerja Praktik dan Magang yang paling
-                sering dibutuhkan.
+        <div class="max-w-2xl">
+            <span class="text-sm font-semibold text-teal">Layanan dalam satu platform</span>
+            <h2 class="mt-2 text-3xl font-bold text-navy sm:text-4xl">Pilih layanan sesuai kebutuhan Anda</h2>
+            <p class="mt-4 leading-relaxed text-muted-foreground">
+                Mulai dari persiapan pengajuan hingga pencarian informasi, setiap fitur Si-Molek
+                dirancang untuk mendampingi perjalanan peserta.
             </p>
         </div>
 
-
-        {{-- Categories Grid --}}
-        <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-
-            {{-- Persyaratan --}}
-            <a
-                href="{{ route('chatbot') }}"
-                class="group rounded-2xl border border-border bg-white p-5 text-left transition-all hover:border-ocean/30 hover:shadow-md"
-            >
-                <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-ocean/[0.08]">
-                    <i
-                        data-lucide="shield"
-                        class="h-5 w-5 text-ocean"
-                        aria-hidden="true"
-                    ></i>
+        <div class="mt-10 grid gap-5 lg:grid-cols-3">
+            <a href="{{ auth('peserta')->check() ? route('peserta.dashboard') : route('peserta.register') }}" class="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-navy to-ocean p-7 text-white shadow-lg shadow-ocean/10 transition hover:-translate-y-1 hover:shadow-xl">
+                <span class="absolute -right-12 -top-12 h-36 w-36 rounded-full border-[24px] border-white/5"></span>
+                <div class="relative">
+                    <div class="flex items-center justify-between">
+                        <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15"><i data-lucide="clipboard-list" class="h-6 w-6"></i></span>
+                        <span class="rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold">LAYANAN UTAMA</span>
+                    </div>
+                    <h3 class="mt-8 text-xl font-bold">Pengajuan &amp; Dashboard Peserta</h3>
+                    <p class="mt-3 text-sm leading-relaxed text-blue-100">Buat akun, siapkan data pengajuan, dan lanjutkan proses layanan peserta secara terarah.</p>
+                    <span class="mt-7 inline-flex items-center gap-2 text-sm font-semibold">Mulai layanan <i data-lucide="arrow-right" class="h-4 w-4 transition group-hover:translate-x-1"></i></span>
                 </div>
-
-                <h3 class="mb-1.5 text-sm font-semibold text-navy">
-                    Persyaratan KP & Magang
-                </h3>
-
-                <p class="mb-3 text-xs leading-relaxed text-muted-foreground">
-                    Informasi lengkap tentang syarat akademik, administrasi,
-                    dan kelengkapan dokumen.
-                </p>
-
-                <div class="mb-3 border-l-2 border-ocean pl-2 text-xs italic text-muted-foreground">
-                    "Apa saja persyaratan pengajuan magang?"
-                </div>
-
-                <span class="inline-flex items-center gap-1 text-xs font-semibold text-ocean transition-all group-hover:gap-2">
-                    Tanyakan ke Chatbot
-
-                    <i
-                        data-lucide="arrow-right"
-                        class="h-3 w-3"
-                        aria-hidden="true"
-                    ></i>
-                </span>
             </a>
 
-
-            {{-- Alur Pengajuan --}}
-            <a
-                href="{{ route('chatbot') }}"
-                class="group rounded-2xl border border-border bg-white p-5 text-left transition-all hover:border-teal/30 hover:shadow-md"
-            >
-                <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-teal/[0.08]">
-                    <i
-                        data-lucide="arrow-right"
-                        class="h-5 w-5 text-teal"
-                        aria-hidden="true"
-                    ></i>
-                </div>
-
-                <h3 class="mb-1.5 text-sm font-semibold text-navy">
-                    Alur Pengajuan
-                </h3>
-
-                <p class="mb-3 text-xs leading-relaxed text-muted-foreground">
-                    Panduan langkah-langkah proses pengajuan dari awal hingga
-                    persetujuan.
-                </p>
-
-                <div class="mb-3 border-l-2 border-teal pl-2 text-xs italic text-muted-foreground">
-                    "Bagaimana alur pengajuan KP?"
-                </div>
-
-                <span class="inline-flex items-center gap-1 text-xs font-semibold text-teal transition-all group-hover:gap-2">
-                    Tanyakan ke Chatbot
-
-                    <i
-                        data-lucide="arrow-right"
-                        class="h-3 w-3"
-                        aria-hidden="true"
-                    ></i>
-                </span>
+            <a href="{{ route('infographics') }}" class="group rounded-3xl border border-border bg-white p-7 transition hover:-translate-y-1 hover:border-teal/30 hover:shadow-xl">
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal/10 text-teal"><i data-lucide="images" class="h-6 w-6"></i></div>
+                <h3 class="mt-8 text-xl font-bold text-navy">Infografis &amp; Panduan</h3>
+                <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Pelajari alur, persyaratan, dokumen, dan informasi penting melalui materi visual resmi.</p>
+                <span class="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-teal">Lihat panduan <i data-lucide="arrow-right" class="h-4 w-4 transition group-hover:translate-x-1"></i></span>
             </a>
 
-
-            {{-- Dokumen Pengajuan --}}
-            <a
-                href="{{ route('chatbot') }}"
-                class="group rounded-2xl border border-border bg-white p-5 text-left transition-all hover:border-indigo-500/30 hover:shadow-md"
-            >
-                <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/[0.08]">
-                    <i
-                        data-lucide="file-text"
-                        class="h-5 w-5 text-indigo-500"
-                        aria-hidden="true"
-                    ></i>
-                </div>
-
-                <h3 class="mb-1.5 text-sm font-semibold text-navy">
-                    Dokumen Pengajuan
-                </h3>
-
-                <p class="mb-3 text-xs leading-relaxed text-muted-foreground">
-                    Daftar dokumen yang wajib disiapkan dan cara
-                    pengumpulannya.
-                </p>
-
-                <div class="mb-3 border-l-2 border-indigo-500 pl-2 text-xs italic text-muted-foreground">
-                    "Dokumen apa saja yang harus disiapkan?"
-                </div>
-
-                <span class="inline-flex items-center gap-1 text-xs font-semibold text-indigo-500 transition-all group-hover:gap-2">
-                    Tanyakan ke Chatbot
-
-                    <i
-                        data-lucide="arrow-right"
-                        class="h-3 w-3"
-                        aria-hidden="true"
-                    ></i>
-                </span>
+            <a href="{{ route('chatbot') }}" class="group rounded-3xl border border-border bg-white p-7 transition hover:-translate-y-1 hover:border-ocean/30 hover:shadow-xl">
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-ocean/10 text-ocean"><i data-lucide="message-square" class="h-6 w-6"></i></div>
+                <h3 class="mt-8 text-xl font-bold text-navy">Asisten Si-Molek</h3>
+                <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Butuh jawaban cepat? Tanyakan persyaratan atau prosedur berdasarkan dokumen resmi yang tersedia.</p>
+                <span class="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-ocean">Tanya asisten <i data-lucide="arrow-right" class="h-4 w-4 transition group-hover:translate-x-1"></i></span>
             </a>
+        </div>
 
-
-            {{-- Pelaksanaan --}}
-            <a
-                href="{{ route('chatbot') }}"
-                class="group rounded-2xl border border-border bg-white p-5 text-left transition-all hover:border-amber-500/30 hover:shadow-md"
-            >
-                <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/[0.08]">
-                    <i
-                        data-lucide="book-open"
-                        class="h-5 w-5 text-amber-500"
-                        aria-hidden="true"
-                    ></i>
-                </div>
-
-                <h3 class="mb-1.5 text-sm font-semibold text-navy">
-                    Pelaksanaan KP & Magang
-                </h3>
-
-                <p class="mb-3 text-xs leading-relaxed text-muted-foreground">
-                    Informasi tentang hak, kewajiban, dan tata tertib selama
-                    pelaksanaan.
-                </p>
-
-                <div class="mb-3 border-l-2 border-amber-500 pl-2 text-xs italic text-muted-foreground">
-                    "Apa kewajiban peserta magang selama pelaksanaan?"
-                </div>
-
-                <span class="inline-flex items-center gap-1 text-xs font-semibold text-amber-500 transition-all group-hover:gap-2">
-                    Tanyakan ke Chatbot
-
-                    <i
-                        data-lucide="arrow-right"
-                        class="h-3 w-3"
-                        aria-hidden="true"
-                    ></i>
-                </span>
-            </a>
-
-
-            {{-- Penyelesaian --}}
-            <a
-                href="{{ route('chatbot') }}"
-                class="group rounded-2xl border border-border bg-white p-5 text-left transition-all hover:border-pink-500/30 hover:shadow-md"
-            >
-                <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-pink-500/[0.08]">
-                    <i
-                        data-lucide="check-circle"
-                        class="h-5 w-5 text-pink-500"
-                        aria-hidden="true"
-                    ></i>
-                </div>
-
-                <h3 class="mb-1.5 text-sm font-semibold text-navy">
-                    Penyelesaian Kegiatan
-                </h3>
-
-                <p class="mb-3 text-xs leading-relaxed text-muted-foreground">
-                    Panduan pelaporan, evaluasi, dan prosedur mengakhiri
-                    kegiatan KP/Magang.
-                </p>
-
-                <div class="mb-3 border-l-2 border-pink-500 pl-2 text-xs italic text-muted-foreground">
-                    "Bagaimana prosedur penyelesaian KP?"
-                </div>
-
-                <span class="inline-flex items-center gap-1 text-xs font-semibold text-pink-500 transition-all group-hover:gap-2">
-                    Tanyakan ke Chatbot
-
-                    <i
-                        data-lucide="arrow-right"
-                        class="h-3 w-3"
-                        aria-hidden="true"
-                    ></i>
-                </span>
-            </a>
-
-
-            {{-- Sertifikat --}}
-            <a
-                href="{{ route('chatbot') }}"
-                class="group rounded-2xl border border-border bg-white p-5 text-left transition-all hover:border-sky-500/30 hover:shadow-md"
-            >
-                <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-sky-500/[0.08]">
-                    <i
-                        data-lucide="award"
-                        class="h-5 w-5 text-sky-500"
-                        aria-hidden="true"
-                    ></i>
-                </div>
-
-                <h3 class="mb-1.5 text-sm font-semibold text-navy">
-                    Sertifikat & Administrasi Akhir
-                </h3>
-
-                <p class="mb-3 text-xs leading-relaxed text-muted-foreground">
-                    Informasi pengurusan sertifikat dan dokumen administratif
-                    setelah selesai.
-                </p>
-
-                <div class="mb-3 border-l-2 border-sky-500 pl-2 text-xs italic text-muted-foreground">
-                    "Bagaimana cara mendapatkan sertifikat magang?"
-                </div>
-
-                <span class="inline-flex items-center gap-1 text-xs font-semibold text-sky-500 transition-all group-hover:gap-2">
-                    Tanyakan ke Chatbot
-
-                    <i
-                        data-lucide="arrow-right"
-                        class="h-3 w-3"
-                        aria-hidden="true"
-                    ></i>
-                </span>
-            </a>
-
+        <div class="mt-6 flex flex-col gap-4 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 sm:flex-row sm:items-center">
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700"><i data-lucide="info" class="h-5 w-5"></i></span>
+            <p class="text-sm leading-relaxed text-amber-950"><strong>Catatan:</strong> Asisten Si-Molek membantu pencarian informasi. Pengajuan dan pengelolaan layanan tetap dilakukan melalui akun serta dashboard peserta.</p>
         </div>
     </div>
 </section>
-
-

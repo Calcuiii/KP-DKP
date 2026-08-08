@@ -52,6 +52,10 @@
                 >
                     Infografis
                 </a>
+
+                <a href="{{ route('chatbot') }}" class="text-sm font-medium text-muted-foreground transition-colors hover:text-ocean">
+                    Asisten
+                </a>
             </div>
 
             {{-- Actions --}}
@@ -143,6 +147,10 @@
                 class="block py-2 text-sm font-medium text-muted-foreground"
             >
                 Infografis
+            </a>
+
+            <a href="{{ route('chatbot') }}" class="block py-2 text-sm font-medium text-muted-foreground">
+                Asisten Si-Molek
             </a>
 
             @auth('peserta')
