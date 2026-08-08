@@ -26,7 +26,13 @@ final class OfficialChatbotFaqResponder
      */
     public function answer(string $question): ?array
     {
-        return match ($this->normalize($question)) {
+        $normalizedQuestion = $this->normalize($question);
+
+        if ($this->isRequestLetterTemplateQuestion($normalizedQuestion)) {
+            return $this->requestLetterTemplate();
+        }
+
+        return match ($normalizedQuestion) {
             'apa saja persyaratan pengajuan magang?' => $this->submissionRequirements(),
             'bagaimana alur pengajuan magang / pkl?' => $this->magangFlow(),
             'bagaimana ketentuan peserta selama magang?' => $this->participantConditions(),
@@ -37,6 +43,39 @@ final class OfficialChatbotFaqResponder
             'ke mana saya mengirimkan dokumen pengajuan?' => $this->woppsDestination(),
             default => null,
         };
+    }
+
+    /**
+     * @return array{status: string, answer: string, sources: array<int, array{document_id: string, document_title: string, section_title: string}>}
+     */
+    private function requestLetterTemplate(): array
+    {
+        return $this->success(
+            <<<'MARKDOWN'
+Ya, template Surat Permohonan Magang / PKL tersedia melalui tautan resmi berikut:
+
+[Buka Template Surat Permohonan](https://bit.ly/Surat_Permohonan_DKP)
+
+Template tersebut dapat digunakan sebagai referensi struktur surat. Surat resmi tetap dibuat dan diterbitkan oleh sekolah, perguruan tinggi, atau institusi pendidikan asal peserta.
+
+Pastikan surat mencantumkan identitas peserta, judul atau tema kegiatan, kompetensi keahlian, periode kegiatan, lokasi tujuan, institusi asal, jumlah peserta, serta nomor WhatsApp perwakilan untuk koordinasi.
+MARKDOWN,
+            [
+                $this->source('KB-004', 'Informasi Wajib dalam Surat Permohonan Magang / PKL', 'Persyaratan Pengajuan — Template Surat Permohonan'),
+                $this->source('KB-010', 'Contoh Surat Permohonan Magang dan PKL', 'Ruang Lingkup'),
+            ],
+        );
+    }
+
+    private function isRequestLetterTemplateQuestion(string $normalizedQuestion): bool
+    {
+        $mentionsTemplate = str_contains($normalizedQuestion, 'template')
+            || str_contains($normalizedQuestion, 'contoh surat')
+            || str_contains($normalizedQuestion, 'format surat');
+
+        return $mentionsTemplate
+            && str_contains($normalizedQuestion, 'surat')
+            && str_contains($normalizedQuestion, 'permohonan');
     }
 
     /**

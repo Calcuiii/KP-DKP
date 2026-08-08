@@ -16,7 +16,7 @@ final class GuestbookCheckinController extends Controller
     public function show(): View
     {
         return view('pages.guestbook-checkin', [
-            'guestbookUrl' => 'https://bit.ly/DaftarMagangPKL_DKP_JATIM',
+            'guestbookUrl' => config('services.dkp.internship_guestbook_url'),
         ]);
     }
 

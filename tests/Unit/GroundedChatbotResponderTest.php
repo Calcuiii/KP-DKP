@@ -86,6 +86,23 @@ final class GroundedChatbotResponderTest extends TestCase
         }
     }
 
+    public function test_it_returns_the_official_template_url_for_request_letter_questions(): void
+    {
+        foreach ([
+            'Apakah ada template surat permohonan dari Dinas untuk Magang/PKL?',
+            'Di mana contoh surat permohonan magang?',
+            'Saya membutuhkan format surat permohonan PKL.',
+        ] as $question) {
+            $result = app(GroundedChatbotResponder::class)->answer($question);
+
+            self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+            self::assertStringContainsString('https://bit.ly/Surat_Permohonan_DKP', $result['answer']);
+            self::assertStringContainsString('institusi pendidikan asal', $result['answer']);
+            self::assertSame('KB-004', $result['sources'][0]['document_id']);
+            self::assertSame('Persyaratan Pengajuan — Template Surat Permohonan', $result['sources'][0]['section_title']);
+        }
+    }
+
     public function test_it_keeps_the_insufficient_information_response_when_no_source_matches(): void
     {
         $result = app(GroundedChatbotResponder::class)->answer(

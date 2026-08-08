@@ -16,8 +16,8 @@
         ];
     @endphp
 
-    <main class="min-h-screen bg-background font-sans text-navy">
-        <header class="border-b border-border bg-white/95 px-5 py-4 backdrop-blur sm:px-8 lg:px-10">
+    <main class="participant-workspace min-h-screen bg-background font-sans text-navy">
+        <header class="sticky top-0 z-40 border-b border-border bg-white/90 px-5 py-4 backdrop-blur-xl sm:px-8 lg:px-10">
             <div class="mx-auto flex max-w-7xl items-center justify-between gap-4">
                 <a href="{{ route('landing') }}" class="flex items-center gap-3">
                     <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-ocean to-teal text-white shadow-lg shadow-ocean/20">
@@ -45,35 +45,140 @@
             </div>
         </header>
 
-        <div class="mx-auto flex max-w-7xl gap-8 px-5 py-7 sm:px-8 lg:px-10">
-            <aside class="hidden w-56 shrink-0 lg:block">
-                <nav class="sticky top-7 rounded-3xl border border-border bg-white p-3 shadow-sm">
-                    <a href="#ringkasan" class="flex items-center gap-3 rounded-2xl bg-ocean px-4 py-3 text-sm font-bold text-white">
-                        <i data-lucide="layout-dashboard" class="h-4 w-4" aria-hidden="true"></i> Dashboard
+        <nav class="border-b border-border bg-white px-5 py-3 lg:hidden" aria-label="Navigasi portal peserta">
+            <div class="flex gap-2 overflow-x-auto pb-1">
+                @foreach ([
+                    ['#kenali-si-molek', 'compass', 'Pengenalan'],
+                    ['#portal-pendampingan', 'layers', 'Portal'],
+                    ['#cara-penggunaan', 'check-circle', 'Cara pakai'],
+                    ['#ringkasan', 'home', 'Dashboard'],
+                    ['#persiapan', 'file-check', 'Dokumen'],
+                ] as [$href, $icon, $label])
+                    <a href="{{ $href }}" data-participant-nav class="participant-mobile-nav inline-flex shrink-0 items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-xs font-bold text-muted-foreground">
+                        <i data-lucide="{{ $icon }}" class="h-3.5 w-3.5"></i>{{ $label }}
                     </a>
-                    <a href="#persiapan" class="mt-1 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-muted-foreground transition hover:bg-light hover:text-navy">
-                        <i data-lucide="file-check-2" class="h-4 w-4" aria-hidden="true"></i> Persiapan Dokumen
-                    </a>
-                    <a href="#progress" class="mt-1 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-muted-foreground transition hover:bg-light hover:text-navy">
-                        <i data-lucide="route" class="h-4 w-4" aria-hidden="true"></i> Status Pengajuan
-                    </a>
-                    <a href="{{ route('chatbot') }}" class="mt-1 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-muted-foreground transition hover:bg-light hover:text-navy">
-                        <i data-lucide="message-circle" class="h-4 w-4" aria-hidden="true"></i> Tanya Asisten
-                    </a>
-                    <div class="mx-3 my-3 border-t border-border"></div>
-                    <a href="{{ route('landing') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-muted-foreground transition hover:bg-light hover:text-navy">
-                        <i data-lucide="house" class="h-4 w-4" aria-hidden="true"></i> Beranda Si-Molek
-                    </a>
+                @endforeach
+            </div>
+        </nav>
+
+        <div class="mx-auto flex max-w-[90rem] gap-6 px-5 py-7 sm:px-8 lg:px-10">
+            <aside class="hidden w-64 shrink-0 lg:block">
+                <nav class="participant-sidebar sticky top-24 overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#173f78] to-navy p-3 text-white shadow-xl shadow-navy/15">
+                    <div class="px-3 pb-4 pt-3">
+                        <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200">Panduan Awal</span>
+                        <p class="mt-1 text-sm font-bold">Mulai dengan memahami portal</p>
+                    </div>
+                    @foreach ([
+                        ['#kenali-si-molek', 'compass', 'Kenali Si-Molek', '01'],
+                        ['#portal-pendampingan', 'layers', 'Portal Pendampingan', '02'],
+                        ['#cara-penggunaan', 'check-circle', 'Cara Penggunaan', '03'],
+                    ] as [$href, $icon, $label, $number])
+                        <a href="{{ $href }}" data-participant-nav class="participant-sidebar-link flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-semibold text-blue-100 transition">
+                            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/10"><i data-lucide="{{ $icon }}" class="h-4 w-4"></i></span>
+                            <span class="min-w-0 flex-1">{{ $label }}</span><span class="text-[10px] text-blue-300">{{ $number }}</span>
+                        </a>
+                    @endforeach
+
+                    <div class="mx-3 my-4 border-t border-white/10"></div>
+                    <div class="px-3 pb-2"><span class="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200">Ruang Kerja</span></div>
+                    @foreach ([
+                        ['#ringkasan', 'home', 'Dashboard Saya'],
+                        ['#persiapan', 'file-check', 'Persiapan Dokumen'],
+                        ['#progress', 'trending-up', 'Status Pengajuan'],
+                    ] as [$href, $icon, $label])
+                        <a href="{{ $href }}" data-participant-nav class="participant-sidebar-link flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-blue-100 transition">
+                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/10"><i data-lucide="{{ $icon }}" class="h-4 w-4"></i></span>{{ $label }}
+                        </a>
+                    @endforeach
+
+                    <div class="m-2 mt-5 rounded-2xl bg-white p-4 text-navy shadow-lg">
+                        <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-teal/10 text-teal"><i data-lucide="message-square" class="h-4 w-4"></i></span>
+                        <p class="mt-3 text-xs font-extrabold">Masih bingung?</p>
+                        <p class="mt-1 text-[11px] leading-relaxed text-muted-foreground">Asisten Si-Molek siap membantu mencari informasi resmi.</p>
+                        <a href="{{ route('chatbot') }}" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-ocean">Tanya Asisten <i data-lucide="arrow-right" class="h-3 w-3"></i></a>
+                    </div>
+                    <a href="{{ route('landing') }}" class="mx-2 mb-1 mt-2 flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-blue-200 transition hover:bg-white/10 hover:text-white"><i data-lucide="arrow-left" class="h-3.5 w-3.5"></i> Beranda Si-Molek</a>
                 </nav>
             </aside>
 
-            <div class="min-w-0 flex-1 space-y-6">
+            <div class="participant-dashboard-content min-w-0 flex-1 space-y-6">
                 @if (session('status'))
                     <div class="flex items-start gap-3 rounded-2xl border border-teal/25 bg-teal/10 px-5 py-4 text-sm font-medium text-teal">
                         <i data-lucide="circle-check" class="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true"></i>
                         {{ session('status') }}
                     </div>
                 @endif
+
+                <section id="kenali-si-molek" class="relative isolate overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#176ac7] via-[#258ddd] to-[#74c8ec] px-6 pb-0 pt-8 text-white shadow-xl shadow-ocean/15 sm:px-10 sm:pt-10">
+                    <div class="pointer-events-none absolute left-8 top-10 h-6 w-20 rounded-full bg-white/30 blur-sm"></div>
+                    <div class="pointer-events-none absolute right-12 top-16 h-8 w-28 rounded-full bg-white/20 blur-sm"></div>
+                    <div class="relative mx-auto max-w-3xl text-center">
+                        <span class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/15 px-3 py-1.5 text-[11px] font-bold backdrop-blur">
+                            <i data-lucide="fish" class="h-3.5 w-3.5" aria-hidden="true"></i> MULAI DARI SINI
+                        </span>
+                        <h1 class="mt-5 text-3xl font-extrabold tracking-tight sm:text-4xl">Selamat datang di Si-Molek, {{ $participant->name }}!</h1>
+                        <p class="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-blue-50 sm:text-base">
+                            Si-Molek adalah <strong>Sistem Informasi Manajemen Otomatisasi Layanan Kerja Praktik, Magang, PKL, dan WOPPS</strong> milik Dinas Kelautan dan Perikanan Provinsi Jawa Timur.
+                        </p>
+                    </div>
+
+                    <div class="relative mx-auto mt-8 max-w-3xl translate-y-6 rounded-t-[1.75rem] border border-white/60 bg-white p-4 text-navy shadow-2xl sm:p-5">
+                        <div class="grid gap-3 sm:grid-cols-3">
+                            <div class="rounded-2xl bg-navy p-4 text-white"><span class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15"><i data-lucide="file-check" class="h-4 w-4"></i></span><p class="mt-4 text-sm font-bold">Persiapan Terarah</p><p class="mt-1 text-xs leading-relaxed text-blue-100">Menata kebutuhan sebelum pengajuan resmi.</p></div>
+                            <div class="rounded-2xl bg-light p-4"><span class="flex h-9 w-9 items-center justify-center rounded-xl bg-teal/10 text-teal"><i data-lucide="book-open" class="h-4 w-4"></i></span><p class="mt-4 text-sm font-bold">Panduan Resmi</p><p class="mt-1 text-xs leading-relaxed text-muted-foreground">Informasi layanan lebih mudah dipahami.</p></div>
+                            <div class="rounded-2xl bg-light p-4"><span class="flex h-9 w-9 items-center justify-center rounded-xl bg-ocean/10 text-ocean"><i data-lucide="message-square" class="h-4 w-4"></i></span><p class="mt-4 text-sm font-bold">Bantuan Informasi</p><p class="mt-1 text-xs leading-relaxed text-muted-foreground">Asisten menjawab dari dokumen yang tersedia.</p></div>
+                        </div>
+                    </div>
+                    <div class="h-10"></div>
+                </section>
+
+                <section id="portal-pendampingan" class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8">
+                    <div class="grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-[0.2em] text-teal">Portal Pendampingan Peserta</span>
+                            <h2 class="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">Apa fungsi portal ini?</h2>
+                            <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Portal Pendampingan adalah ruang kerja pribadi Anda di dalam Si-Molek. Di sini, Anda dipandu untuk memahami tahapan dan mempersiapkan kebutuhan layanan sebelum menuju kanal pengajuan resmi DKP.</p>
+                        </div>
+                        <div class="grid gap-3 sm:grid-cols-3">
+                            @foreach ([
+                                ['01', 'Pilih layanan', 'Tentukan Magang/PKL atau WOPPS.'],
+                                ['02', 'Siapkan kebutuhan', 'Pelajari checklist dan dokumen awal.'],
+                                ['03', 'Pantau tahapan', 'Lihat posisi proses layanan Anda.'],
+                            ] as [$number, $title, $description])
+                                <div class="rounded-2xl border border-border bg-background p-4">
+                                    <span class="text-xs font-extrabold text-ocean">{{ $number }}</span>
+                                    <h3 class="mt-5 text-sm font-extrabold">{{ $title }}</h3>
+                                    <p class="mt-1 text-xs leading-relaxed text-muted-foreground">{{ $description }}</p>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </section>
+
+                <section id="cara-penggunaan" class="rounded-[2rem] bg-navy p-6 text-white shadow-sm sm:p-8">
+                    <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+                        <div class="max-w-lg">
+                            <span class="text-xs font-bold uppercase tracking-[0.2em] text-teal-200">Cara Penggunaan</span>
+                            <h2 class="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">Empat langkah untuk memulai</h2>
+                            <p class="mt-3 text-sm leading-relaxed text-blue-100">Setelah memahami alurnya, lanjutkan ke bagian dashboard di bawah untuk memulai persiapan.</p>
+                        </div>
+                        <a href="#ringkasan" class="inline-flex w-fit items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-bold text-navy transition hover:bg-blue-50">Mulai sekarang <i data-lucide="arrow-down" class="h-4 w-4"></i></a>
+                    </div>
+                    <ol class="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                        @foreach ([
+                            ['Buat persiapan', 'Pilih jenis layanan yang dibutuhkan.'],
+                            ['Baca checklist', 'Pahami data dan dokumen yang perlu disiapkan.'],
+                            ['Gunakan panduan', 'Buka infografis atau Asisten jika membutuhkan informasi.'],
+                            ['Lanjutkan proses', 'Ikuti tahapan sampai kanal pengajuan resmi tersedia.'],
+                        ] as $index => [$title, $description])
+                            <li class="rounded-2xl border border-white/10 bg-white/[0.07] p-4">
+                                <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal text-xs font-extrabold">{{ $index + 1 }}</span>
+                                <h3 class="mt-4 text-sm font-bold">{{ $title }}</h3>
+                                <p class="mt-1 text-xs leading-relaxed text-blue-100">{{ $description }}</p>
+                            </li>
+                        @endforeach
+                    </ol>
+                </section>
 
                 @if (! $application)
                     <section id="ringkasan" class="overflow-hidden rounded-[2rem] bg-gradient-to-br from-navy via-[#123d72] to-ocean p-7 text-white shadow-xl shadow-navy/10 sm:p-10">
@@ -141,6 +246,13 @@
                         </div>
                     </section>
 
+                    @if ($application->service_type === \App\Models\ParticipantApplication::SERVICE_MAGANG_PKL)
+                        @include('components.peserta.internship-workflow', [
+                            'application' => $application,
+                            'locations' => $internshipLocations,
+                            'guestbookUrl' => $internshipGuestbookUrl,
+                        ])
+                    @else
                     <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                         <a href="#persiapan" class="group rounded-3xl border border-border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                             <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-ocean/10 text-ocean"><i data-lucide="file-check-2" class="h-5 w-5" aria-hidden="true"></i></span>
@@ -210,6 +322,7 @@
                             @endforeach
                         </ol>
                     </section>
+                    @endif
                 @endif
             </div>
         </div>
