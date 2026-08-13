@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Pusat Informasi Visual Magang dan PKL | DKP Assistant')
+@section('title', 'Pusat Informasi Visual Magang dan PKL | Si-Molek')
 
 @section('meta_description', 'Jelajahi infografis dan surat edaran resmi mengenai layanan Magang dan PKL DKP Jawa Timur.')
 
@@ -181,7 +181,7 @@
                         <section class="rounded-3xl border border-teal/20 bg-teal/5 p-6 text-sm leading-relaxed text-muted-foreground">
                             <i data-lucide="shield" class="h-5 w-5 text-teal" aria-hidden="true"></i>
                             <p class="mt-3">
-                                Seluruh informasi visual bersumber dari dokumen dan informasi resmi yang digunakan dalam knowledge base DKP Assistant.
+                                Seluruh informasi visual bersumber dari dokumen dan informasi resmi yang digunakan dalam knowledge base Si-Molek.
                             </p>
                             <a href="{{ route('landing') }}#infografis" class="mt-4 inline-flex items-center gap-2 font-semibold text-ocean hover:underline">
                                 Kembali ke beranda
@@ -196,7 +196,7 @@
                 <div class="rounded-[2rem] bg-[linear-gradient(105deg,#0c2340,#1a5fa8)] px-6 py-10 text-center shadow-lg sm:px-12 sm:py-12">
                     <h2 class="text-2xl font-bold text-white sm:text-3xl">Masih Belum Menemukan Informasi yang Dicari?</h2>
                     <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-white/70 sm:text-base">
-                        Tanyakan langsung kepada DKP Assistant berdasarkan informasi resmi yang tersedia.
+                        Tanyakan langsung kepada Si-Molek berdasarkan informasi resmi yang tersedia.
                     </p>
                     <a
                         href="{{ route('chatbot') }}"

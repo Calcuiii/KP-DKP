@@ -36,11 +36,21 @@ class AdminLoginRequest extends FormRequest
             ]);
         }
 
-        if (! Auth::user()->isAdmin()) {
+        $user = Auth::user();
+
+        if (! $user->isAdmin()) {
             Auth::logout();
 
             throw ValidationException::withMessages([
                 'email' => 'Akun ini tidak memiliki akses sebagai administrator.',
+            ]);
+        }
+
+        if ($user->status !== 'Aktif') {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => 'Akun Anda sedang dinonaktifkan. Hubungi Super Admin untuk mengaktifkannya kembali.',
             ]);
         }
 

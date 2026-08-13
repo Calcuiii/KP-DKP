@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Dashboard - DKP Assistant')</title>
+    <title>@yield('title', 'Dashboard - Si-Molek')</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/charts.js'])
     @stack('styles')
@@ -20,8 +20,6 @@
             </main>
         </div>
     </div>
-
-    @include('components.dev-nav')
 
     @stack('scripts')
 </body>

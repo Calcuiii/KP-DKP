@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('title', 'DKP Assistant | Chatbot')
+@section('title', 'Asisten Si-Molek | Informasi Layanan')
  
 @section(
     'meta_description',
-    'Tanyakan informasi Kerja Praktik dan Magang melalui DKP Assistant berdasarkan dokumen resmi.'
+    'Tanyakan informasi layanan Kerja Praktik, Magang, PKL, dan WOPPS melalui Asisten Si-Molek berdasarkan dokumen resmi.'
 )
 @section('hide_dev_nav', true)
 
@@ -29,9 +29,9 @@
 
             <section
                 data-chat-messages
-                class="hidden min-h-0 flex-1 overflow-y-auto px-4 py-6 sm:px-6"
+                class="chatbot-pattern-surface hidden min-h-0 flex-1 overflow-y-auto px-4 py-6 sm:px-6"
             >
-                <div data-chat-message-list class="mx-auto w-full max-w-3xl space-y-5"></div>
+                <div data-chat-message-list class="chatbot-pattern-content mx-auto w-full max-w-3xl space-y-5"></div>
             </section>
 
             @include('components.chatbot.chat-input')

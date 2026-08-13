@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'DKP Assistant | Informasi KP dan Magang')
+@section('title', 'Si-Molek | Layanan KP, Magang, PKL, dan WOPPS')
 
 @section(
     'meta_description',
-    'Temukan informasi Kerja Praktik dan Magang melalui DKP Assistant berbasis informasi resmi Dinas Kelautan dan Perikanan Provinsi Jawa Timur.'
+    'Si-Molek adalah Sistem Informasi Manajemen Otomatisasi Layanan Kerja Praktik, Magang, PKL, dan WOPPS Dinas Kelautan dan Perikanan Provinsi Jawa Timur.'
 )
 
 @section('content')
@@ -17,13 +17,9 @@
 
             @include('components.landing.categories')
 
-            @include('components.landing.popular-questions')
-
             @include('components.landing.infographics-preview', [
                 'items' => $infographics,
             ])
-
-            @include('components.landing.how-it-works')
 
             @include('components.landing.benefits')
 

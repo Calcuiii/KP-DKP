@@ -22,7 +22,7 @@ class ChatbotPageTest extends TestCase
             ->assertOk()
             ->assertSee('data-chatbot-app', false)
             ->assertSee('data-chat-message-list', false)
-            ->assertSee('Halo, selamat datang di DKP Assistant!')
+            ->assertSee('Halo, selamat datang di Asisten Si-Molek!')
             ->assertSee('Magang / PKL')
             ->assertSee('WOPPS')
             ->assertDontSee('fixed bottom-6 left-1/2', false);
@@ -41,6 +41,56 @@ class ChatbotPageTest extends TestCase
                 'session_key',
                 'message',
             ]);
+    }
+
+    public function test_the_chat_message_endpoint_returns_the_approved_answer_for_a_magang_quick_question(): void
+    {
+        $response = $this
+            ->withCookie('dkp_guestbook_completed', '1')
+            ->withCredentials()
+            ->postJson(route('chatbot.api.messages.send'), [
+                'session_key' => (string) Str::uuid(),
+                'message' => 'Bagaimana alur pengajuan Magang / PKL?',
+            ]);
+
+        $response
+            ->assertCreated()
+            ->assertJsonPath('data.message.status', 'success')
+            ->assertJsonPath('data.message.sources.0.document_id', 'KB-007');
+
+        self::assertStringContainsString(
+            '1. Isi Buku Tamu Magang / PKL.',
+            $response->json('data.message.content'),
+        );
+        self::assertStringContainsString(
+            '11. Proses dokumen akhir dilakukan sesuai ketentuan yang berlaku.',
+            $response->json('data.message.content'),
+        );
+    }
+
+    public function test_the_chat_message_endpoint_returns_the_approved_answer_for_a_wopps_quick_question(): void
+    {
+        $response = $this
+            ->withCookie('dkp_guestbook_completed', '1')
+            ->withCredentials()
+            ->postJson(route('chatbot.api.messages.send'), [
+                'session_key' => (string) Str::uuid(),
+                'message' => 'Ke mana saya mengirimkan dokumen pengajuan?',
+            ]);
+
+        $response
+            ->assertCreated()
+            ->assertJsonPath('data.message.status', 'success')
+            ->assertJsonPath('data.message.sources.0.document_id', 'KB-009');
+
+        self::assertStringContainsString(
+            'https://bit.ly/WOPPS',
+            $response->json('data.message.content'),
+        );
+        self::assertStringContainsString(
+            '0852-53000-485',
+            $response->json('data.message.content'),
+        );
     }
 
     public function test_the_chat_message_endpoint_uses_the_conversation_question_for_an_explicit_follow_up(): void

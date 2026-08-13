@@ -7,7 +7,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| DKP Assistant Design Foundation
+| Si-Molek Design Foundation
 |--------------------------------------------------------------------------
 */
 
@@ -174,6 +174,15 @@
     padding-left: 1.25rem;
     margin-bottom: 0.5rem;
 }
+.chat-markdown ul {
+    list-style-type: disc;
+}
+.chat-markdown ol {
+    list-style-type: decimal;
+}
+.chat-markdown li + li {
+    margin-top: 0.35rem;
+}
 .chat-markdown table {
     border-collapse: collapse;
     width: 100%;
@@ -194,4 +203,238 @@
 .chat-markdown a {
     color: var(--ocean);
     text-decoration: underline;
+}
+
+.chatbot-pattern-surface {
+    position: relative;
+    isolation: isolate;
+    background-color: #F7FAFE;
+    background-image:
+        linear-gradient(to right, rgba(26, 95, 168, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(26, 95, 168, 0.07) 1px, transparent 1px);
+    background-size: 6rem 4rem;
+}
+
+.chatbot-pattern-surface::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    content: '';
+    background:
+        radial-gradient(circle 42rem at 100% 0%, rgba(56, 189, 248, 0.17), transparent 62%),
+        radial-gradient(circle 32rem at 0% 100%, rgba(13, 158, 138, 0.09), transparent 65%);
+}
+
+.chatbot-pattern-content {
+    position: relative;
+    z-index: 1;
+}
+
+@layer components {
+    .participant-workspace {
+        background:
+            radial-gradient(circle at 82% 8%, rgba(56, 189, 248, 0.10), transparent 24rem),
+            radial-gradient(circle at 6% 38%, rgba(13, 158, 138, 0.07), transparent 22rem),
+            var(--background);
+    }
+
+    .participant-sidebar::before {
+        position: absolute;
+        width: 11rem;
+        height: 11rem;
+        right: -5rem;
+        top: -5rem;
+        border-radius: 9999px;
+        background: rgba(56, 189, 248, 0.15);
+        content: '';
+        animation: participant-float 7s ease-in-out infinite;
+    }
+
+    .participant-sidebar-link {
+        position: relative;
+        z-index: 1;
+    }
+
+    .participant-sidebar-link:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.10);
+        transform: translateX(3px);
+    }
+
+    .participant-sidebar-link.is-active {
+        color: var(--navy);
+        background: white;
+        box-shadow: 0 10px 28px rgba(5, 25, 55, 0.22);
+    }
+
+    .participant-sidebar-link.is-active > span:first-child {
+        color: white;
+        background: linear-gradient(135deg, var(--ocean), var(--teal));
+    }
+
+    .participant-mobile-nav.is-active {
+        color: white;
+        border-color: var(--ocean);
+        background: var(--ocean);
+    }
+
+    .participant-dashboard-content > section,
+    .participant-dashboard-content > div,
+    .participant-dashboard-content > article {
+        scroll-margin-top: 7rem;
+    }
+
+    .participant-reveal {
+        opacity: 0;
+        transform: translateY(22px) scale(0.985);
+        transition:
+            opacity 650ms cubic-bezier(0.22, 1, 0.36, 1),
+            transform 650ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .participant-reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    #kenali-si-molek::after {
+        position: absolute;
+        width: 14rem;
+        height: 14rem;
+        right: -5rem;
+        bottom: -6rem;
+        border: 2rem solid rgba(255, 255, 255, 0.08);
+        border-radius: 9999px;
+        content: '';
+        animation: participant-orbit 14s linear infinite;
+    }
+
+    #kenali-si-molek > div:nth-last-child(2) {
+        animation: participant-dashboard-hover 5s ease-in-out infinite;
+    }
+
+    #cara-penggunaan li {
+        transition: transform 250ms ease, background-color 250ms ease;
+    }
+
+    #cara-penggunaan li:hover {
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateY(-5px);
+    }
+
+    #cara-penggunaan li span:first-child {
+        animation: participant-pulse 2.8s ease-in-out infinite;
+    }
+
+    #cara-penggunaan li:nth-child(2) span:first-child { animation-delay: 200ms; }
+    #cara-penggunaan li:nth-child(3) span:first-child { animation-delay: 400ms; }
+    #cara-penggunaan li:nth-child(4) span:first-child { animation-delay: 600ms; }
+
+    .participant-auth-scene {
+        background:
+            radial-gradient(circle at 12% 16%, rgba(56, 189, 248, 0.15), transparent 28rem),
+            radial-gradient(circle at 89% 82%, rgba(13, 158, 138, 0.12), transparent 26rem),
+            var(--background);
+    }
+
+    .participant-auth-card {
+        animation: participant-auth-enter 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .auth-fade-up {
+        animation: participant-auth-fade-up 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .auth-delay-1 {
+        animation-delay: 100ms;
+    }
+
+    .auth-delay-2 {
+        animation-delay: 180ms;
+    }
+
+    .auth-delay-3 {
+        animation-delay: 260ms;
+    }
+
+    .participant-auth-wave {
+        transform-origin: center;
+        animation: participant-auth-wave 7s ease-in-out infinite alternate;
+    }
+}
+
+@keyframes participant-float {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50% { transform: translate3d(-12px, 16px, 0); }
+}
+
+@keyframes participant-dashboard-hover {
+    0%, 100% { transform: translateY(1.5rem); }
+    50% { transform: translateY(1.15rem); }
+}
+
+@keyframes participant-orbit {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes participant-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(13, 158, 138, 0); }
+    50% { box-shadow: 0 0 0 7px rgba(13, 158, 138, 0.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .participant-reveal,
+    .participant-reveal.is-visible,
+    .participant-sidebar::before,
+    #kenali-si-molek::after,
+    #kenali-si-molek > div:nth-last-child(2),
+    #cara-penggunaan li span:first-child {
+        animation: none;
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
+@keyframes participant-auth-enter {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes participant-auth-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes participant-auth-wave {
+    from {
+        transform: translateX(-5px) translateY(0);
+    }
+
+    to {
+        transform: translateX(6px) translateY(-3px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .participant-auth-card,
+    .auth-fade-up,
+    .participant-auth-wave {
+        animation: none;
+    }
 }

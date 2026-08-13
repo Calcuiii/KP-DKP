@@ -175,7 +175,7 @@ function LogoMark({ size = 36, dark = false }: { size?: number; dark?: boolean }
         <Fish size={size * 0.55} color={dark ? "#7EC8FF" : "#fff"} />
       </div>
       <div>
-        <div className={`font-bold leading-tight text-sm ${dark ? "text-white" : "text-[#0C2340]"}`}>DKP Assistant</div>
+        <div className={`font-bold leading-tight text-sm ${dark ? "text-white" : "text-[#0C2340]"}`}>Si-Molek</div>
         <div className={`text-[10px] leading-tight ${dark ? "text-blue-300" : "text-muted-foreground"}`}>Jawa Timur</div>
       </div>
     </div>
@@ -187,11 +187,11 @@ function LandingPage({ onNavigate }: { onNavigate: (page: Page, q?: string) => v
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const faqs = [
-    { q: "Apa itu DKP Assistant?", a: "DKP Assistant adalah layanan chatbot berbasis AI yang membantu mahasiswa dan siswa SMK menemukan informasi seputar Kerja Praktik dan Magang di Dinas Kelautan dan Perikanan Provinsi Jawa Timur." },
-    { q: "Apakah jawaban chatbot merupakan keputusan resmi Dinas?", a: "Tidak. Jawaban yang diberikan DKP Assistant bersifat informatif dan berdasarkan dokumen resmi yang dikelola administrator. Untuk keputusan resmi, silakan hubungi petugas Dinas secara langsung." },
+    { q: "Apa itu Si-Molek?", a: "Si-Molek adalah layanan chatbot berbasis AI yang membantu mahasiswa dan siswa SMK menemukan informasi seputar Kerja Praktik dan Magang di Dinas Kelautan dan Perikanan Provinsi Jawa Timur." },
+    { q: "Apakah jawaban chatbot merupakan keputusan resmi Dinas?", a: "Tidak. Jawaban yang diberikan Si-Molek bersifat informatif dan berdasarkan dokumen resmi yang dikelola administrator. Untuk keputusan resmi, silakan hubungi petugas Dinas secara langsung." },
     { q: "Informasi apa saja yang dapat ditanyakan?", a: "Anda dapat menanyakan informasi seputar persyaratan KP & Magang, alur pengajuan, dokumen yang dibutuhkan, pelaksanaan kegiatan, penyelesaian, serta sertifikat dan administrasi akhir." },
-    { q: "Dari mana chatbot mendapatkan informasi?", a: "DKP Assistant menggunakan teknologi Retrieval-Augmented Generation (RAG) yang mencari informasi dari knowledge base berisi dokumen resmi yang telah diverifikasi dan dikelola oleh administrator Dinas." },
-    { q: "Apa yang terjadi jika chatbot tidak menemukan jawaban?", a: "Jika tidak ditemukan informasi yang relevan, DKP Assistant akan memberitahu Anda dan menyarankan untuk menghubungi petugas Dinas secara langsung. Pertanyaan tersebut juga akan dicatat untuk pembaruan knowledge base." },
+    { q: "Dari mana chatbot mendapatkan informasi?", a: "Si-Molek menggunakan teknologi Retrieval-Augmented Generation (RAG) yang mencari informasi dari knowledge base berisi dokumen resmi yang telah diverifikasi dan dikelola oleh administrator Dinas." },
+    { q: "Apa yang terjadi jika chatbot tidak menemukan jawaban?", a: "Jika tidak ditemukan informasi yang relevan, Si-Molek akan memberitahu Anda dan menyarankan untuk menghubungi petugas Dinas secara langsung. Pertanyaan tersebut juga akan dicatat untuk pembaruan knowledge base." },
     { q: "Bagaimana cara menghubungi petugas?", a: "Anda dapat menghubungi petugas Dinas Kelautan dan Perikanan Provinsi Jawa Timur melalui kontak resmi yang tertera di website resmi Dinas atau mengunjungi kantor langsung pada jam kerja." },
   ];
 
@@ -317,7 +317,7 @@ function LandingPage({ onNavigate }: { onNavigate: (page: Page, q?: string) => v
                   <Fish size={14} color="#7EC8FF" />
                 </div>
                 <div>
-                  <div className="text-white text-xs font-semibold">DKP Assistant</div>
+                  <div className="text-white text-xs font-semibold">Si-Molek</div>
                   <div className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" /><span className="text-blue-200 text-[10px]">Online</span></div>
                 </div>
               </div>
@@ -425,7 +425,7 @@ function LandingPage({ onNavigate }: { onNavigate: (page: Page, q?: string) => v
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold mb-4" style={{ background: `${OCEAN}15`, color: OCEAN }}>
               Cara Kerja
             </span>
-            <h2 className="text-3xl font-bold" style={{ color: NAVY }}>Bagaimana DKP Assistant Menghasilkan Jawaban?</h2>
+            <h2 className="text-3xl font-bold" style={{ color: NAVY }}>Bagaimana Si-Molek Menghasilkan Jawaban?</h2>
           </div>
           <div className="flex flex-col lg:flex-row items-center gap-4 mb-8">
             {[
@@ -454,7 +454,7 @@ function LandingPage({ onNavigate }: { onNavigate: (page: Page, q?: string) => v
           <div className="max-w-2xl mx-auto p-4 rounded-2xl border border-[#1A5FA8]/20 bg-white flex items-start gap-3">
             <Info size={18} className="flex-shrink-0 mt-0.5" style={{ color: OCEAN }} />
             <p className="text-sm text-muted-foreground leading-relaxed">
-              DKP Assistant hanya memberikan jawaban berdasarkan knowledge base yang telah diverifikasi dan dikelola oleh administrator.
+              Si-Molek hanya memberikan jawaban berdasarkan knowledge base yang telah diverifikasi dan dikelola oleh administrator.
             </p>
           </div>
         </div>
@@ -515,7 +515,7 @@ function LandingPage({ onNavigate }: { onNavigate: (page: Page, q?: string) => v
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="rounded-3xl p-12 text-center" style={{ background: `linear-gradient(135deg, ${NAVY} 0%, ${OCEAN} 100%)` }}>
             <h2 className="text-3xl font-bold text-white mb-3">Masih Memiliki Pertanyaan tentang KP atau Magang?</h2>
-            <p className="text-blue-200 mb-8 max-w-lg mx-auto">Gunakan DKP Assistant untuk menemukan informasi berdasarkan dokumen resmi yang tersedia.</p>
+            <p className="text-blue-200 mb-8 max-w-lg mx-auto">Gunakan Si-Molek untuk menemukan informasi berdasarkan dokumen resmi yang tersedia.</p>
             <button
               onClick={() => onNavigate("chat")}
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm text-white border-2 border-white/30 hover:bg-white/10 transition-all"
@@ -685,7 +685,7 @@ function ChatPage({ onNavigate, initialQ }: { onNavigate: (p: Page) => void; ini
               <Fish size={14} color="#fff" />
             </div>
             <div>
-              <div className="text-sm font-semibold" style={{ color: NAVY }}>DKP Assistant</div>
+              <div className="text-sm font-semibold" style={{ color: NAVY }}>Si-Molek</div>
               <div className="flex items-center gap-1 text-[10px] text-muted-foreground"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />Online</div>
             </div>
           </div>
@@ -703,7 +703,7 @@ function ChatPage({ onNavigate, initialQ }: { onNavigate: (p: Page) => void; ini
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 shadow-md" style={{ background: OCEAN }}>
                 <Fish size={32} color="#fff" />
               </div>
-              <h2 className="text-xl font-bold mb-2" style={{ color: NAVY }}>Halo, ada yang bisa DKP Assistant bantu?</h2>
+              <h2 className="text-xl font-bold mb-2" style={{ color: NAVY }}>Halo, ada yang bisa Si-Molek bantu?</h2>
               <p className="text-sm text-muted-foreground mb-8">Tanyakan informasi seputar Kerja Praktik dan Magang.</p>
               <div className="grid sm:grid-cols-2 gap-2.5 max-w-lg w-full">
                 {suggested.map(q => (
@@ -814,7 +814,7 @@ function ChatPage({ onNavigate, initialQ }: { onNavigate: (p: Page) => void; ini
               </div>
             </div>
             <p className="text-[10px] text-muted-foreground text-center mt-2">
-              DKP Assistant dapat menghasilkan jawaban yang kurang tepat. Pastikan kembali informasi penting melalui layanan resmi.
+              Si-Molek dapat menghasilkan jawaban yang kurang tepat. Pastikan kembali informasi penting melalui layanan resmi.
             </p>
           </div>
         </div>
@@ -835,7 +835,7 @@ function AdminLogin({ onLogin }: { onLogin: () => void }) {
         <div className="bg-white rounded-3xl shadow-2xl p-8">
           <div className="flex justify-center mb-6"><LogoMark size={44} /></div>
           <h1 className="text-xl font-bold text-center mb-1" style={{ color: NAVY }}>Masuk Admin</h1>
-          <p className="text-xs text-center text-muted-foreground mb-6">Panel Manajemen DKP Assistant</p>
+          <p className="text-xs text-center text-muted-foreground mb-6">Panel Manajemen Si-Molek</p>
 
           <div className="p-3 rounded-xl border border-amber-200 bg-amber-50 flex items-start gap-2 mb-5">
             <Shield size={14} className="mt-0.5 flex-shrink-0 text-amber-600" />
@@ -1525,7 +1525,7 @@ function ChatbotSettings() {
               </button>
             </div>
             {[
-              { label: "Nama Chatbot", val: "DKP Assistant" },
+              { label: "Nama Chatbot", val: "Si-Molek" },
               { label: "Deskripsi Chatbot", val: "Asisten informasi KP & Magang DKP Jawa Timur" },
             ].map(f => (
               <div key={f.label}>
@@ -1535,7 +1535,7 @@ function ChatbotSettings() {
             ))}
             <div>
               <label className="block text-xs font-semibold mb-1.5">Pesan Sambutan</label>
-              <textarea defaultValue="Halo! Saya DKP Assistant. Ada yang bisa saya bantu seputar Kerja Praktik dan Magang?" className="w-full px-3 py-2.5 rounded-xl border border-border bg-input-background text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/20" rows={3} />
+              <textarea defaultValue="Halo! Saya Si-Molek. Ada yang bisa saya bantu seputar Kerja Praktik dan Magang?" className="w-full px-3 py-2.5 rounded-xl border border-border bg-input-background text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/20" rows={3} />
             </div>
             <button className="px-5 py-2.5 rounded-xl text-white text-sm font-semibold" style={{ background: OCEAN }}>Simpan Perubahan</button>
           </>
@@ -1573,7 +1573,7 @@ function ChatbotSettings() {
           <>
             <div>
               <label className="block text-xs font-semibold mb-1.5">System Instruction</label>
-              <textarea defaultValue={`Anda adalah DKP Assistant, asisten AI yang membantu pengguna mendapatkan informasi seputar Kerja Praktik (KP) dan Magang di Dinas Kelautan dan Perikanan Provinsi Jawa Timur.\n\nAnda hanya menjawab berdasarkan konteks dokumen resmi yang diberikan. Jika informasi tidak tersedia dalam konteks, sampaikan bahwa informasi belum tersedia dan sarankan pengguna untuk menghubungi petugas Dinas.`} className="w-full px-3 py-2.5 rounded-xl border border-border bg-input-background text-sm resize-none focus:outline-none font-mono text-xs" rows={8} />
+              <textarea defaultValue={`Anda adalah Si-Molek, asisten AI yang membantu pengguna mendapatkan informasi seputar Kerja Praktik (KP) dan Magang di Dinas Kelautan dan Perikanan Provinsi Jawa Timur.\n\nAnda hanya menjawab berdasarkan konteks dokumen resmi yang diberikan. Jika informasi tidak tersedia dalam konteks, sampaikan bahwa informasi belum tersedia dan sarankan pengguna untuk menghubungi petugas Dinas.`} className="w-full px-3 py-2.5 rounded-xl border border-border bg-input-background text-sm resize-none focus:outline-none font-mono text-xs" rows={8} />
             </div>
             <div className="flex gap-3">
               <button className="px-5 py-2.5 rounded-xl text-white text-sm font-semibold" style={{ background: OCEAN }}>Simpan</button>

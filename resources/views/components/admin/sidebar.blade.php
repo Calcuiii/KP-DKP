@@ -1,14 +1,21 @@
 @php
 $menu = [
     ['icon' => 'bar-chart-2', 'label' => 'Dashboard', 'route' => 'admin.dashboard'],
-    ['icon' => 'database', 'label' => 'Knowledge Base', 'route' => 'admin.knowledge-base'],
-    ['icon' => 'layers', 'label' => 'Infografis', 'route' => 'admin.infographics'],
     ['icon' => 'message-square', 'label' => 'Conversation Logs', 'route' => 'admin.conversation-logs'],
     ['icon' => 'inbox', 'label' => 'Pertanyaan Tidak Terjawab', 'route' => 'admin.unanswered-questions'],
     ['icon' => 'trending-up', 'label' => 'Analytics', 'route' => 'admin.analytics'],
-    ['icon' => 'users', 'label' => 'Manajemen Admin', 'route' => 'admin.manajemen-admin'],
     ['icon' => 'activity', 'label' => 'Activity Log', 'route' => 'admin.activity-log'],
 ];
+
+if (auth()->user()?->isSuperAdmin()) {
+    array_splice($menu, 1, 0, [
+        ['icon' => 'database', 'label' => 'Knowledge Base', 'route' => 'admin.knowledge-base'],
+        ['icon' => 'layers', 'label' => 'Infografis', 'route' => 'admin.infographics'],
+    ]);
+    array_splice($menu, -1, 0, [
+        ['icon' => 'users', 'label' => 'Manajemen Admin', 'route' => 'admin.manajemen-admin'],
+    ]);
+}
 @endphp
 <div data-admin-sidebar class="flex w-60 flex-shrink-0 flex-col overflow-hidden bg-navy transition-all duration-300">
 <div class="flex items-center gap-2.5 border-b border-white/10 p-4">
@@ -16,7 +23,7 @@ $menu = [
 <i data-lucide="fish" class="h-5 w-5 text-cyan-300" aria-hidden="true"></i>
 </div>
 <div>
-<div class="text-sm font-bold leading-tight text-white">DKP Assistant</div>
+<div class="text-sm font-bold leading-tight text-white">Si-Molek</div>
 <div class="text-[10px] leading-tight text-blue-300">Jawa Timur</div>
 </div>
 </div>

@@ -2,18 +2,6 @@
     "schema_version": "1.0",
     "documents": [
         {
-            "document_id": "KB-UPLOAD-000002",
-            "title": "FAQ Dinas Periknan dan Kelautan Provinsi Jawa Timur",
-            "category": "sop",
-            "document_type": "official_procedure",
-            "effective_date": "2026-07-31",
-            "priority": 2,
-            "status": "active",
-            "source_file": "public/knowledge-base/J2CjLnWW28gMQvDDA2ez5evKVs10ElTZYxFQ9Kch.docx",
-            "processed_file": "kb-upload-000002.md",
-            "source_sha256": "6241559fd7db5b27e92c9f08d38f9d0d9ec50a051b556a4a0c15e04e9071ed61"
-        },
-        {
             "document_id": "KB-UPLOAD-000001",
             "title": "FAQ DKP",
             "category": "faq",
@@ -24,6 +12,18 @@
             "source_file": "public/knowledge-base/AdygrUKdjUtvyDzLch5DSwuHNCwlLMUaxGdZ6JBK.docx",
             "processed_file": "kb-upload-000001.md",
             "source_sha256": "6241559fd7db5b27e92c9f08d38f9d0d9ec50a051b556a4a0c15e04e9071ed61"
+        },
+        {
+            "document_id": "KB-UPLOAD-000002",
+            "title": "FAQ Magang/PKL/WOPPS DKP",
+            "category": "faq",
+            "document_type": "uploaded_document",
+            "effective_date": "2026-08-04",
+            "priority": 3,
+            "status": "active",
+            "source_file": "public/knowledge-base/de1j4kfYkmjGrOHvanFvBw0dREfxexp0ByUEaNOZ.docx",
+            "processed_file": "kb-upload-000002.md",
+            "source_sha256": "a1f59ff2a6bd70f8215c9f0ec53ffe10df7c81fcedb1aa62c95dd464642ebc5d"
         },
         {
             "document_id": "KB-UPLOAD-000003",

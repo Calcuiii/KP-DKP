@@ -21,40 +21,88 @@
             </a>
         </div>
 
-        <div class="mt-8" data-infographic-carousel>
+        <div
+            class="mt-8"
+            data-infographic-coverflow
+            role="region"
+            aria-roledescription="carousel"
+            aria-label="Carousel infografis"
+        >
             <div
-                class="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4"
-                data-infographic-carousel-track
-                aria-label="Carousel infografis"
+                class="cursor-grab overflow-hidden py-8 outline-none focus-visible:ring-2 focus-visible:ring-ocean active:cursor-grabbing sm:py-10"
+                data-infographic-coverflow-frame
+                tabindex="0"
+                style="perspective: 900px; touch-action: pan-y;"
             >
-                @foreach ($items as $index => $item)
-                    <div class="w-[86%] shrink-0 snap-start sm:w-[calc(50%-0.625rem)] lg:w-[calc(33.333%-0.834rem)]">
-                        <x-infographics.card
-                            :item="$item"
-                            :index="$index"
-                            :loading="$index === 0 ? 'eager' : 'lazy'"
-                        />
-                    </div>
-                @endforeach
+                <div
+                    class="relative mx-auto h-[17rem] select-none sm:h-[22rem]"
+                    data-infographic-coverflow-stage
+                    style="transform-style: preserve-3d;"
+                >
+                    @foreach ($items as $index => $item)
+                        @php
+                            $label = $item->type === 'infografis'
+                                ? sprintf('Seri Infografis %d/07', $item->series_number)
+                                : 'Surat Edaran Resmi';
+                        @endphp
+
+                        <button
+                            type="button"
+                            data-infographic-coverflow-card
+                            data-infographic-lightbox-trigger
+                            data-image-src="{{ $item->image_url }}"
+                            data-image-alt="{{ $item->alt }}"
+                            data-image-caption="{{ $item->caption }}"
+                            data-image-width="{{ $item->image_width }}"
+                            data-image-height="{{ $item->image_height }}"
+                            class="absolute left-1/2 top-0 aspect-[3/4] w-[clamp(9.25rem,29vw,14rem)] overflow-hidden rounded-2xl border border-white/70 bg-white text-left shadow-xl outline-none ring-ocean transition-shadow focus-visible:ring-4"
+                            style="will-change: transform, opacity;"
+                            aria-roledescription="slide"
+                            aria-label="{{ $index + 1 }} dari {{ $items->count() }}: {{ $item->caption }}"
+                        >
+                            <img
+                                src="{{ $item->image_url }}"
+                                alt="{{ $item->alt }}"
+                                width="{{ $item->image_width }}"
+                                height="{{ $item->image_height }}"
+                                loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
+                                @if ($index === 0) fetchpriority="high" @endif
+                                draggable="false"
+                                class="h-full w-full object-cover"
+                            >
+
+                            <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy/90 via-navy/55 to-transparent px-3 pb-3 pt-10 text-xs font-semibold text-white">
+                                {{ $label }}
+                            </span>
+                        </button>
+                    @endforeach
+                </div>
             </div>
 
-            <div class="mt-2 flex justify-end gap-2">
+            <div class="mx-auto mt-1 max-w-xl text-center" aria-live="polite">
+                <p class="text-sm font-bold text-navy" data-infographic-coverflow-caption></p>
+                <p class="mt-1 text-xs text-muted-foreground" data-infographic-coverflow-detail></p>
+            </div>
+
+            <div class="mt-5 flex items-center justify-center gap-3">
                 <button
                     type="button"
-                    data-infographic-carousel-previous
-                    class="rounded-lg border border-border px-3 py-2 text-sm font-semibold text-ocean transition-colors hover:bg-secondary"
+                    data-infographic-coverflow-previous
+                    class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white text-ocean shadow-sm transition hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-ocean focus:ring-offset-2"
                     aria-label="Infografis sebelumnya"
                 >
-                    Sebelumnya
+                    <i data-lucide="chevron-left" class="h-5 w-5" aria-hidden="true"></i>
                 </button>
+
+                <div class="flex items-center gap-1.5" data-infographic-coverflow-pagination aria-label="Pilih infografis"></div>
 
                 <button
                     type="button"
-                    data-infographic-carousel-next
-                    class="rounded-lg border border-border px-3 py-2 text-sm font-semibold text-ocean transition-colors hover:bg-secondary"
+                    data-infographic-coverflow-next
+                    class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white text-ocean shadow-sm transition hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-ocean focus:ring-offset-2"
                     aria-label="Infografis berikutnya"
                 >
-                    Berikutnya
+                    <i data-lucide="chevron-right" class="h-5 w-5" aria-hidden="true"></i>
                 </button>
             </div>
         </div>

@@ -1,16 +1,16 @@
 ---
 document_id: KB-UPLOAD-000002
-title: FAQ Dinas Periknan dan Kelautan Provinsi Jawa Timur
-category: sop
-document_type: official_procedure
-effective_date: 2026-07-31
-priority: 2
+title: FAQ Magang/PKL/WOPPS DKP
+category: faq
+document_type: uploaded_document
+effective_date: 2026-08-04
+priority: 3
 status: active
-source_file: public/knowledge-base/J2CjLnWW28gMQvDDA2ez5evKVs10ElTZYxFQ9Kch.docx
+source_file: public/knowledge-base/de1j4kfYkmjGrOHvanFvBw0dREfxexp0ByUEaNOZ.docx
 policy_relations: []
 ---
 
-# FAQ Dinas Periknan dan Kelautan Provinsi Jawa Timur
+# FAQ Magang/PKL/WOPPS DKP
 
 ## Ringkasan
 
@@ -113,9 +113,171 @@ Membuat Surat Permohonan resmi dari institusi pendidikan asal
 Mengisi Google Form “Etichal Clearance”: https://bit.ly/EASL-DKP
 Membuat Proposal Kegiatan (Format sesuai institusi asal)
 
-Alur Magang Kerja / Kerja Praktek Lapangan (PKL)
+Alur Magang Kerja / Praktek Kerja Lapangan (PKL)
 
-## Bagaimana alur magang kerja / kerja praktek lapangan di Dinas Perikanan dan Kelautan Provinsi Jawa Timur?
+## Bagaimana alur lengkap magang kerja / Praktek Kerja Lapangan (PKL) di Dinas Perikanan dan Kelautan Provinsi Jawa Timur, dari pengajuan hingga penerbitan Surat Keterangan dan Sertifikat?
 
 Answer:
+Alur magang kerja / PKL terdiri dari 11 tahapan yang terbagi ke dalam 3 tahap besar, yaitu:
+
+Tahap 1 - Pengajuan:
+Isi Buku Tamu Magang / PKL
+Koordinasi Ketersediaan Kuota
+Ajukan Surat Permohonan
+Isi Form Pelaksanaan Magang / PKL
+
+Tahap 2 - Konfirmasi:
+Penerbitan Surat Balasan
+Pelaksanaan Magang / PKL
+
+Tahap 3 - Pelaksanaan:
+Susun Laporan Kegiatan
+Siapkan Bahan Presentasi
+Presentasi Hasil Kegiatan
+Isi Form Selesai Magang / PKL
+Penerbitan Surat Keterangan & Sertifikat
+
+## Apa yang dimaksud dengan tahap "Isi Buku Tamu Magang / PKL"?
+
+Answer:
+Calon peserta mengisi Google Form Buku Tamu secara individu sebagai tahap awal pendataan permohonan Magang / PKL, melalui link:
+bit.ly/DaftarMagangPKL_DKP_JATIM
+
+## Apa yang dimaksud dengan tahap "Koordinasi Ketersediaan Kuota"?
+
+Answer:
+Calon peserta berkoordinasi mengenai ketersediaan kuota dan kesesuaian Program Studi atau Jurusan. Pada tahap ini, calon peserta juga memperoleh informasi awal mengenai aturan dan tata tertib yang berlaku.
+
+## Apa yang dimaksud dengan tahap "Ajukan Surat Permohonan" pada alur Magang / PKL?
+
+Answer:
+Calon peserta mengajukan Surat Permohonan Magang / PKL setelah memperoleh persetujuan awal terkait kuota. Kelengkapan data yang wajib dicantumkan dalam surat ini dapat dilihat pada Section F.
+
+## Apa yang dimaksud dengan tahap "Isi Form Pelaksanaan Magang / PKL"?
+
+Answer:
+Calon peserta mengisi Google Form Pelaksanaan Magang / PKL sesuai kategori institusi pendidikan, yaitu:
+SMA/K: tinyurl.com/DaftarMagangDKP-SM
+Perguruan Tinggi: tinyurl.com/DaftarMagangDKP-PT
+
+## Apa yang dimaksud dengan tahap "Penerbitan Surat Balasan"?
+
+Answer:
+Dinas memproses dan menerbitkan Surat Balasan sebagai tindak lanjut atas Surat Permohonan Magang / PKL yang diajukan.
+
+## Apa yang dimaksud dengan tahap "Pelaksanaan Magang / PKL"?
+
+Answer:
+Peserta melaksanakan kegiatan Magang / PKL sesuai dengan periode, lokasi, aturan, dan tata tertib yang telah ditentukan.
+
+## Apa yang dimaksud dengan tahap "Susun Laporan Kegiatan"?
+
+Answer:
+Peserta menyusun laporan hasil kegiatan Magang / PKL menggunakan format sesuai ketentuan institusi asal.
+
+## Apa yang dimaksud dengan tahap "Siapkan Bahan Presentasi"?
+
+Answer:
+Peserta menyusun bahan presentasi yang merangkum hasil pelaksanaan kegiatan Magang / PKL.
+
+## Apa yang dimaksud dengan tahap "Presentasi Hasil Kegiatan"?
+
+Answer:
+Peserta melakukan presentasi hasil kegiatan Magang / PKL di lokasi pelaksanaan, pada minggu terakhir program (tentative).
+
+## Apa yang dimaksud dengan tahap "Isi Form Selesai Magang / PKL"?
+
+Answer:
+Setelah kegiatan selesai, peserta mengisi Google Form sebagai konfirmasi penyelesaian Magang / PKL, sekaligus tempat mengumpulkan hasil presentasi dan laporan, melalui link:
+SMA/K: bit.ly/SelesaiMagangPKL-SM
+Perguruan Tinggi: (bit.ly/SelesaiMagangPKL-PT)
+
+## Kapan Surat Keterangan dan Sertifikat Magang / PKL diterbitkan?
+
+Answer:
+Dinas menerbitkan Surat Keterangan dan Sertifikat apabila peserta telah melampirkan permintaan penerbitan tersebut secara tersurat di dalam Surat Permohonan, dan seluruh tahapan (presentasi, laporan, serta konfirmasi selesai) telah dipenuhi.
+
+Kelengkapan Tambahan dalam Surat Permohonan Magang / PKL
+
+## Selain data yang sudah disebutkan pada Section C, data tambahan apa saja yang wajib dicantumkan dalam Surat Permohonan Magang / PKL?
+
+Answer:
+Selain data identitas pemohon (nama, NIS/NIM, sekolah/universitas, dan sebagainya), berikut kelengkapan tambahan yang wajib dicantumkan:
+Judul Kegiatan
+Tema Kegiatan
+Periode Kegiatan
+Lokasi Kegiatan
+Jumlah Peserta
+Kompetensi Keahlian
+Nomor WhatsApp Perwakilan
+Template Surat Permohonan dapat diakses pada link: https://bit.ly/Permohonan_Sertifikat_DKP
+
+## Apa yang dimaksud dengan "Judul Kegiatan" dalam Surat Permohonan Magang / PKL?
+
+Answer:
+Judul spesifik dari kegiatan magang atau Praktek Kerja Lapangan yang diajukan oleh pemohon.
+
+## Apa yang dimaksud dengan "Tema Kegiatan" dalam Surat Permohonan Magang / PKL?
+
+Answer:
+Tema atau topik utama yang diusulkan pemohon untuk kegiatan Magang / PKL yang akan dilaksanakan.
+
+## Apa yang dimaksud dengan "Periode Kegiatan" dalam Surat Permohonan Magang / PKL?
+
+Answer:
+Tanggal mulai dan berakhir yang diusulkan pemohon untuk pelaksanaan kegiatan Magang / PKL.
+
+## Apa yang dimaksud dengan "Lokasi Kegiatan" dalam Surat Permohonan Magang / PKL?
+
+Answer:
+Lokasi atau unit kerja yang dituju pemohon untuk melaksanakan kegiatan Magang / Praktek Kerja Lapangan.
+
+## Apa yang dimaksud dengan "Jumlah Peserta" dalam Surat Permohonan Magang / PKL?
+
+Answer:
+Jumlah peserta yang diajukan institusi asal untuk mengikuti kegiatan Magang / PKL tersebut.
+
+## Apa yang dimaksud dengan "Kompetensi Keahlian" dalam Surat Permohonan Magang / PKL?
+
+Answer:
+Bidang keahlian atau bidang studi yang menjadi latar belakang pemohon, digunakan sebagai acuan penempatan unit kerja.
+
+## Apa fungsi "Nomor WhatsApp Perwakilan" dalam Surat Permohonan Magang / PKL?
+
+Answer:
+Nomor WhatsApp perwakilan dilampirkan agar Dinas dapat berkoordinasi langsung terkait proses permohonan dan pelaksanaan Magang / PKL.
+
+## Apakah kebutuhan Surat Keterangan dan Sertifikat harus dicantumkan sejak awal dalam Surat Permohonan?
+
+Answer:
+Ya. Apabila pemohon memerlukan Surat Keterangan Magang/PKL/Penelitian atau Sertifikat, kebutuhan tersebut wajib dicantumkan secara jelas dan tersurat sejak Surat Permohonan awal, agar proses penerbitan dapat berjalan lebih cepat dan lancar.
+
+Ketentuan Sanksi bagi Peserta Magang / Praktek Kerja Lapangan
+
+## Apa saja tingkatan sanksi yang berlaku apabila peserta Magang / PKL melanggar aturan yang berlaku selama periode kegiatan?
+
+Answer:
+Terdapat 3 kategori sanksi bagi peserta Magang / PKL yang melanggar aturan, yaitu:
+a. Ringan: pembinaan berupa teguran lisan
+b. Sedang: penundaan penerbitan Surat Keterangan & Sertifikat Magang Kerja
+c. Berat: kegiatan magang yang bersangkutan dihentikan dan tidak mendapat Surat Keterangan / Sertifikat
+
+## Apa konsekuensi bagi peserta yang dikenakan sanksi kategori berat?
+
+Answer:
+Peserta yang dikenakan sanksi kategori berat akan dihentikan kegiatan Magang / PKL-nya dan tidak akan mendapatkan Surat Keterangan maupun Sertifikat penyelesaian Magang / PKL dari Dinas.
+
+Pengajuan Dokumen Penelitian / Permintaan Data
+
+## Setelah identitas diri, Surat Permohonan, Ethical Clearance, dan Proposal Kegiatan lengkap, ke mana dokumen pengajuan penelitian / permintaan data dikirimkan?
+
+Answer:
+Seluruh dokumen pengajuan penelitian / permintaan data dikirimkan melalui link berikut: https://bit.ly/WOPPS
+
+## Apa perbedaan antara link Ethical Clearance (EASL-DKP) dan link WOPPS?
+
+Answer:
+Link Ethical Clearance (https://bit.ly/EASL-DKP)
+merupakan Google Form untuk mengisi Form Persetujuan Etik (salah satu dokumen pendukung) yang harus diisi sebelum pengajuan. Sementara link WOPPS (https://bit.ly/WOPPS)
+merupakan link akhir untuk mengirimkan seluruh dokumen pengajuan (identitas diri, Surat Permohonan, hasil Ethical Clearance, dan Proposal Kegiatan) setelah semuanya lengkap.
 

@@ -10,10 +10,10 @@
 
     <meta
         name="description"
-        content="@yield('meta_description', 'DKP Assistant adalah layanan informasi Kerja Praktik dan Magang Dinas Kelautan dan Perikanan Provinsi Jawa Timur.')"
+        content="@yield('meta_description', 'Si-Molek adalah Sistem Informasi Manajemen Otomatisasi Layanan Kerja Praktik, Magang, PKL, dan WOPPS Dinas Kelautan dan Perikanan Provinsi Jawa Timur.')"
     >
 
-    <title>@yield('title', 'DKP Assistant')</title>
+    <title>@yield('title', 'Si-Molek')</title>
 
     @vite([
         'resources/css/app.css',
