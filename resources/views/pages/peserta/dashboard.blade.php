@@ -21,19 +21,29 @@
         ];
     @endphp
 
-    <div class="flex min-h-screen bg-[#F4F7FB] font-sans text-navy">
+            <div class="flex min-h-screen bg-[#F4F7FB] font-sans text-navy">
 
-        {{-- ═══════════ SIDEBAR ═══════════ --}}
-        <aside class="fixed left-0 top-0 z-40 hidden h-full w-60 flex-col bg-navy md:flex">
-            <div class="flex items-center gap-3 border-b border-white/10 px-5 py-5">
-                <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-ocean">
-                    <i data-lucide="waves" class="h-4 w-4 text-white" aria-hidden="true"></i>
-                </span>
-                <span>
-                    <span class="block text-sm font-bold leading-snug text-white">DKP Jatim</span>
-                    <span class="block text-xs text-white/45">Companion Portal</span>
-                </span>
-            </div>
+                {{-- ═══════════ SIDEBAR ═══════════ --}}
+                <aside class="fixed left-0 top-0 z-40 hidden h-full w-60 flex-col bg-navy md:flex">
+<div class="flex items-center gap-3 border-b border-white/10 px-5 py-5">
+    <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white shadow-[0_4px_10px_rgba(0,0,0,0.15)]">
+        <i
+            data-lucide="fish"
+            class="h-6 w-6 text-[#0B2545]"
+            stroke-width="1.8"
+            aria-hidden="true"
+        ></i>
+    </span>
+
+    <div class="min-w-0">
+        <span class="block text-sm font-bold leading-snug text-white">
+            Si-Molek
+        </span>
+        <span class="block text-[10px] font-medium leading-snug text-white/50">
+            Portal Peserta DKP Jatim
+        </span>
+    </div>
+</div>
 
             <nav class="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-4">
                 @foreach ($navItems as $item)
@@ -95,7 +105,7 @@
                     {{-- ═══ BELUM ADA PENGAJUAN AKTIF ═══ --}}
 
                     <div class="flex flex-col items-center gap-5 rounded-2xl border border-ocean/10 bg-gradient-to-br from-[#EDF3FB] to-[#E8F5F3] p-6 sm:flex-row">
-                        <svg width="120" height="72" viewBox="0 0 200 120" fill="none" aria-hidden="true" class="flex-shrink-0">
+                        <svg width="120" height="72" viewBox="0 0 200 120" fill="none" aria-hidden="true" class="flex-shrink-0 animate-[float_5s_ease-in-out_infinite]">
                             <ellipse cx="100" cy="105" rx="95" ry="18" fill="rgba(26,95,168,0.08)" />
                             <path d="M86 95L83 48H117L114 95H86Z" fill="white" stroke="#D1DCF0" stroke-width="1" />
                             <line x1="84" y1="78" x2="116" y2="78" stroke="rgba(26,95,168,0.18)" stroke-width="2" />
