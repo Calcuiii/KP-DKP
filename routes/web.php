@@ -15,6 +15,7 @@ use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\GuestbookCheckinController;
 use App\Http\Controllers\Peserta\ParticipantApplicationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\InternshipLocationController;
 
 Route::view('/', 'pages.landing')->name('landing');
 
@@ -105,6 +106,9 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
     Route::get('/analytics/export', [AnalyticsController::class, 'export'])->name('admin.analytics.export');
 
     Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('admin.activity-log');
+
+    Route::get('/lokasi-kp', [InternshipLocationController::class, 'index'])->name('admin.internship-locations');
+    Route::patch('/lokasi-kp/{location}', [InternshipLocationController::class, 'update'])->name('admin.internship-locations.update');
 
     Route::middleware('superadmin')->group(function (): void {
         Route::get('/knowledge-base', [KnowledgeBaseController::class, 'index'])->name('admin.knowledge-base');
