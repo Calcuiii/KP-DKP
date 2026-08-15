@@ -28,8 +28,20 @@ final class OfficialChatbotFaqResponder
     {
         $normalizedQuestion = $this->normalize($question);
 
+        if ($this->isGuestbookAccessQuestion($normalizedQuestion)) {
+            return $this->guestbookAccess();
+        }
+
+        if ($this->isRequestLetterContentsQuestion($normalizedQuestion)) {
+            return $this->requestLetterContents();
+        }
+
         if ($this->isRequestLetterTemplateQuestion($normalizedQuestion)) {
             return $this->requestLetterTemplate();
+        }
+
+        if ($this->isInternshipReportFormatQuestion($normalizedQuestion)) {
+            return $this->internshipReportFormat();
         }
 
         return match ($normalizedQuestion) {
@@ -43,6 +55,98 @@ final class OfficialChatbotFaqResponder
             'ke mana saya mengirimkan dokumen pengajuan?' => $this->woppsDestination(),
             default => null,
         };
+    }
+
+    private function isGuestbookAccessQuestion(string $normalizedQuestion): bool
+    {
+        if (! str_contains($normalizedQuestion, 'buku tamu')) {
+            return false;
+        }
+
+        return $this->containsAny($normalizedQuestion, [
+            'melalui apa',
+            'di mana',
+            'dimana',
+            'link',
+            'tautan',
+            'cara isi',
+            'cara mengisi',
+            'mengisinya',
+        ]);
+    }
+
+    private function guestbookAccess(): array
+    {
+        return $this->success(
+            <<<'MARKDOWN'
+Buku Tamu Magang / PKL diisi melalui Google Form resmi berikut:
+
+[Isi Buku Tamu Magang / PKL](https://bit.ly/DaftarMagangPKL_DKP_JATIM)
+
+Setelah selesai, simpan screenshot atau PDF bukti pengisian untuk diunggah pada Portal Peserta Si-Molek.
+MARKDOWN,
+            [
+                $this->source('KB-006', 'Layanan Pendaftaran Magang / PKL', 'Buku Tamu Magang / PKL'),
+                $this->source('KB-007', 'Alur Utama Magang / Praktik Kerja Lapang (PKL)', 'Langkah 1: Isi Buku Tamu'),
+            ],
+        );
+    }
+
+    private function isRequestLetterContentsQuestion(string $normalizedQuestion): bool
+    {
+        if (! str_contains($normalizedQuestion, 'surat permohonan')) {
+            return false;
+        }
+
+        return $this->containsAny($normalizedQuestion, [
+            'apa saja informasi',
+            'informasi yang perlu',
+            'apa yang perlu',
+            'harus ada',
+            'harus dicantumkan',
+            'wajib dicantumkan',
+            'isi surat',
+            'memuat apa',
+        ]);
+    }
+
+    private function requestLetterContents(): array
+    {
+        return $this->success(
+            <<<'MARKDOWN'
+Surat Permohonan Magang / PKL perlu memuat informasi berikut:
+
+1. Nama lengkap setiap peserta.
+2. NIS atau NIM setiap peserta.
+3. Judul kegiatan.
+4. Tema kegiatan.
+5. Kompetensi keahlian atau program studi.
+6. Periode kegiatan, termasuk tanggal mulai dan selesai yang diajukan.
+7. Sekolah atau fakultas asal.
+8. Lokasi kegiatan yang dituju.
+9. Universitas atau institusi pendidikan asal.
+10. Jumlah peserta dan nomor WhatsApp perwakilan untuk koordinasi.
+
+Surat resmi dibuat oleh institusi pendidikan dan ditujukan kepada Kepala Dinas Kelautan dan Perikanan Provinsi Jawa Timur. Jika peserta membutuhkan sertifikat, kebutuhan tersebut juga harus dinyatakan secara jelas dalam surat permohonan.
+
+[Buka Template Surat Permohonan](https://bit.ly/Surat_Permohonan_DKP)
+MARKDOWN,
+            [
+                $this->source('KB-004', 'Informasi Wajib dalam Surat Permohonan Magang / PKL', 'Informasi Wajib'),
+                $this->source('KB-010', 'Contoh Surat Permohonan Magang dan PKL', 'Struktur Surat'),
+            ],
+        );
+    }
+
+    private function containsAny(string $haystack, array $needles): bool
+    {
+        foreach ($needles as $needle) {
+            if (str_contains($haystack, $needle)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -76,6 +180,40 @@ MARKDOWN,
         return $mentionsTemplate
             && str_contains($normalizedQuestion, 'surat')
             && str_contains($normalizedQuestion, 'permohonan');
+    }
+
+    private function isInternshipReportFormatQuestion(string $normalizedQuestion): bool
+    {
+        if (! str_contains($normalizedQuestion, 'laporan')) {
+            return false;
+        }
+
+        return $this->containsAny($normalizedQuestion, [
+            'format',
+            'template',
+            'ketentuan dinas',
+            'ketentuan kampus',
+            'ketentuan sekolah',
+            'institusi asal',
+        ]);
+    }
+
+    /**
+     * @return array{status: string, answer: string, sources: array<int, array{document_id: string, document_title: string, section_title: string}>}
+     */
+    private function internshipReportFormat(): array
+    {
+        return $this->success(
+            <<<'MARKDOWN'
+Laporan kegiatan Magang / PKL dibuat mengikuti **format atau template dari institusi pendidikan asal**, yaitu kampus atau sekolah peserta. Jadi, laporan tidak menggunakan format pribadi dan dokumen resmi yang tersedia tidak menetapkan format khusus dari Dinas.
+
+Setelah selesai, laporan dikirimkan dalam bentuk **PDF**.
+MARKDOWN,
+            [
+                $this->source('KB-001', 'Ketentuan Umum Peserta Magang / PKL', 'Laporan'),
+                $this->source('KB-002', 'Penerbitan Surat Keterangan dan Sertifikat', 'Laporan Hasil'),
+            ],
+        );
     }
 
     /**

@@ -24,10 +24,12 @@ $initials = collect(explode(' ', auth()->user()->name))
             >
         </div>
 
-        <button type="button" class="relative rounded-xl p-2 hover:bg-accent">
+        <a href="{{ route('admin.unanswered-questions') }}" class="relative rounded-xl p-2 hover:bg-accent" aria-label="Notifikasi pertanyaan">
             <i data-lucide="bell" class="h-4 w-4" aria-hidden="true"></i>
-            <span class="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500"></span>
-        </button>
+            @if (($notifications['total'] ?? 0) > 0)
+                <span class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">{{ min($notifications['total'], 99) }}</span>
+            @endif
+        </a>
 
         <div class="flex items-center gap-2 rounded-xl border border-border bg-input-background px-2.5 py-1.5">
             <div class="flex h-6 w-6 items-center justify-center rounded-lg bg-ocean text-[10px] font-bold text-white">

@@ -10,8 +10,11 @@ use App\Http\Requests\StoreChatFeedbackRequest;
 use App\Models\ChatConversation;
 use App\Models\ChatFeedback;
 use App\Models\ChatMessage;
+use App\Models\UnansweredEscalation;
 use App\Services\GroundedChatbotResponder;
+use App\Services\WhatsAppAdminNotifier;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -179,6 +182,55 @@ final class ChatbotController extends Controller
         ]);
     }
 
+    public function escalate(
+        Request $request,
+        ChatMessage $message,
+        WhatsAppAdminNotifier $notifier,
+    ): JsonResponse {
+        $validated = $request->validate([
+            'session_key' => ['required', 'uuid'],
+        ]);
+
+        $message->loadMissing('conversation');
+
+        abort_unless(
+            $message->role === ChatMessage::ROLE_ASSISTANT
+            && $message->status === 'insufficient_information'
+            && hash_equals($message->conversation->session_key, $validated['session_key']),
+            404,
+        );
+
+        $userMessage = ChatMessage::query()
+            ->where('chat_conversation_id', $message->chat_conversation_id)
+            ->where('role', ChatMessage::ROLE_USER)
+            ->where('id', '<', $message->id)
+            ->latest('id')
+            ->firstOrFail();
+
+        $escalation = UnansweredEscalation::query()->firstOrCreate(
+            ['assistant_message_id' => $message->id],
+            [
+                'user_message_id' => $userMessage->id,
+                'ticket_code' => 'SM-'.now()->format('Ymd').'-'.strtoupper(Str::random(6)),
+                'status' => 'new',
+                'whatsapp_status' => 'pending',
+            ],
+        );
+
+        if ($escalation->wasRecentlyCreated) {
+            $escalation->load('userMessage');
+            $notifier->send($escalation);
+        }
+
+        return response()->json([
+            'data' => [
+                'ticket_code' => $escalation->ticket_code,
+                'status' => $escalation->status,
+                'whatsapp_status' => $escalation->whatsapp_status,
+            ],
+        ], $escalation->wasRecentlyCreated ? 201 : 200);
+    }
+
     private function resolveConversation(
         string $sessionKey,
         ?int $conversationId,
@@ -231,6 +283,8 @@ final class ChatbotController extends Controller
 
     private function serializeMessage(ChatMessage $message): array
     {
+        $message->loadMissing(['escalation', 'answeredEscalation']);
+
         return [
             'id' => $message->id,
             'role' => $message->role,
@@ -246,6 +300,13 @@ final class ChatbotController extends Controller
             'feedback' => $message->feedback === null ? null : [
                 'rating' => $message->feedback->rating,
                 'reason' => $message->feedback->reason,
+            ],
+            'escalation' => $message->escalation === null ? null : [
+                'ticket_code' => $message->escalation->ticket_code,
+                'status' => $message->escalation->status,
+            ],
+            'admin_answer' => $message->answeredEscalation === null ? null : [
+                'ticket_code' => $message->answeredEscalation->ticket_code,
             ],
         ];
     }

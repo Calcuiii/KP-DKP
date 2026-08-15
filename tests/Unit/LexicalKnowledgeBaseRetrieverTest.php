@@ -82,6 +82,23 @@ final class LexicalKnowledgeBaseRetrieverTest extends TestCase
         self::assertSame($sortedScores, $scores);
     }
 
+    public function test_it_ignores_generic_indonesian_words_when_retrieving_request_letter_content(): void
+    {
+        $results = $this->retrieveFromKnowledgeBase(
+            'Apa saja informasi yang perlu ada di surat permohonan?',
+            10,
+        );
+
+        self::assertNotEmpty($results);
+        self::assertTrue(array_any(
+            $results,
+            static fn (KnowledgeBaseSearchResult $result): bool => str_contains(
+                mb_strtolower($result->chunk->content.' '.$result->chunk->sectionTitle),
+                'surat permohonan',
+            ),
+        ));
+    }
+
     public function test_it_respects_top_k(): void
     {
         $results = $this->retrieveFromKnowledgeBase('magang', 3);

@@ -165,7 +165,10 @@ const initializeChatbot = () => {
     const urls = {
         history: app.dataset.historyUrl,
         send: app.dataset.sendUrl,
+        escalateTemplate: app.dataset.escalateUrlTemplate,
         conversationTemplate: app.dataset.conversationUrlTemplate,
+        infographics: app.dataset.infographicsUrl,
+        contact: app.dataset.contactUrl,
     };
 
     const request = async (url, options = {}) => {
@@ -330,10 +333,100 @@ const initializeChatbot = () => {
             bubble.classList.add('border-amber-200', 'bg-amber-50');
         }
 
+        if (message.status === 'admin_answer') {
+            bubble.classList.add('border-teal/30', 'bg-teal/10');
+
+            const adminLabel = document.createElement('div');
+            adminLabel.className = 'mb-2 inline-flex items-center gap-1.5 rounded-full bg-teal px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white';
+            adminLabel.innerHTML = '<i data-lucide="check" class="h-3 w-3"></i><span>Jawaban Petugas</span>';
+            bubble.append(adminLabel);
+
+            if (message.admin_answer?.ticket_code) {
+                const ticketLabel = document.createElement('p');
+                ticketLabel.className = 'mb-2 text-[10px] font-semibold text-teal';
+                ticketLabel.textContent = `Tiket ${message.admin_answer.ticket_code}`;
+                bubble.append(ticketLabel);
+            }
+        }
+
         const answerText = document.createElement('div');
         answerText.className = 'chat-markdown text-sm leading-7';
         answerText.innerHTML = DOMPurify.sanitize(marked.parse(message.content ?? ''));
         bubble.append(answerText);
+
+        if (message.status === 'insufficient_information') {
+            const fallbackPanel = document.createElement('div');
+            fallbackPanel.className = 'mt-4 rounded-2xl border border-amber-200 bg-white p-4';
+
+            const fallbackTitle = document.createElement('p');
+            fallbackTitle.className = 'text-xs font-bold text-navy';
+            fallbackTitle.textContent = 'Masih membutuhkan jawaban?';
+
+            const fallbackText = document.createElement('p');
+            fallbackText.className = 'mt-1 text-xs leading-5 text-muted-foreground';
+            fallbackText.textContent = 'Teruskan pertanyaan kepada petugas atau lihat panduan resmi yang berkaitan.';
+
+            const fallbackActions = document.createElement('div');
+            fallbackActions.className = 'mt-3 flex flex-wrap gap-2';
+
+            const escalationResult = document.createElement('p');
+            escalationResult.className = 'mt-3 hidden rounded-xl bg-teal/10 px-3 py-2 text-xs font-semibold text-teal';
+
+            const escalateButton = document.createElement('button');
+            escalateButton.type = 'button';
+            escalateButton.className = 'inline-flex items-center gap-1.5 rounded-xl bg-navy px-3 py-2 text-xs font-bold text-white transition hover:bg-ocean disabled:cursor-not-allowed disabled:opacity-60';
+            escalateButton.innerHTML = '<i data-lucide="send" class="h-3.5 w-3.5"></i><span>Teruskan ke Petugas</span>';
+
+            const showEscalated = (ticketCode) => {
+                escalateButton.disabled = true;
+                escalateButton.innerHTML = '<i data-lucide="check" class="h-3.5 w-3.5"></i><span>Sudah diteruskan</span>';
+                escalationResult.textContent = `Pertanyaan telah diteruskan. Kode tiket: ${ticketCode}`;
+                escalationResult.classList.remove('hidden');
+                refreshIcons(escalateButton);
+            };
+
+            if (message.escalation?.ticket_code) {
+                showEscalated(message.escalation.ticket_code);
+            } else {
+                escalateButton.addEventListener('click', async () => {
+                    escalateButton.disabled = true;
+                    escalateButton.querySelector('span').textContent = 'Mengirim...';
+
+                    try {
+                        const url = urls.escalateTemplate.replace('__MESSAGE__', String(message.id));
+                        const payload = await request(url, {
+                            method: 'POST',
+                            body: JSON.stringify({ session_key: state.sessionKey }),
+                        });
+                        showEscalated(payload.data.ticket_code);
+                    } catch (error) {
+                        escalateButton.disabled = false;
+                        escalateButton.querySelector('span').textContent = 'Coba kirim lagi';
+                        showError(error.message);
+                    }
+                });
+            }
+
+            const infographicLink = document.createElement('a');
+            infographicLink.href = urls.infographics;
+            infographicLink.className = 'inline-flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-bold text-ocean transition hover:bg-secondary';
+            infographicLink.innerHTML = '<i data-lucide="file-text" class="h-3.5 w-3.5"></i><span>Lihat Panduan</span>';
+
+            fallbackActions.append(escalateButton, infographicLink);
+
+            if (urls.contact) {
+                const contactLink = document.createElement('a');
+                contactLink.href = urls.contact;
+                contactLink.target = '_blank';
+                contactLink.rel = 'noopener noreferrer';
+                contactLink.className = 'inline-flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-bold text-teal transition hover:bg-secondary';
+                contactLink.innerHTML = '<i data-lucide="message-square" class="h-3.5 w-3.5"></i><span>Hubungi Layanan</span>';
+                fallbackActions.append(contactLink);
+            }
+
+            fallbackPanel.append(fallbackTitle, fallbackText, fallbackActions, escalationResult);
+            bubble.append(fallbackPanel);
+        }
 
         if (Array.isArray(message.sources) && message.sources.length > 0) {
             const sourceSection = document.createElement('div');

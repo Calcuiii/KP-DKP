@@ -13,6 +13,7 @@ use App\KnowledgeBase\KnowledgeBaseTopicResolver;
 use App\KnowledgeBase\LexicalKnowledgeBaseRetriever;
 use App\Models\Infographic;
 use App\Services\KnowledgeBaseDocumentIndexer;
+use App\View\Composers\NotificationComposer;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -80,6 +81,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        View::composer(['layouts.admin', 'components.admin.topbar'], NotificationComposer::class);
+
         View::composer(
             ['pages.landing', 'pages.infographics'],
             static function ($view): void {
