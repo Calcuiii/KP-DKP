@@ -17,7 +17,6 @@ use App\Http\Controllers\Peserta\ParticipantApplicationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\InternshipLocationController;
 
-
 Route::view('/', 'pages.landing')->name('landing');
 
 Route::view('/infografis', 'pages.infographics')->name('infographics');
