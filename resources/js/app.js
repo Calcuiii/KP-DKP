@@ -55,17 +55,6 @@ import {
     ArrowDown,
     ClipboardList,
     Images,
-    LayoutGrid,
-    ClipboardCheck,
-    Target,
-    Waves,
-    CircleCheck,
-    CircleHelp,
-    ArrowUpRight,
-    FileCheck2,
-    ScanSearch,
-    ExternalLink,
-    Circle,
 } from 'lucide';
 
 createIcons({
@@ -77,8 +66,6 @@ createIcons({
         Users, Activity, LogOut, Bell, Eye, EyeOff, Lock, AlertCircle,
         Hash, Clock, Star, Plus, RotateCcw, Trash2, Upload, XCircle,
         Download, Edit2, Home, HelpCircle, Compass, ArrowDown, ClipboardList, Images,
-        LayoutGrid, ClipboardCheck, Target, Waves, CircleCheck, CircleHelp,
-        ArrowUpRight, FileCheck2, ScanSearch, ExternalLink, Circle,
     },
 });
 
