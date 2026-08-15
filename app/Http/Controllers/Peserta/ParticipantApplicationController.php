@@ -62,7 +62,7 @@ final class ParticipantApplicationController extends Controller
     }
 
     public function storeRequestLetter(UploadRequestLetterRequest $request, RequestLetterAutomatedChecker $checker): RedirectResponse
-    {
+    { 
         $application = $this->magangApplication($request);
         abort_unless($application->guestbook_confirmed_at !== null, 422, 'Lengkapi bukti Buku Tamu terlebih dahulu.');
         $currentLetter = $application->documents()->where('type', ParticipantApplicationDocument::TYPE_REQUEST_LETTER)->latest('version')->first();
@@ -91,9 +91,9 @@ final class ParticipantApplicationController extends Controller
 
         $automatedResult = $checker->check($path);
         $document->update([
-            'automated_check_status' => $automatedResult['status'],
-            'automated_check_results' => $automatedResult,
-            'automated_checked_at' => now(),
+            'review_status' => ParticipantApplicationDocument::REVIEW_APPROVED,
+            'review_notes' => $request->input('review_notes'),
+            'reviewed_at' => now(),
         ]);
 
         $needsCorrection = in_array($automatedResult['status'], ['needs_revision', 'unreadable'], true);

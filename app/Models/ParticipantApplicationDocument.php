@@ -12,7 +12,7 @@ final class ParticipantApplicationDocument extends Model
 
     public const REVIEW_SUBMITTED = 'submitted';
     public const REVIEW_REVISION = 'revision_required';
-    public const REVIEW_APPROVED = 'approved';
+    public const REVIEW_APPROVED = 'review_approved';
 
     protected $fillable = ['type', 'version', 'file_path', 'original_name', 'mime_type', 'file_size', 'review_status', 'review_notes', 'reviewed_at', 'automated_check_status', 'automated_check_results', 'automated_checked_at'];
 
