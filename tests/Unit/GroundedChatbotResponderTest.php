@@ -103,6 +103,55 @@ final class GroundedChatbotResponderTest extends TestCase
         }
     }
 
+    public function test_it_answers_common_variations_about_request_letter_contents(): void
+    {
+        foreach ([
+            'Apa saja informasi yang perlu ada di surat permohonan?',
+            'Surat permohonan magang harus ada apa saja?',
+            'Surat permohonan PKL wajib dicantumkan apa saja?',
+        ] as $question) {
+            $result = app(GroundedChatbotResponder::class)->answer($question);
+
+            self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+            self::assertStringContainsString('Nama lengkap setiap peserta', $result['answer']);
+            self::assertStringContainsString('https://bit.ly/Surat_Permohonan_DKP', $result['answer']);
+            self::assertSame('KB-004', $result['sources'][0]['document_id']);
+        }
+    }
+
+    public function test_it_answers_common_variations_about_accessing_the_guestbook(): void
+    {
+        foreach ([
+            'Buku tamu magang diisi melalui apa?',
+            'Di mana link Buku Tamu PKL?',
+            'Bagaimana cara mengisi buku tamu?',
+        ] as $question) {
+            $result = app(GroundedChatbotResponder::class)->answer($question);
+
+            self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+            self::assertStringContainsString('https://bit.ly/DaftarMagangPKL_DKP_JATIM', $result['answer']);
+            self::assertSame('KB-006', $result['sources'][0]['document_id']);
+        }
+    }
+
+    public function test_it_answers_common_variations_about_the_internship_report_format(): void
+    {
+        foreach ([
+            'Laporan kegiatan dibuat sesuai format atau ketentuan dinas atau kampus pribadi?',
+            'Apakah laporan magang mengikuti template kampus atau Dinas?',
+            'Format laporan PKL mengikuti ketentuan siapa?',
+        ] as $question) {
+            $result = app(GroundedChatbotResponder::class)->answer($question);
+
+            self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
+            self::assertStringContainsString('institusi pendidikan asal', $result['answer']);
+            self::assertStringContainsString('tidak menggunakan format pribadi', $result['answer']);
+            self::assertStringContainsString('PDF', $result['answer']);
+            self::assertSame('KB-001', $result['sources'][0]['document_id']);
+            self::assertSame('Laporan', $result['sources'][0]['section_title']);
+        }
+    }
+
     public function test_it_keeps_the_insufficient_information_response_when_no_source_matches(): void
     {
         $result = app(GroundedChatbotResponder::class)->answer(

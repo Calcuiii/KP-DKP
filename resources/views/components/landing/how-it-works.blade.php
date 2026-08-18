@@ -8,7 +8,7 @@
             </span>
 
             <h2 class="text-3xl font-bold text-navy">
-                Bagaimana Asisten Si-Molek Menghasilkan Jawaban?
+                Bagaimana Asisten SI-MELAYUR Menghasilkan Jawaban?
             </h2>
         </div>
 
@@ -135,7 +135,7 @@
             ></i>
 
             <p class="text-sm leading-relaxed text-muted-foreground">
-                Asisten Si-Molek hanya memberikan jawaban berdasarkan knowledge base
+                Asisten SI-MELAYUR hanya memberikan jawaban berdasarkan knowledge base
                 yang telah diverifikasi dan dikelola oleh administrator.
             </p>
         </div>

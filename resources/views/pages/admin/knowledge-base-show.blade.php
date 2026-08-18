@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Detail Dokumen - Si-Molek')
+@section('title', 'Detail Dokumen - SI-MELAYUR')
 
 @section('content')
 <div class="mx-auto max-w-5xl space-y-5">

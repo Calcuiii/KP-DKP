@@ -9,12 +9,12 @@
             </span>
 
             <h1 class="max-w-3xl text-4xl font-bold leading-[1.12] text-navy sm:text-5xl lg:text-[3.5rem]">
-                Satu tempat untuk mengakses layanan
-                <span class="text-ocean">KP, Magang, PKL, dan WOPPS</span>
+                Satu portal untuk layanan
+                <span class="text-ocean">magang, penelitian, dan data kelautan</span>
             </h1>
 
             <p class="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-                Si-Molek membantu Anda menyiapkan pengajuan, mengikuti informasi layanan,
+                <strong>SI-MELAYUR</strong>—Sistem Informasi Magang, Penelitian, dan Data Kelautan Jawa Timur—membantu Anda menyiapkan pengajuan, mengikuti informasi layanan,
                 membaca panduan visual, dan menemukan jawaban dari sumber resmi Dinas Kelautan
                 dan Perikanan Provinsi Jawa Timur.
             </p>
@@ -48,7 +48,7 @@
         <div class="relative mx-auto w-full max-w-xl">
             <div class="rounded-[2rem] border border-white/80 bg-white/85 p-5 shadow-2xl shadow-ocean/15 backdrop-blur sm:p-7">
                 <div class="flex items-start justify-between gap-4">
-                    <div><p class="text-xs font-semibold uppercase tracking-[0.18em] text-ocean">Pusat Layanan Si-Molek</p><h2 class="mt-2 text-xl font-bold text-navy">Apa yang ingin Anda lakukan?</h2></div>
+                    <div><p class="text-xs font-semibold uppercase tracking-[0.18em] text-ocean">Pusat Layanan SI-MELAYUR</p><h2 class="mt-2 text-xl font-bold text-navy">Apa yang ingin Anda lakukan?</h2></div>
                     <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-navy text-white"><i data-lucide="fish" class="h-5 w-5" aria-hidden="true"></i></div>
                 </div>
                 <div class="mt-6 grid gap-3 sm:grid-cols-2">

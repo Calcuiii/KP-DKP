@@ -4,6 +4,17 @@ return [
 
     'dkp' => [
         'internship_guestbook_url' => env('DKP_INTERNSHIP_GUESTBOOK_URL', 'https://bit.ly/DaftarMagangPKL_DKP_JATIM'),
+        'contact_whatsapp_url' => env('DKP_CONTACT_WHATSAPP_URL'),
+    ],
+
+    'whatsapp' => [
+        'enabled' => env('WHATSAPP_NOTIFICATIONS_ENABLED', false),
+        'graph_version' => env('WHATSAPP_GRAPH_VERSION', 'v23.0'),
+        'access_token' => env('WHATSAPP_ACCESS_TOKEN'),
+        'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
+        'admin_recipient' => env('WHATSAPP_ADMIN_RECIPIENT'),
+        'template_name' => env('WHATSAPP_TEMPLATE_NAME', 'simolek_unanswered_question'),
+        'template_language' => env('WHATSAPP_TEMPLATE_LANGUAGE', 'id'),
     ],
 
     /*

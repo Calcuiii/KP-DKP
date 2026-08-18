@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\ChatConversation;
 use App\Models\ChatMessage;
+use App\Models\UnansweredEscalation;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -22,7 +24,7 @@ class ChatbotPageTest extends TestCase
             ->assertOk()
             ->assertSee('data-chatbot-app', false)
             ->assertSee('data-chat-message-list', false)
-            ->assertSee('Halo, selamat datang di Asisten Si-Molek!')
+            ->assertSee('Halo, selamat datang di Asisten SI-MELAYUR!')
             ->assertSee('Magang / PKL')
             ->assertSee('WOPPS')
             ->assertDontSee('fixed bottom-6 left-1/2', false);
@@ -125,5 +127,104 @@ class ChatbotPageTest extends TestCase
             ->assertJsonPath('data.conversation.id', $conversation->id)
             ->assertSeeText('Kompetensi Keahlian')
             ->assertSeeText('Jumlah Peserta');
+    }
+
+    public function test_an_unanswered_question_can_be_forwarded_to_an_admin_once(): void
+    {
+        config(['services.whatsapp.enabled' => false]);
+
+        $sessionKey = (string) Str::uuid();
+        $conversation = ChatConversation::create([
+            'session_key' => $sessionKey,
+            'title' => 'Pertanyaan khusus',
+            'last_message_at' => now(),
+        ]);
+        $userMessage = ChatMessage::create([
+            'chat_conversation_id' => $conversation->id,
+            'role' => ChatMessage::ROLE_USER,
+            'content' => 'Apakah peserta mendapat fasilitas khusus?',
+            'status' => 'submitted',
+        ]);
+        $assistantMessage = ChatMessage::create([
+            'chat_conversation_id' => $conversation->id,
+            'role' => ChatMessage::ROLE_ASSISTANT,
+            'content' => 'Informasi belum ditemukan.',
+            'status' => 'insufficient_information',
+        ]);
+
+        $route = route('chatbot.api.messages.escalate', $assistantMessage);
+        $payload = ['session_key' => $sessionKey];
+
+        $this->withCookie('dkp_guestbook_completed', '1')->withCredentials()->postJson($route, $payload)
+            ->assertCreated()
+            ->assertJsonPath('data.status', 'new')
+            ->assertJsonPath('data.whatsapp_status', 'skipped');
+
+        $this->withCookie('dkp_guestbook_completed', '1')->withCredentials()->postJson($route, $payload)
+            ->assertOk();
+
+        $this->assertDatabaseCount('unanswered_escalations', 1);
+        $this->assertDatabaseHas('unanswered_escalations', [
+            'assistant_message_id' => $assistantMessage->id,
+            'user_message_id' => $userMessage->id,
+            'status' => 'new',
+        ]);
+    }
+
+    public function test_an_admin_can_answer_a_forwarded_question_in_the_users_chat_history(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'Aktif']);
+        $sessionKey = (string) Str::uuid();
+        $conversation = ChatConversation::create(['session_key' => $sessionKey, 'title' => 'Pertanyaan', 'last_message_at' => now()]);
+        $userMessage = ChatMessage::create(['chat_conversation_id' => $conversation->id, 'role' => 'user', 'content' => 'Pertanyaan untuk petugas', 'status' => 'submitted']);
+        $assistantMessage = ChatMessage::create(['chat_conversation_id' => $conversation->id, 'role' => 'assistant', 'content' => 'Belum ditemukan', 'status' => 'insufficient_information']);
+        $escalation = UnansweredEscalation::create([
+            'assistant_message_id' => $assistantMessage->id,
+            'user_message_id' => $userMessage->id,
+            'ticket_code' => 'SM-20260815-ABC123',
+            'status' => 'new',
+            'whatsapp_status' => 'skipped',
+        ]);
+
+        $this->actingAs($admin)->get(route('admin.unanswered-questions'))
+            ->assertOk()
+            ->assertSee('SM-20260815-ABC123')
+            ->assertSee('Pertanyaan untuk petugas');
+
+        $this->actingAs($admin)->get(route('admin.unanswered-questions.show', $escalation))
+            ->assertOk()
+            ->assertSee('Konteks percakapan')
+            ->assertSee('Kirim jawaban dan selesaikan');
+
+        $answer = 'Buku Tamu Magang dan PKL diisi melalui formulir resmi yang tersedia pada Portal Peserta.';
+
+        $this->actingAs($admin)->post(route('admin.unanswered-questions.respond', $escalation), [
+            'response' => $answer,
+        ])->assertRedirect(route('admin.unanswered-questions.show', $escalation));
+
+        $this->assertDatabaseHas('unanswered_escalations', [
+            'id' => $escalation->id,
+            'status' => 'resolved',
+            'resolved_by' => $admin->id,
+            'admin_response' => $answer,
+        ]);
+        $this->assertDatabaseHas('chat_messages', [
+            'chat_conversation_id' => $conversation->id,
+            'role' => 'assistant',
+            'status' => 'admin_answer',
+            'content' => $answer,
+        ]);
+
+        $this->withCookie('dkp_guestbook_completed', '1')->withCredentials()
+            ->getJson(route('chatbot.api.conversation', [
+                'conversation' => $conversation,
+                'session_key' => $sessionKey,
+            ]))
+            ->assertOk()
+            ->assertJsonFragment([
+                'content' => $answer,
+                'status' => 'admin_answer',
+            ])
+            ->assertJsonFragment(['ticket_code' => 'SM-20260815-ABC123']);
     }
 }

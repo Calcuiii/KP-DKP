@@ -35,6 +35,13 @@ final class LexicalKnowledgeBaseRetriever
         'dong',
         'kah',
         'yang',
+        'saja',
+        'perlu',
+        'ada',
+        'di',
+        'dalam',
+        'untuk',
+        'dari',
     ];
 
     /**

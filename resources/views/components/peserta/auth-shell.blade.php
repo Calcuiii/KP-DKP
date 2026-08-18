@@ -16,7 +16,7 @@
                     <i data-lucide="fish" class="h-5 w-5" aria-hidden="true"></i>
                 </span>
                 <span>
-                    <span class="block text-base font-extrabold leading-none">Si-Molek</span>
+                    <span class="block text-base font-extrabold leading-none">SI-MELAYUR</span>
                     <span class="mt-1 block text-[11px] font-medium text-muted-foreground">Portal Peserta DKP Jatim</span>
                 </span>
             </a>
@@ -66,7 +66,7 @@
             <div class="auth-fade-up relative z-10 w-full max-w-md rounded-[1.75rem] bg-white p-6 shadow-2xl shadow-navy/25 sm:p-8">
                 <a href="{{ route('landing') }}" class="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition hover:text-ocean lg:hidden">
                     <i data-lucide="arrow-left" class="h-4 w-4" aria-hidden="true"></i>
-                    Kembali ke Si-Molek
+                    Kembali ke SI-MELAYUR
                 </a>
 
                 <div class="flex items-center gap-3 border-b border-border pb-5">

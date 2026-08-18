@@ -2,18 +2,15 @@
 
 namespace App\View\Composers;
 
-use App\Models\ChatMessage;
 use App\Models\KnowledgeBaseDocument;
+use App\Models\UnansweredEscalation;
 use Illuminate\View\View;
 
 class NotificationComposer
 {
     public function compose(View $view): void
     {
-        $unansweredCount = ChatMessage::where('role', 'assistant')
-            ->where('status', 'insufficient_information')
-            ->where('created_at', '>=', now()->subDays(7))
-            ->count();
+        $unansweredCount = UnansweredEscalation::where('status', '!=', 'resolved')->count();
 
         $failedDocsCount = KnowledgeBaseDocument::where('status', 'Failed')->count();
 

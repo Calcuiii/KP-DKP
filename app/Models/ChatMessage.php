@@ -47,4 +47,14 @@ final class ChatMessage extends Model
     {
         return $this->hasOne(ChatFeedback::class);
     }
+
+    public function escalation(): HasOne
+    {
+        return $this->hasOne(UnansweredEscalation::class, 'assistant_message_id');
+    }
+
+    public function answeredEscalation(): HasOne
+    {
+        return $this->hasOne(UnansweredEscalation::class, 'response_message_id');
+    }
 }

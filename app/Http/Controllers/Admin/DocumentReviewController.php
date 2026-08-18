@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\ParticipantApplicationDocument;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentReviewController extends Controller
 {
@@ -56,10 +58,16 @@ class DocumentReviewController extends Controller
             404
         );
 
-        $document->update([
-            'review_status' => 'review_approved',
-            'review_notes' => $request->input('review_notes'),
+        $validated = $request->validate([
+            'review_notes' => ['nullable', 'string', 'max:2000'],
         ]);
+
+        $document->update([
+            'review_status' => ParticipantApplicationDocument::REVIEW_APPROVED,
+            'review_notes' => $validated['review_notes'] ?? null,
+            'reviewed_at' => now(),
+        ]);
+        $document->application()->update(['status' => 'letter_approved']);
 
         return redirect()
             ->route('admin.pemeriksaan-dokumen.show', $document)
@@ -91,26 +99,24 @@ class DocumentReviewController extends Controller
         $document->update([
             'review_status' => ParticipantApplicationDocument::REVIEW_REVISION,
             'review_notes' => $validated['review_notes'],
+            'reviewed_at' => now(),
         ]);
+        $document->application()->update(['status' => 'letter_revision_required']);
 
         return redirect()
             ->route('admin.pemeriksaan-dokumen.show', $document)
             ->with('success', 'Permintaan perbaikan berhasil dikirim kepada peserta.');
     }
 
-    public function download(ParticipantApplicationDocument $document): \Symfony\Component\HttpFoundation\StreamedResponse
-{
-    abort_unless(
-        $document->type === ParticipantApplicationDocument::TYPE_REQUEST_LETTER,
-        404
-    );
+    public function download(ParticipantApplicationDocument $document): StreamedResponse
+    {
+        abort_unless(
+            $document->type === ParticipantApplicationDocument::TYPE_REQUEST_LETTER,
+            404
+        );
 
-    abort_unless(
-        \Illuminate\Support\Facades\Storage::disk('local')->exists($document->file_path),
-        404
-    );
+        abort_unless(Storage::disk('local')->exists($document->file_path), 404);
 
-    return \Illuminate\Support\Facades\Storage::disk('local')
-        ->download($document->file_path, $document->original_name);
-}
+        return Storage::disk('local')->download($document->file_path, $document->original_name);
+    }
 }

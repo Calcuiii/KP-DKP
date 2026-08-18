@@ -46,6 +46,9 @@ Route::prefix('api/chatbot')
 
         Route::post('/messages/{message}/feedback', [ChatbotController::class, 'feedback'])
             ->name('messages.feedback');
+
+        Route::post('/messages/{message}/escalate', [ChatbotController::class, 'escalate'])
+            ->name('messages.escalate');
     });
 
 Route::prefix('akun')->name('peserta.')->middleware('guest:peserta')->group(function (): void {
@@ -101,7 +104,9 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
     Route::get('/conversation-logs/export', [ConversationLogController::class, 'export'])->name('admin.conversation-logs.export');
 
     Route::get('/unanswered-questions', [UnansweredQuestionController::class, 'index'])->name('admin.unanswered-questions');
-    Route::post('/unanswered-questions/{question}/resolve', [UnansweredQuestionController::class, 'markResolved'])->name('admin.unanswered-questions.resolve');
+    Route::get('/unanswered-questions/{escalation}', [UnansweredQuestionController::class, 'show'])->name('admin.unanswered-questions.show');
+    Route::post('/unanswered-questions/{escalation}/respond', [UnansweredQuestionController::class, 'respond'])->name('admin.unanswered-questions.respond');
+    Route::post('/unanswered-questions/{escalation}/resolve', [UnansweredQuestionController::class, 'markResolved'])->name('admin.unanswered-questions.resolve');
 
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('admin.analytics');
     Route::get('/analytics/export', [AnalyticsController::class, 'export'])->name('admin.analytics.export');

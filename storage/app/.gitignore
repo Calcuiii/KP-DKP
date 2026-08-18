@@ -3,7 +3,7 @@
 !public/
 !.gitignore
 
-# Track Si-Molek knowledge base
+# Track SI-MELAYUR knowledge base
 !knowledge-base/
 !knowledge-base/**/
 !knowledge-base/**/*.md
