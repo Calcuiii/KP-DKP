@@ -86,6 +86,19 @@ Route::middleware('auth:peserta')->group(function (): void {
         Route::get('/dokumen/{document}/unduh', [ParticipantApplicationController::class, 'downloadDocument'])
             ->middleware('verified')->name('document.download');
         Route::post('/keluar', [ParticipantAuthController::class, 'destroy'])->name('logout');
+
+        // WOPPS
+        Route::post('/wopps/dokumen', [ParticipantApplicationController::class, 'storeWoppsDocument'])
+            ->middleware('verified')
+            ->name('wopps.document.store');
+
+        Route::post('/wopps/cek-kelengkapan', [ParticipantApplicationController::class, 'checkWoppsCompleteness'])
+            ->middleware('verified')
+            ->name('wopps.completeness.check');
+
+        Route::post('/wopps/google-form', [ParticipantApplicationController::class, 'confirmWoppsGoogleForm'])
+            ->middleware('verified')
+            ->name('wopps.google-form');
     });
 });
 

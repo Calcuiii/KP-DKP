@@ -252,29 +252,11 @@
                             'locations' => $internshipLocations,
                             'guestbookUrl' => $internshipGuestbookUrl,
                         ])
-                    @else
-                    <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                        <a href="#persiapan" class="group rounded-3xl border border-border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                            <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-ocean/10 text-ocean"><i data-lucide="file-check-2" class="h-5 w-5" aria-hidden="true"></i></span>
-                            <span class="mt-5 block text-sm font-extrabold text-navy">Checklist Dokumen</span>
-                            <span class="mt-1 block text-xs leading-relaxed text-muted-foreground">Pahami kebutuhan sebelum mengajukan.</span>
-                        </a>
-                        <div class="rounded-3xl border border-border bg-white p-5 opacity-70 shadow-sm">
-                            <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal/10 text-teal"><i data-lucide="scan-search" class="h-5 w-5" aria-hidden="true"></i></span>
-                            <span class="mt-5 block text-sm font-extrabold text-navy">AI Document Checker</span>
-                            <span class="mt-1 block text-xs leading-relaxed text-muted-foreground">Segera hadir pada tahap berikutnya.</span>
-                        </div>
-                        <div class="rounded-3xl border border-border bg-white p-5 opacity-70 shadow-sm">
-                            <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan/15 text-ocean"><i data-lucide="external-link" class="h-5 w-5" aria-hidden="true"></i></span>
-                            <span class="mt-5 block text-sm font-extrabold text-navy">Google Form Resmi</span>
-                            <span class="mt-1 block text-xs leading-relaxed text-muted-foreground">Terbuka setelah pemeriksaan dokumen tersedia.</span>
-                        </div>
-                        <a href="{{ route('chatbot') }}" class="group rounded-3xl border border-border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                            <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal/10 text-teal"><i data-lucide="message-circle" class="h-5 w-5" aria-hidden="true"></i></span>
-                            <span class="mt-5 block text-sm font-extrabold text-navy">Tanya Asisten</span>
-                            <span class="mt-1 block text-xs leading-relaxed text-muted-foreground">Cari informasi dari dokumen resmi DKP.</span>
-                        </a>
-                    </section>
+                    @elseif ($application->service_type === \App\Models\ParticipantApplication::SERVICE_WOPPS)
+                        @include('components.peserta.wopps-workflow', [
+                            'application' => $application,
+                        ])
+                    @endif
 
                     <section id="persiapan" class="grid gap-6 xl:grid-cols-[1.35fr_0.65fr]">
                         <article class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8">
