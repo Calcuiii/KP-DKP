@@ -10,10 +10,10 @@
 
     <meta
         name="description"
-        content="@yield('meta_description', 'Si-Molek adalah Sistem Informasi Manajemen Otomatisasi Layanan Kerja Praktik, Magang, PKL, dan WOPPS Dinas Kelautan dan Perikanan Provinsi Jawa Timur.')"
+        content="@yield('meta_description', 'SI-MELAYUR adalah Sistem Informasi Magang, Penelitian, dan Data Kelautan Jawa Timur milik Dinas Kelautan dan Perikanan Provinsi Jawa Timur.')"
     >
 
-    <title>@yield('title', 'Si-Molek')</title>
+    <title>@yield('title', 'SI-MELAYUR')</title>
 
     @vite([
         'resources/css/app.css',

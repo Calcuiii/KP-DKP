@@ -5,11 +5,11 @@
             style="background: linear-gradient(135deg, #0C2340 0%, #1A5FA8 100%);"
         >
             <h2 class="mb-3 text-3xl font-bold text-white">
-                Siap Memulai Layanan Anda di Si-Molek?
+                Siap Memulai Layanan Anda di SI-MELAYUR?
             </h2>
 
             <p class="mx-auto mb-8 max-w-lg text-blue-200">
-                Buat akun peserta untuk mempersiapkan pengajuan, atau gunakan Asisten Si-Molek jika Anda masih membutuhkan informasi.
+                Buat akun peserta untuk mempersiapkan pengajuan, atau gunakan Asisten SI-MELAYUR jika Anda masih membutuhkan informasi.
             </p>
 
             <div class="flex flex-wrap justify-center gap-3">

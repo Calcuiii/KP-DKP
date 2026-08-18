@@ -137,7 +137,12 @@ class ParticipantApplicationTest extends TestCase
 
         $this->assertSame([1, 2], $application->documents()->where('type', ParticipantApplicationDocument::TYPE_REQUEST_LETTER)->orderBy('version')->pluck('version')->all());
         $this->assertSame('letter_revision_required', $application->fresh()->status);
-        $this->assertSame('unreadable', $application->documents()->latest('version')->first()->automated_check_status);
+        $latestLetter = $application->documents()->latest('version')->first();
+        $this->assertSame('unreadable', $latestLetter->automated_check_status);
+        $this->assertSame(ParticipantApplicationDocument::REVIEW_SUBMITTED, $latestLetter->review_status);
+        $this->assertNotNull($latestLetter->automated_check_results);
+        $this->assertNotNull($latestLetter->automated_checked_at);
+        $this->assertNull($latestLetter->reviewed_at);
     }
 
     public function test_google_form_confirmation_requires_an_approved_letter(): void

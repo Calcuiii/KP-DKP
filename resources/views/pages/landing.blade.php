@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Si-Molek | Layanan KP, Magang, PKL, dan WOPPS')
+@section('title', 'SI-MELAYUR | Magang, Penelitian, dan Data Kelautan Jawa Timur')
 
 @section(
     'meta_description',
-    'Si-Molek adalah Sistem Informasi Manajemen Otomatisasi Layanan Kerja Praktik, Magang, PKL, dan WOPPS Dinas Kelautan dan Perikanan Provinsi Jawa Timur.'
+    'SI-MELAYUR adalah Sistem Informasi Magang, Penelitian, dan Data Kelautan Jawa Timur milik Dinas Kelautan dan Perikanan Provinsi Jawa Timur.'
 )
 
 @section('content')

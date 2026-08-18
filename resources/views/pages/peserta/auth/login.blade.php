@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Masuk Peserta | Si-Molek')
+@section('title', 'Masuk Peserta | SI-MELAYUR')
 
 @section('hide_dev_nav', true)
 
@@ -8,7 +8,7 @@
     <x-peserta.auth-shell
         eyebrow="Portal Peserta"
         title="Masuk"
-        description="Masuk untuk melanjutkan perjalanan layanan Magang, PKL, dan pendampingan Si-Molek."
+        description="Masuk untuk melanjutkan perjalanan layanan Magang, PKL, dan pendampingan SI-MELAYUR."
     >
         <form method="POST" action="{{ route('peserta.login.store') }}" class="space-y-5" data-participant-auth-form>
             @csrf

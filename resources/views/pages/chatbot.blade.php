@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('title', 'Asisten Si-Molek | Informasi Layanan')
+@section('title', 'Asisten SI-MELAYUR | Informasi Layanan')
  
 @section(
     'meta_description',
-    'Tanyakan informasi layanan Kerja Praktik, Magang, PKL, dan WOPPS melalui Asisten Si-Molek berdasarkan dokumen resmi.'
+    'Tanyakan informasi layanan Kerja Praktik, Magang, PKL, dan WOPPS melalui Asisten SI-MELAYUR berdasarkan dokumen resmi.'
 )
 @section('hide_dev_nav', true)
 
@@ -12,7 +12,10 @@
         data-chatbot-app
         data-history-url="{{ route('chatbot.api.history') }}"
         data-send-url="{{ route('chatbot.api.messages.send') }}"
+        data-escalate-url-template="{{ route('chatbot.api.messages.escalate', ['message' => '__MESSAGE__']) }}"
         data-conversation-url-template="{{ route('chatbot.api.conversation', ['conversation' => '__CONVERSATION__']) }}"
+        data-infographics-url="{{ route('infographics') }}"
+        data-contact-url="{{ config('services.dkp.contact_whatsapp_url') }}"
         class="flex h-screen overflow-hidden bg-light font-sans text-navy"
     >
         @include('components.chatbot.sidebar')

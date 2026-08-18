@@ -14,11 +14,11 @@
 
                 <div>
                     <div class="text-sm font-bold leading-tight text-navy">
-                        Si-Molek
+                        SI-MELAYUR
                     </div>
 
                     <div class="text-xs leading-tight text-muted-foreground">
-                        Layanan KP, Magang, PKL &amp; WOPPS
+                        Magang, Penelitian &amp; Data Kelautan
                     </div>
                 </div>
             </a>
@@ -150,7 +150,7 @@
             </a>
 
             <a href="{{ route('chatbot') }}" class="block py-2 text-sm font-medium text-muted-foreground">
-                Asisten Si-Molek
+                Asisten SI-MELAYUR
             </a>
 
             @auth('peserta')

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Portal Peserta | Si-Molek')
+@section('title', 'Portal Peserta | SI-MELAYUR')
 
 @section('hide_dev_nav', true)
 
@@ -24,7 +24,7 @@
                         <i data-lucide="compass" class="h-5 w-5" aria-hidden="true"></i>
                     </span>
                     <span>
-                        <span class="block text-base font-extrabold tracking-tight">Si-Molek</span>
+                        <span class="block text-base font-extrabold tracking-tight">SI-MELAYUR</span>
                         <span class="block text-[11px] font-semibold text-muted-foreground">Portal pendamping peserta</span>
                     </span>
                 </a>
@@ -69,7 +69,7 @@
                         <p class="mt-1 text-sm font-bold">Mulai dengan memahami portal</p>
                     </div>
                     @foreach ([
-                        ['#kenali-si-molek', 'compass', 'Kenali Si-Molek', '01'],
+                        ['#kenali-si-molek', 'compass', 'Kenali SI-MELAYUR', '01'],
                         ['#portal-pendampingan', 'layers', 'Portal Pendampingan', '02'],
                         ['#cara-penggunaan', 'check-circle', 'Cara Penggunaan', '03'],
                     ] as [$href, $icon, $label, $number])
@@ -94,10 +94,10 @@
                     <div class="m-2 mt-5 rounded-2xl bg-white p-4 text-navy shadow-lg">
                         <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-teal/10 text-teal"><i data-lucide="message-square" class="h-4 w-4"></i></span>
                         <p class="mt-3 text-xs font-extrabold">Masih bingung?</p>
-                        <p class="mt-1 text-[11px] leading-relaxed text-muted-foreground">Asisten Si-Molek siap membantu mencari informasi resmi.</p>
+                        <p class="mt-1 text-[11px] leading-relaxed text-muted-foreground">Asisten SI-MELAYUR siap membantu mencari informasi resmi.</p>
                         <a href="{{ route('chatbot') }}" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-ocean">Tanya Asisten <i data-lucide="arrow-right" class="h-3 w-3"></i></a>
                     </div>
-                    <a href="{{ route('landing') }}" class="mx-2 mb-1 mt-2 flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-blue-200 transition hover:bg-white/10 hover:text-white"><i data-lucide="arrow-left" class="h-3.5 w-3.5"></i> Beranda Si-Molek</a>
+                    <a href="{{ route('landing') }}" class="mx-2 mb-1 mt-2 flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-blue-200 transition hover:bg-white/10 hover:text-white"><i data-lucide="arrow-left" class="h-3.5 w-3.5"></i> Beranda SI-MELAYUR</a>
                 </nav>
             </aside>
 
@@ -116,9 +116,9 @@
                         <span class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/15 px-3 py-1.5 text-[11px] font-bold backdrop-blur">
                             <i data-lucide="fish" class="h-3.5 w-3.5" aria-hidden="true"></i> MULAI DARI SINI
                         </span>
-                        <h1 class="mt-5 text-3xl font-extrabold tracking-tight sm:text-4xl">Selamat datang di Si-Molek, {{ $participant->name }}!</h1>
+                        <h1 class="mt-5 text-3xl font-extrabold tracking-tight sm:text-4xl">Selamat datang di SI-MELAYUR, {{ $participant->name }}!</h1>
                         <p class="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-blue-50 sm:text-base">
-                            Si-Molek adalah <strong>Sistem Informasi Manajemen Otomatisasi Layanan Kerja Praktik, Magang, PKL, dan WOPPS</strong> milik Dinas Kelautan dan Perikanan Provinsi Jawa Timur.
+                            SI-MELAYUR adalah <strong>Sistem Informasi Magang, Penelitian, dan Data Kelautan Jawa Timur</strong> milik Dinas Kelautan dan Perikanan Provinsi Jawa Timur. Nama ini terinspirasi dari ikan layur sebagai identitas bahari DKP Jawa Timur.
                         </p>
                     </div>
 
@@ -137,7 +137,7 @@
                         <div>
                             <span class="text-xs font-bold uppercase tracking-[0.2em] text-teal">Portal Pendampingan Peserta</span>
                             <h2 class="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">Apa fungsi portal ini?</h2>
-                            <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Portal Pendampingan adalah ruang kerja pribadi Anda di dalam Si-Molek. Di sini, Anda dipandu untuk memahami tahapan dan mempersiapkan kebutuhan layanan sebelum menuju kanal pengajuan resmi DKP.</p>
+                            <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Portal Pendampingan adalah ruang kerja pribadi Anda di dalam SI-MELAYUR. Di sini, Anda dipandu untuk memahami tahapan dan mempersiapkan kebutuhan layanan sebelum menuju kanal pengajuan resmi DKP.</p>
                         </div>
                         <div class="grid gap-3 sm:grid-cols-3">
                             @foreach ([
@@ -183,9 +183,9 @@
                 @if (! $application)
                     <section id="ringkasan" class="overflow-hidden rounded-[2rem] bg-gradient-to-br from-navy via-[#123d72] to-ocean p-7 text-white shadow-xl shadow-navy/10 sm:p-10">
                         <div class="max-w-2xl">
-                            <p class="text-xs font-bold uppercase tracking-[0.22em] text-teal-200">Portal Peserta Si-Molek</p>
+                            <p class="text-xs font-bold uppercase tracking-[0.22em] text-teal-200">Portal Peserta SI-MELAYUR</p>
                             <h1 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">Halo, {{ $participant->name }} 👋</h1>
-                            <p class="mt-3 max-w-xl text-sm leading-relaxed text-blue-100 sm:text-base">Mulailah dengan memilih layanan yang ingin Anda persiapkan. Si-Molek membantu menata kebutuhan sebelum Anda mengirim pengajuan melalui Google Form resmi DKP.</p>
+                            <p class="mt-3 max-w-xl text-sm leading-relaxed text-blue-100 sm:text-base">Mulailah dengan memilih layanan yang ingin Anda persiapkan. SI-MELAYUR membantu menata kebutuhan sebelum Anda mengirim pengajuan melalui Google Form resmi DKP.</p>
                         </div>
                     </section>
 
@@ -252,29 +252,11 @@
                             'locations' => $internshipLocations,
                             'guestbookUrl' => $internshipGuestbookUrl,
                         ])
-                    @else
-                    <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                        <a href="#persiapan" class="group rounded-3xl border border-border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                            <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-ocean/10 text-ocean"><i data-lucide="file-check-2" class="h-5 w-5" aria-hidden="true"></i></span>
-                            <span class="mt-5 block text-sm font-extrabold text-navy">Checklist Dokumen</span>
-                            <span class="mt-1 block text-xs leading-relaxed text-muted-foreground">Pahami kebutuhan sebelum mengajukan.</span>
-                        </a>
-                        <div class="rounded-3xl border border-border bg-white p-5 opacity-70 shadow-sm">
-                            <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal/10 text-teal"><i data-lucide="scan-search" class="h-5 w-5" aria-hidden="true"></i></span>
-                            <span class="mt-5 block text-sm font-extrabold text-navy">AI Document Checker</span>
-                            <span class="mt-1 block text-xs leading-relaxed text-muted-foreground">Segera hadir pada tahap berikutnya.</span>
-                        </div>
-                        <div class="rounded-3xl border border-border bg-white p-5 opacity-70 shadow-sm">
-                            <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan/15 text-ocean"><i data-lucide="external-link" class="h-5 w-5" aria-hidden="true"></i></span>
-                            <span class="mt-5 block text-sm font-extrabold text-navy">Google Form Resmi</span>
-                            <span class="mt-1 block text-xs leading-relaxed text-muted-foreground">Terbuka setelah pemeriksaan dokumen tersedia.</span>
-                        </div>
-                        <a href="{{ route('chatbot') }}" class="group rounded-3xl border border-border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                            <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal/10 text-teal"><i data-lucide="message-circle" class="h-5 w-5" aria-hidden="true"></i></span>
-                            <span class="mt-5 block text-sm font-extrabold text-navy">Tanya Asisten</span>
-                            <span class="mt-1 block text-xs leading-relaxed text-muted-foreground">Cari informasi dari dokumen resmi DKP.</span>
-                        </a>
-                    </section>
+                    @elseif ($application->service_type === \App\Models\ParticipantApplication::SERVICE_WOPPS)
+                        @include('components.peserta.wopps-workflow', [
+                            'application' => $application,
+                        ])
+                    @endif
 
                     <section id="persiapan" class="grid gap-6 xl:grid-cols-[1.35fr_0.65fr]">
                         <article class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8">
@@ -303,8 +285,8 @@
                         <aside class="rounded-[2rem] border border-border bg-light/60 p-6 sm:p-7">
                             <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-ocean shadow-sm"><i data-lucide="circle-help" class="h-5 w-5" aria-hidden="true"></i></span>
                             <h2 class="mt-5 text-xl font-extrabold">Butuh bantuan?</h2>
-                            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">Gunakan Asisten Si-Molek untuk menanyakan persyaratan, alur, atau kontak layanan.</p>
-                            <a href="{{ route('chatbot') }}" class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-ocean transition hover:text-navy">Buka Asisten Si-Molek <i data-lucide="arrow-up-right" class="h-4 w-4" aria-hidden="true"></i></a>
+                            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">Gunakan Asisten SI-MELAYUR untuk menanyakan persyaratan, alur, atau kontak layanan.</p>
+                            <a href="{{ route('chatbot') }}" class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-ocean transition hover:text-navy">Buka Asisten SI-MELAYUR <i data-lucide="arrow-up-right" class="h-4 w-4" aria-hidden="true"></i></a>
                         </aside>
                     </section>
 

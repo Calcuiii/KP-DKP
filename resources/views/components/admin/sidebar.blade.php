@@ -25,7 +25,7 @@ if (auth()->user()?->isSuperAdmin()) {
 <i data-lucide="fish" class="h-5 w-5 text-cyan-300" aria-hidden="true"></i>
 </div>
 <div>
-<div class="text-sm font-bold leading-tight text-white">Si-Molek</div>
+<div class="text-sm font-bold leading-tight text-white">SI-MELAYUR</div>
 <div class="text-[10px] leading-tight text-blue-300">Jawa Timur</div>
 </div>
 </div>

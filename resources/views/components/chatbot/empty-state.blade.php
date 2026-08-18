@@ -8,7 +8,7 @@
         </div>
 
         <h1 class="mt-5 text-2xl font-bold tracking-tight text-navy sm:text-3xl">
-            Halo, selamat datang di Asisten Si-Molek!
+            Halo, selamat datang di Asisten SI-MELAYUR!
         </h1>
 
         <p class="mx-auto mt-3 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
@@ -90,7 +90,7 @@
         <div class="mx-auto mt-7 flex max-w-xl items-start gap-3 rounded-2xl border border-ocean/10 bg-secondary/60 p-4 text-left">
             <i data-lucide="info" class="mt-0.5 h-5 w-5 shrink-0 text-ocean"></i>
             <p class="text-xs leading-5 text-muted-foreground sm:text-sm">
-                Jika informasi tidak tersedia di knowledge base resmi, Asisten Si-Molek akan menyampaikan bahwa informasi belum ditemukan dan tidak akan mengarang jawaban.
+                Jika informasi tidak tersedia di knowledge base resmi, Asisten SI-MELAYUR akan menyampaikan bahwa informasi belum ditemukan dan tidak akan mengarang jawaban.
             </p>
         </div>
     </div>

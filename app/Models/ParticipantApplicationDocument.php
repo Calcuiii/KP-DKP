@@ -8,13 +8,37 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 final class ParticipantApplicationDocument extends Model
 {
     public const TYPE_GUESTBOOK = 'guestbook_proof';
+
     public const TYPE_REQUEST_LETTER = 'request_letter';
 
-    public const REVIEW_SUBMITTED = 'submitted';
-    public const REVIEW_REVISION = 'revision_required';
-    public const REVIEW_APPROVED = 'review_approved';
+    public const TYPE_WOPPS_IDENTITY = 'wopps_identity';
 
-    protected $fillable = ['type', 'version', 'file_path', 'original_name', 'mime_type', 'file_size', 'review_status', 'review_notes', 'reviewed_at', 'automated_check_status', 'automated_check_results', 'automated_checked_at'];
+    public const TYPE_WOPPS_REQUEST_LETTER = 'wopps_request_letter';
+
+    public const TYPE_WOPPS_PROPOSAL = 'wopps_proposal';
+
+    public const TYPE_WOPPS_ETHICS = 'wopps_ethics';
+
+    public const REVIEW_SUBMITTED = 'submitted';
+
+    public const REVIEW_REVISION = 'revision_required';
+
+    public const REVIEW_APPROVED = 'approved';
+
+    protected $fillable = [
+        'type',
+        'version',
+        'file_path',
+        'original_name',
+        'mime_type',
+        'file_size',
+        'review_status',
+        'review_notes',
+        'reviewed_at',
+        'automated_check_status',
+        'automated_check_results',
+        'automated_checked_at',
+    ];
 
     protected function casts(): array
     {
@@ -27,6 +51,9 @@ final class ParticipantApplicationDocument extends Model
 
     public function application(): BelongsTo
     {
-        return $this->belongsTo(ParticipantApplication::class, 'participant_application_id');
+        return $this->belongsTo(
+            ParticipantApplication::class,
+            'participant_application_id'
+        );
     }
 }

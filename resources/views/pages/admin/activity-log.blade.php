@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Activity Log - Si-Molek')
+@section('title', 'Activity Log - SI-MELAYUR')
 
 @section('content')
 <div class="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">

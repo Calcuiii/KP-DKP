@@ -46,6 +46,9 @@ Route::prefix('api/chatbot')
 
         Route::post('/messages/{message}/feedback', [ChatbotController::class, 'feedback'])
             ->name('messages.feedback');
+
+        Route::post('/messages/{message}/escalate', [ChatbotController::class, 'escalate'])
+            ->name('messages.escalate');
     });
 
 Route::prefix('akun')->name('peserta.')->middleware('guest:peserta')->group(function (): void {
@@ -83,6 +86,19 @@ Route::middleware('auth:peserta')->group(function (): void {
         Route::get('/dokumen/{document}/unduh', [ParticipantApplicationController::class, 'downloadDocument'])
             ->middleware('verified')->name('document.download');
         Route::post('/keluar', [ParticipantAuthController::class, 'destroy'])->name('logout');
+
+        // WOPPS
+        Route::post('/wopps/dokumen', [ParticipantApplicationController::class, 'storeWoppsDocument'])
+            ->middleware('verified')
+            ->name('wopps.document.store');
+
+        Route::post('/wopps/cek-kelengkapan', [ParticipantApplicationController::class, 'checkWoppsCompleteness'])
+            ->middleware('verified')
+            ->name('wopps.completeness.check');
+
+        Route::post('/wopps/google-form', [ParticipantApplicationController::class, 'confirmWoppsGoogleForm'])
+            ->middleware('verified')
+            ->name('wopps.google-form');
     });
 });
 
@@ -101,7 +117,9 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
     Route::get('/conversation-logs/export', [ConversationLogController::class, 'export'])->name('admin.conversation-logs.export');
 
     Route::get('/unanswered-questions', [UnansweredQuestionController::class, 'index'])->name('admin.unanswered-questions');
-    Route::post('/unanswered-questions/{question}/resolve', [UnansweredQuestionController::class, 'markResolved'])->name('admin.unanswered-questions.resolve');
+    Route::get('/unanswered-questions/{escalation}', [UnansweredQuestionController::class, 'show'])->name('admin.unanswered-questions.show');
+    Route::post('/unanswered-questions/{escalation}/respond', [UnansweredQuestionController::class, 'respond'])->name('admin.unanswered-questions.respond');
+    Route::post('/unanswered-questions/{escalation}/resolve', [UnansweredQuestionController::class, 'markResolved'])->name('admin.unanswered-questions.resolve');
 
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('admin.analytics');
     Route::get('/analytics/export', [AnalyticsController::class, 'export'])->name('admin.analytics.export');

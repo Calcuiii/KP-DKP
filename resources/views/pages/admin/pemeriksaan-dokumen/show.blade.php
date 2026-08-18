@@ -284,8 +284,6 @@
                 class="mt-6"
             >
 
-                @csrf
-                @method('PATCH')
 
                 <label class="text-sm font-bold text-navy">
                     Catatan Admin
@@ -296,7 +294,7 @@
                         rows="4"
                         class="mt-2 w-full rounded-xl border border-border bg-background p-3 text-sm outline-none focus:border-ocean"
                         placeholder="Tambahkan catatan jika diperlukan..."
-                    >{{ old('review_notes', $document->review_status === 'approved' ? $document->review_notes : '') }}</textarea>
+                    >{{ old('review_notes', $document->review_status === ParticipantApplicationDocument::REVIEW_APPROVED ? $document->review_notes : '') }}</textarea>
 
                     <button
                         type="submit"
