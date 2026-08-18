@@ -5,7 +5,8 @@ $menu = [
     ['icon' => 'inbox', 'label' => 'Pertanyaan Tidak Terjawab', 'route' => 'admin.unanswered-questions'],
     ['icon' => 'trending-up', 'label' => 'Analytics', 'route' => 'admin.analytics'],
     ['icon' => 'activity', 'label' => 'Activity Log', 'route' => 'admin.activity-log'],
-    ['icon' => 'map-pin', 'label' => 'Kuota Lokasi KP', 'route' => 'admin.internship-locations'],
+    ['icon' => 'map', 'label' => 'Kuota Lokasi KP', 'route' => 'admin.internship-locations'],
+    ['icon' => 'file-check-2', 'label' => 'Pemeriksaan Surat KP', 'route' => 'admin.pemeriksaan-dokumen'],
 ];
 
 if (auth()->user()?->isSuperAdmin()) {

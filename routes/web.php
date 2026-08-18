@@ -16,6 +16,7 @@ use App\Http\Controllers\GuestbookCheckinController;
 use App\Http\Controllers\Peserta\ParticipantApplicationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\InternshipLocationController;
+use App\Http\Controllers\Admin\DocumentReviewController;
 
 Route::view('/', 'pages.landing')->name('landing');
 
@@ -114,6 +115,21 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/lokasi-kp', [InternshipLocationController::class, 'index'])->name('admin.internship-locations');
     Route::patch('/lokasi-kp/{location}', [InternshipLocationController::class, 'update'])->name('admin.internship-locations.update');
+
+        Route::get('/pemeriksaan-dokumen', [DocumentReviewController::class, 'index'])
+        ->name('admin.pemeriksaan-dokumen');
+
+    Route::get('/pemeriksaan-dokumen/{document}', [DocumentReviewController::class, 'show'])
+        ->name('admin.pemeriksaan-dokumen.show');
+
+    Route::patch('/pemeriksaan-dokumen/{document}/approve', [DocumentReviewController::class, 'approve'])
+        ->name('admin.pemeriksaan-dokumen.approve');
+
+    Route::patch('/pemeriksaan-dokumen/{document}/revision', [DocumentReviewController::class, 'revision'])
+        ->name('admin.pemeriksaan-dokumen.revision');
+
+    Route::get('/pemeriksaan-dokumen/{document}/unduh', [DocumentReviewController::class, 'download'])
+        ->name('admin.pemeriksaan-dokumen.download');
 
     Route::middleware('superadmin')->group(function (): void {
         Route::get('/knowledge-base', [KnowledgeBaseController::class, 'index'])->name('admin.knowledge-base');
