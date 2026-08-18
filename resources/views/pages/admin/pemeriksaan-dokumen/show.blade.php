@@ -81,7 +81,7 @@
                         class="inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white"
                     >
                         <i data-lucide="file-text" class="h-4 w-4"></i>
-                        Buka / Unduh Surat
+                        Buka
                     </a>
 
                 </div>
@@ -279,16 +279,17 @@
                      APPROVE
                 ========================== --}}
                 <form
-                    method="POST"
-                    action="{{ route('admin.pemeriksaan-dokumen.approve', $document) }}"
-                    class="mt-6"
-                >
+                method="POST"
+                action="{{ route('admin.pemeriksaan-dokumen.approve', $document) }}"
+                class="mt-6"
+            >
 
-                    @csrf
+                @csrf
+                @method('PATCH')
 
-                    <label class="text-sm font-bold text-navy">
-                        Catatan Admin
-                    </label>
+                <label class="text-sm font-bold text-navy">
+                    Catatan Admin
+                </label>
 
                     <textarea
                         name="review_notes"
@@ -319,6 +320,7 @@
                 >
 
                     @csrf
+                    @method('PATCH')
 
                     <label class="text-sm font-bold text-navy">
                         Alasan Perbaikan

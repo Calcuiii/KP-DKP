@@ -98,19 +98,19 @@ class DocumentReviewController extends Controller
             ->with('success', 'Permintaan perbaikan berhasil dikirim kepada peserta.');
     }
 
-    public function download(ParticipantApplicationDocument $document): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function download(ParticipantApplicationDocument $document): \Symfony\Component\HttpFoundation\BinaryFileResponse
 {
     abort_unless(
         $document->type === ParticipantApplicationDocument::TYPE_REQUEST_LETTER,
         404
     );
 
-    abort_unless(
-        \Illuminate\Support\Facades\Storage::disk('local')->exists($document->file_path),
-        404
-    );
+    $absolutePath = \Illuminate\Support\Facades\Storage::disk('local')->path($document->file_path);
 
-    return \Illuminate\Support\Facades\Storage::disk('local')
-        ->download($document->file_path, $document->original_name);
+    abort_unless(file_exists($absolutePath), 404);
+
+    return response()->file($absolutePath, [
+        'Content-Type' => $document->mime_type ?? 'application/pdf',
+    ]);
 }
 }
