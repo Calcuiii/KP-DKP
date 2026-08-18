@@ -310,8 +310,15 @@
         animation: participant-orbit 14s linear infinite;
     }
 
-    #kenali-si-molek > div:nth-last-child(2) {
-        animation: participant-dashboard-hover 5s ease-in-out infinite;
+    .participant-intro-content {
+        display: grid;
+        grid-template-rows: 1fr;
+        opacity: 1;
+    }
+
+    .participant-intro-content-inner {
+        min-height: 0;
+        overflow: hidden;
     }
 
     #cara-penggunaan li {
@@ -369,11 +376,6 @@
     50% { transform: translate3d(-12px, 16px, 0); }
 }
 
-@keyframes participant-dashboard-hover {
-    0%, 100% { transform: translateY(1.5rem); }
-    50% { transform: translateY(1.15rem); }
-}
-
 @keyframes participant-orbit {
     to { transform: rotate(360deg); }
 }
@@ -388,13 +390,13 @@
     .participant-reveal.is-visible,
     .participant-sidebar::before,
     #kenali-si-molek::after,
-    #kenali-si-molek > div:nth-last-child(2),
     #cara-penggunaan li span:first-child {
         animation: none;
         opacity: 1;
         transform: none;
         transition: none;
     }
+
 }
 
 @keyframes participant-auth-enter {
