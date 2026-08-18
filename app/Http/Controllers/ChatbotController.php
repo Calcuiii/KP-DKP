@@ -211,7 +211,7 @@ final class ChatbotController extends Controller
             ['assistant_message_id' => $message->id],
             [
                 'user_message_id' => $userMessage->id,
-                'ticket_code' => 'SM-'.now()->format('Ymd').'-'.strtoupper(Str::random(6)),
+                'ticket_code' => 'SMLYR-'.now()->format('Ymd').'-'.strtoupper(Str::random(6)),
                 'status' => 'new',
                 'whatsapp_status' => 'pending',
             ],

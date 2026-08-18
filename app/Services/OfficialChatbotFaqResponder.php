@@ -83,7 +83,7 @@ Buku Tamu Magang / PKL diisi melalui Google Form resmi berikut:
 
 [Isi Buku Tamu Magang / PKL](https://bit.ly/DaftarMagangPKL_DKP_JATIM)
 
-Setelah selesai, simpan screenshot atau PDF bukti pengisian untuk diunggah pada Portal Peserta Si-Molek.
+Setelah selesai, simpan screenshot atau PDF bukti pengisian untuk diunggah pada Portal Peserta SI-MELAYUR.
 MARKDOWN,
             [
                 $this->source('KB-006', 'Layanan Pendaftaran Magang / PKL', 'Buku Tamu Magang / PKL'),

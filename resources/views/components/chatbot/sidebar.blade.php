@@ -9,7 +9,7 @@
             </span>
 
             <span class="min-w-0">
-                <span class="block truncate text-sm font-semibold">Asisten Si-Molek</span>
+                <span class="block truncate text-sm font-semibold">Asisten SI-MELAYUR</span>
                 <span class="block truncate text-[10px] text-blue-300">Provinsi Jawa Timur</span>
             </span>
         </a>
@@ -62,7 +62,7 @@
             aria-current="page"
         >
             <i data-lucide="message-square" class="h-4 w-4"></i>
-            Asisten Si-Molek
+            Asisten SI-MELAYUR
         </a>
 
         <a

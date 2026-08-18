@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Analytics - Si-Molek')
+@section('title', 'Analytics - SI-MELAYUR')
 
 @section('content')
 @php
@@ -13,7 +13,7 @@
         <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
             <div class="max-w-2xl">
                 <p class="text-xs font-semibold tracking-[0.16em] text-sky-200">ANALISIS LAYANAN</p>
-                <h1 class="mt-2 text-2xl font-bold sm:text-3xl">Pantau performa Si-Molek</h1>
+                <h1 class="mt-2 text-2xl font-bold sm:text-3xl">Pantau performa SI-MELAYUR</h1>
                 <p class="mt-2 text-sm leading-6 text-sky-100">Lihat tren pertanyaan, tingkat jawaban, dan sumber knowledge base yang paling banyak digunakan dalam satu tampilan.</p>
             </div>
             <div class="grid grid-cols-2 gap-3 sm:min-w-[330px]">

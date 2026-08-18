@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Verifikasi Email | Si-Molek')
+@section('title', 'Verifikasi Email | SI-MELAYUR')
 
 @section('hide_dev_nav', true)
 

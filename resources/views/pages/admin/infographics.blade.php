@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Infografis - Si-Molek')
+@section('title', 'Infografis - SI-MELAYUR')
 
 @section('content')
     <div class="space-y-5">

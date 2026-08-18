@@ -1,7 +1,7 @@
 Design a complete high-fidelity responsive web application UI/UX for an AI-powered chatbot information service for Kerja Praktik (KP) and Magang at Dinas Kelautan dan Perikanan Provinsi Jawa Timur.
 
 PROJECT NAME:
-Si-Molek
+SI-MELAYUR
 
 SYSTEM PURPOSE:
 The website is a public information portal and AI chatbot service that helps students and vocational school students obtain accurate information about Kerja Praktik and Magang services.
@@ -136,7 +136,7 @@ Show a sample conversation:
 User:
 "Apa saja persyaratan untuk mengajukan magang?"
 
-Si-Molek:
+SI-MELAYUR:
 "Berikut persyaratan pengajuan magang berdasarkan informasi resmi yang tersedia..."
 
 Display source citation:
@@ -215,7 +215,7 @@ Badge:
 "Cara Kerja"
 
 Headline:
-"Bagaimana Si-Molek Menghasilkan Jawaban?"
+"Bagaimana SI-MELAYUR Menghasilkan Jawaban?"
 
 Create a modern horizontal process visualization.
 
@@ -238,7 +238,7 @@ Use simple icons and connecting arrows.
 
 Add a small information box:
 
-"Si-Molek hanya memberikan jawaban berdasarkan knowledge base yang telah diverifikasi dan dikelola oleh administrator."
+"SI-MELAYUR hanya memberikan jawaban berdasarkan knowledge base yang telah diverifikasi dan dikelola oleh administrator."
 
 ==================================================
 5. SYSTEM BENEFITS SECTION
@@ -269,7 +269,7 @@ Create accordion FAQ component.
 
 Example questions:
 
-"Apa itu Si-Molek?"
+"Apa itu SI-MELAYUR?"
 
 "Apakah jawaban chatbot merupakan keputusan resmi Dinas?"
 
@@ -291,7 +291,7 @@ Headline:
 "Masih Memiliki Pertanyaan tentang KP atau Magang?"
 
 Description:
-"Gunakan Si-Molek untuk menemukan informasi berdasarkan dokumen resmi yang tersedia."
+"Gunakan SI-MELAYUR untuk menemukan informasi berdasarkan dokumen resmi yang tersedia."
 
 Button:
 "Mulai Bertanya"
@@ -305,7 +305,7 @@ Use dark navy blue to ocean blue gradient background.
 Create footer with four columns.
 
 Column 1:
-Si-Molek
+SI-MELAYUR
 Short system description.
 
 Column 2:
@@ -339,7 +339,7 @@ Layout:
 
 LEFT SIDEBAR:
 
-Si-Molek logo.
+SI-MELAYUR logo.
 
 Button:
 "+ Percakapan Baru"
@@ -366,7 +366,7 @@ Initial empty state:
 Icon or illustration.
 
 Headline:
-"Halo, ada yang bisa Si-Molek bantu?"
+"Halo, ada yang bisa SI-MELAYUR bantu?"
 
 Description:
 "Tanyakan informasi seputar Kerja Praktik dan Magang."
@@ -389,7 +389,7 @@ AI answer aligned left.
 
 Every AI answer contains:
 
-- Si-Molek avatar.
+- SI-MELAYUR avatar.
 - Answer content.
 - Source citation.
 - Button "Lihat Sumber".
@@ -432,7 +432,7 @@ Character limit indicator.
 
 Add disclaimer:
 
-"Si-Molek dapat menghasilkan jawaban yang kurang tepat. Pastikan kembali informasi penting melalui layanan resmi."
+"SI-MELAYUR dapat menghasilkan jawaban yang kurang tepat. Pastikan kembali informasi penting melalui layanan resmi."
 
 CHATBOT STATES:
 
@@ -582,7 +582,7 @@ Page title:
 "Knowledge Base"
 
 Description:
-"Kelola dokumen yang digunakan sebagai sumber informasi Si-Molek."
+"Kelola dokumen yang digunakan sebagai sumber informasi SI-MELAYUR."
 
 Metric cards:
 

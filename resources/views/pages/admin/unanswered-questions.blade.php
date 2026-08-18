@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Pertanyaan Tidak Terjawab - Si-Molek')
+@section('title', 'Pertanyaan Tidak Terjawab - SI-MELAYUR')
 
 @section('content')
 <div class="space-y-5">

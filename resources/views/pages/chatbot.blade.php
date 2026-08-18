@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('title', 'Asisten Si-Molek | Informasi Layanan')
+@section('title', 'Asisten SI-MELAYUR | Informasi Layanan')
  
 @section(
     'meta_description',
-    'Tanyakan informasi layanan Kerja Praktik, Magang, PKL, dan WOPPS melalui Asisten Si-Molek berdasarkan dokumen resmi.'
+    'Tanyakan informasi layanan Kerja Praktik, Magang, PKL, dan WOPPS melalui Asisten SI-MELAYUR berdasarkan dokumen resmi.'
 )
 @section('hide_dev_nav', true)
 

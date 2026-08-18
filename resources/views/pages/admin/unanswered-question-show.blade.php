@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Detail Tiket - Si-Molek')
+@section('title', 'Detail Tiket - SI-MELAYUR')
 
 @section('content')
 <div class="mx-auto max-w-6xl space-y-5">

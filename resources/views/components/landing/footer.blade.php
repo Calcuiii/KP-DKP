@@ -16,7 +16,7 @@
 
                     <div>
                         <div class="text-sm font-bold leading-tight text-navy">
-                            Si-Molek
+                            SI-MELAYUR
                         </div>
 
                         <div class="text-[10px] leading-tight text-muted-foreground">
@@ -26,7 +26,7 @@
                 </div>
 
                 <p class="mt-3 max-w-[180px] text-xs leading-relaxed text-muted-foreground">
-                    Sistem informasi layanan Kerja Praktik, Magang, PKL, dan WOPPS berbasis dokumen resmi.
+                    Sistem Informasi Magang, Penelitian, dan Data Kelautan Jawa Timur berbasis dokumen resmi.
                 </p>
             </div>
 

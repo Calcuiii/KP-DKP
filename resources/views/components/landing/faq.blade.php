@@ -1,12 +1,12 @@
 @php
     $faqs = [
         [
-            'question' => 'Apa itu Si-Molek?',
-            'answer' => 'Si-Molek adalah Sistem Informasi Manajemen Otomatisasi Layanan Kerja Praktik, Magang, PKL, dan WOPPS di Dinas Kelautan dan Perikanan Provinsi Jawa Timur. Asisten Si-Molek adalah salah satu fitur di dalam sistem ini untuk membantu mencari informasi dari dokumen resmi.',
+            'question' => 'Apa itu SI-MELAYUR?',
+            'answer' => 'SI-MELAYUR adalah Sistem Informasi Magang, Penelitian, dan Data Kelautan Jawa Timur milik Dinas Kelautan dan Perikanan Provinsi Jawa Timur. Namanya terinspirasi dari ikan layur untuk memperkuat identitas bahari, sedangkan Asisten SI-MELAYUR menjadi salah satu fitur pencarian informasi dari dokumen resmi.',
         ],
         [
             'question' => 'Apakah jawaban chatbot merupakan keputusan resmi Dinas?',
-            'answer' => 'Tidak. Jawaban yang diberikan Asisten Si-Molek bersifat informatif dan berdasarkan dokumen resmi yang dikelola administrator. Untuk keputusan resmi, silakan hubungi petugas Dinas secara langsung.',
+            'answer' => 'Tidak. Jawaban yang diberikan Asisten SI-MELAYUR bersifat informatif dan berdasarkan dokumen resmi yang dikelola administrator. Untuk keputusan resmi, silakan hubungi petugas Dinas secara langsung.',
         ],
         [
             'question' => 'Informasi apa saja yang dapat ditanyakan?',
@@ -14,11 +14,11 @@
         ],
         [
             'question' => 'Dari mana chatbot mendapatkan informasi?',
-            'answer' => 'Asisten Si-Molek menggunakan teknologi Retrieval-Augmented Generation (RAG) yang mencari informasi dari knowledge base berisi dokumen resmi yang telah diverifikasi dan dikelola oleh administrator Dinas.',
+            'answer' => 'Asisten SI-MELAYUR menggunakan teknologi Retrieval-Augmented Generation (RAG) yang mencari informasi dari knowledge base berisi dokumen resmi yang telah diverifikasi dan dikelola oleh administrator Dinas.',
         ],
         [
             'question' => 'Apa yang terjadi jika chatbot tidak menemukan jawaban?',
-            'answer' => 'Jika tidak ditemukan informasi yang relevan, Asisten Si-Molek akan memberitahu Anda dan menyarankan untuk menghubungi petugas Dinas secara langsung. Pertanyaan tersebut juga akan dicatat untuk pembaruan knowledge base.',
+            'answer' => 'Jika tidak ditemukan informasi yang relevan, Asisten SI-MELAYUR akan memberitahu Anda dan menyarankan untuk menghubungi petugas Dinas secara langsung. Pertanyaan tersebut juga akan dicatat untuk pembaruan knowledge base.',
         ],
         [
             'question' => 'Bagaimana cara menghubungi petugas?',
