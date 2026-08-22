@@ -305,7 +305,6 @@
                         </ol>
                     </section>
                     @endif
-                @endif
             </div>
         </div>
     </main>
