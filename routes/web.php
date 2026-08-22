@@ -14,6 +14,7 @@ use App\Http\Controllers\Auth\ParticipantEmailVerificationController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\GuestbookCheckinController;
 use App\Http\Controllers\Peserta\ParticipantApplicationController;
+use App\Http\Controllers\Peserta\ParticipantNotificationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\InternshipLocationController;
 use App\Http\Controllers\Admin\DocumentReviewController;
@@ -81,24 +82,22 @@ Route::middleware('auth:peserta')->group(function (): void {
             ->middleware('verified')->name('guestbook-proof.store');
         Route::post('/surat-permohonan', [ParticipantApplicationController::class, 'storeRequestLetter'])
             ->middleware('verified')->name('request-letter.store');
-        Route::post('/konfirmasi-google-form', [ParticipantApplicationController::class, 'confirmGoogleForm'])
-            ->middleware('verified')->name('google-form.confirm');
+        Route::post('/ethics-approval', [ParticipantApplicationController::class, 'storeEthicsApproval'])
+            ->middleware('verified')->name('ethics-approval.store');
+        Route::post('/bukti-form-wopps', [ParticipantApplicationController::class, 'storeWoppsFormProof'])
+            ->middleware('verified')->name('wopps-form-proof.store');
+        Route::post('/bukti-google-form-magang', [ParticipantApplicationController::class, 'storeInternshipFormProof'])
+            ->middleware('verified')->name('internship-form-proof.store');
         Route::get('/dokumen/{document}/unduh', [ParticipantApplicationController::class, 'downloadDocument'])
             ->middleware('verified')->name('document.download');
+        Route::get('/surat-balasan/unduh', [ParticipantApplicationController::class, 'downloadResponseLetter'])
+            ->middleware('verified')->name('response-letter.download');
+        Route::post('/notifikasi/{notification}/baca', [ParticipantNotificationController::class, 'read'])
+            ->middleware('verified')->name('notifications.read');
+        Route::post('/notifikasi/baca-semua', [ParticipantNotificationController::class, 'readAll'])
+            ->middleware('verified')->name('notifications.read-all');
         Route::post('/keluar', [ParticipantAuthController::class, 'destroy'])->name('logout');
 
-        // WOPPS
-        Route::post('/wopps/dokumen', [ParticipantApplicationController::class, 'storeWoppsDocument'])
-            ->middleware('verified')
-            ->name('wopps.document.store');
-
-        Route::post('/wopps/cek-kelengkapan', [ParticipantApplicationController::class, 'checkWoppsCompleteness'])
-            ->middleware('verified')
-            ->name('wopps.completeness.check');
-
-        Route::post('/wopps/google-form', [ParticipantApplicationController::class, 'confirmWoppsGoogleForm'])
-            ->middleware('verified')
-            ->name('wopps.google-form');
     });
 });
 

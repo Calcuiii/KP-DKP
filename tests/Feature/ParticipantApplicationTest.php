@@ -58,9 +58,10 @@ class ParticipantApplicationTest extends TestCase
             ->get(route('peserta.dashboard'))
             ->assertOk()
             ->assertSee('WOPPS')
-            ->assertSee('Persetujuan etik')
-            ->assertSee('AI Document Checker')
-            ->assertSee('Terbuka setelah pemeriksaan dokumen tersedia.');
+            ->assertSee('Pemeriksaan Surat Permohonan')
+            ->assertSee('Nomor Induk Mahasiswa')
+            ->assertSee('Dosen Pembimbing/Lapangan dan WhatsApp aktif')
+            ->assertSee('Tujuan Penggunaan Data / Informasi');
     }
 
     public function test_an_unverified_participant_cannot_create_a_preparation_draft(): void
@@ -145,8 +146,153 @@ class ParticipantApplicationTest extends TestCase
         $this->assertNull($latestLetter->reviewed_at);
     }
 
-    public function test_google_form_confirmation_requires_an_approved_letter(): void
+    public function test_wopps_request_letter_can_be_uploaded_without_guestbook_proof(): void
     {
+        Storage::fake('local');
+        $participant = Participant::factory()->create(['email_verified_at' => now()]);
+        $application = $participant->applications()->create([
+            'service_type' => ParticipantApplication::SERVICE_WOPPS,
+            'status' => 'preparation',
+        ]);
+
+        $this->actingAs($participant, 'peserta')->post(route('peserta.request-letter.store'), [
+            'request_letter' => UploadedFile::fake()->create('surat-wopps.pdf', 100, 'application/pdf'),
+            'letter_declaration' => '1',
+        ])->assertRedirect()->assertSessionHas('status');
+
+        $letter = $application->documents()->sole();
+        $this->assertSame(ParticipantApplicationDocument::TYPE_REQUEST_LETTER, $letter->type);
+        $this->assertSame('unreadable', $letter->automated_check_status);
+        $this->assertSame('letter_revision_required', $application->fresh()->status);
+    }
+
+    public function test_wopps_ethics_approval_is_locked_until_request_letter_is_approved(): void
+    {
+        Storage::fake('local');
+        $participant = Participant::factory()->create(['email_verified_at' => now()]);
+        $application = $participant->applications()->create([
+            'service_type' => ParticipantApplication::SERVICE_WOPPS,
+            'status' => 'preparation',
+        ]);
+
+        $payload = [
+            'ethics_approval' => UploadedFile::fake()->create('ethics.pdf', 100, 'application/pdf'),
+            'ethics_declaration' => '1',
+        ];
+        $this->actingAs($participant, 'peserta')->post(route('peserta.ethics-approval.store'), $payload)->assertStatus(422);
+
+        $application->documents()->create([
+            'type' => ParticipantApplicationDocument::TYPE_REQUEST_LETTER,
+            'version' => 1,
+            'file_path' => 'test/request.pdf',
+            'original_name' => 'request.pdf',
+            'mime_type' => 'application/pdf',
+            'file_size' => 100,
+            'review_status' => ParticipantApplicationDocument::REVIEW_APPROVED,
+        ]);
+
+        $this->actingAs($participant, 'peserta')->post(route('peserta.ethics-approval.store'), $payload)->assertRedirect()->assertSessionHas('status');
+        $ethics = $application->documents()->where('type', ParticipantApplicationDocument::TYPE_ETHICS_APPROVAL)->sole();
+        $this->assertSame('unreadable', $ethics->automated_check_status);
+        $this->assertSame('ethics_revision_required', $application->fresh()->status);
+    }
+
+    public function test_wopps_form_proof_is_locked_until_ethics_approval_is_approved(): void
+    {
+        Storage::fake('local');
+        $participant = Participant::factory()->create(['email_verified_at' => now()]);
+        $application = $participant->applications()->create([
+            'service_type' => ParticipantApplication::SERVICE_WOPPS,
+            'status' => 'ethics_under_review',
+        ]);
+
+        $payload = [
+            'wopps_form_proof' => UploadedFile::fake()->image('bukti-wopps.png'),
+            'wopps_form_declaration' => '1',
+        ];
+
+        $this->actingAs($participant, 'peserta')
+            ->post(route('peserta.wopps-form-proof.store'), $payload)
+            ->assertStatus(422);
+
+        $application->documents()->create([
+            'type' => ParticipantApplicationDocument::TYPE_ETHICS_APPROVAL,
+            'version' => 1,
+            'file_path' => 'test/ethics.pdf',
+            'original_name' => 'ethics.pdf',
+            'mime_type' => 'application/pdf',
+            'file_size' => 100,
+            'review_status' => ParticipantApplicationDocument::REVIEW_APPROVED,
+        ]);
+
+        $this->actingAs($participant, 'peserta')
+            ->post(route('peserta.wopps-form-proof.store'), $payload)
+            ->assertRedirect()
+            ->assertSessionHas('status');
+
+        $proof = $application->documents()->where('type', ParticipantApplicationDocument::TYPE_WOPPS_FORM_PROOF)->sole();
+        $this->assertSame('bukti-wopps.png', $proof->original_name);
+        $this->assertSame(ParticipantApplicationDocument::REVIEW_SUBMITTED, $proof->review_status);
+        $this->assertSame('wopps_form_submitted', $application->fresh()->status);
+        $this->assertNotNull($application->fresh()->google_form_confirmed_at);
+        Storage::disk('local')->assertExists($proof->file_path);
+    }
+
+    public function test_approved_ethics_document_unlocks_the_wopps_form_stage_on_dashboard(): void
+    {
+        $participant = Participant::factory()->create(['email_verified_at' => now()]);
+        $application = $participant->applications()->create([
+            'service_type' => ParticipantApplication::SERVICE_WOPPS,
+            'status' => 'ethics_approved',
+        ]);
+        $application->documents()->create([
+            'type' => ParticipantApplicationDocument::TYPE_ETHICS_APPROVAL,
+            'version' => 1,
+            'file_path' => 'test/ethics.pdf',
+            'original_name' => 'ethics.pdf',
+            'mime_type' => 'application/pdf',
+            'file_size' => 100,
+            'review_status' => ParticipantApplicationDocument::REVIEW_APPROVED,
+        ]);
+
+        $this->actingAs($participant, 'peserta')
+            ->get(route('peserta.dashboard'))
+            ->assertOk()
+            ->assertSeeInOrder(['WOPPS · Tahap 2', 'WOPPS · Tahap 3'])
+            ->assertSee('https://bit.ly/WOPPS', false)
+            ->assertSee('Upload bukti pengiriman');
+    }
+
+    public function test_submitted_wopps_form_proof_unlocks_the_official_contact_stage(): void
+    {
+        $participant = Participant::factory()->create(['email_verified_at' => now()]);
+        $application = $participant->applications()->create([
+            'service_type' => ParticipantApplication::SERVICE_WOPPS,
+            'status' => 'wopps_form_submitted',
+            'google_form_confirmed_at' => now(),
+        ]);
+        $application->documents()->create([
+            'type' => ParticipantApplicationDocument::TYPE_WOPPS_FORM_PROOF,
+            'version' => 1,
+            'file_path' => 'test/bukti-wopps.png',
+            'original_name' => 'bukti-wopps.png',
+            'mime_type' => 'image/png',
+            'file_size' => 100,
+            'review_status' => ParticipantApplicationDocument::REVIEW_SUBMITTED,
+        ]);
+
+        $this->actingAs($participant, 'peserta')
+            ->get(route('peserta.dashboard'))
+            ->assertOk()
+            ->assertSee('Koordinasi tindak lanjut')
+            ->assertSee('Bapak Dicky Fadillah')
+            ->assertSee('+62 852-5300-0485')
+            ->assertSee('https://wa.me/6285253000485', false);
+    }
+
+    public function test_internship_form_proof_requires_an_approved_letter_and_unlocks_the_response_stage(): void
+    {
+        Storage::fake('local');
         $participant = Participant::factory()->create(['email_verified_at' => now()]);
         $application = $participant->applications()->create(['service_type' => ParticipantApplication::SERVICE_MAGANG_PKL, 'status' => 'letter_under_review', 'guestbook_confirmed_at' => now()]);
         $letter = $application->documents()->create([
@@ -155,12 +301,25 @@ class ParticipantApplicationTest extends TestCase
             'file_size' => 100, 'review_status' => ParticipantApplicationDocument::REVIEW_SUBMITTED,
         ]);
 
-        $this->actingAs($participant, 'peserta')->post(route('peserta.google-form.confirm'))->assertStatus(422);
+        $payload = [
+            'internship_form_proof' => UploadedFile::fake()->image('bukti-form.png'),
+            'internship_form_declaration' => '1',
+        ];
+
+        $this->actingAs($participant, 'peserta')->post(route('peserta.internship-form-proof.store'), $payload)->assertStatus(422);
         $letter->update(['review_status' => ParticipantApplicationDocument::REVIEW_APPROVED]);
-        $this->actingAs($participant, 'peserta')->post(route('peserta.google-form.confirm'))->assertRedirect();
+        $this->actingAs($participant, 'peserta')->post(route('peserta.internship-form-proof.store'), [
+            'internship_form_proof' => UploadedFile::fake()->image('bukti-form.png'),
+            'internship_form_declaration' => '1',
+        ])->assertRedirect();
 
         $this->assertSame('response_pending', $application->fresh()->status);
         $this->assertNotNull($application->fresh()->google_form_confirmed_at);
+        $this->assertDatabaseHas('participant_application_documents', [
+            'participant_application_id' => $application->id,
+            'type' => ParticipantApplicationDocument::TYPE_INTERNSHIP_FORM_PROOF,
+            'original_name' => 'bukti-form.png',
+        ]);
     }
 
     public function test_approved_internship_application_shows_google_forms_for_both_education_levels(): void

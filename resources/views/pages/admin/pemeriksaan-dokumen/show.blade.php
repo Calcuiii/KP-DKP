@@ -484,6 +484,7 @@
                         >
 
                             @csrf
+                            @method('PATCH')
 
                             <textarea
                                 name="review_notes"
@@ -498,7 +499,7 @@
                                 class="mt-3 w-full rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white hover:bg-emerald-700"
                                 onclick="return confirm('Apakah dokumen ini sudah benar dan ingin disetujui?')"
                             >
-                                ✓ Setujui Dokumen
+                                ✓ Setujui Surat
                             </button>
 
                         </form>
