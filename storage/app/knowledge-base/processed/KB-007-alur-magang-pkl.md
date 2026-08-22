@@ -53,6 +53,15 @@ Calon peserta berkoordinasi mengenai ketersediaan kuota dan kesesuaian Program S
 
 Calon peserta mengajukan Surat Permohonan Magang atau PKL setelah memperoleh persetujuan awal.
 
+Dokumen yang perlu disiapkan untuk pengajuan Magang, Kerja Praktik (KP), atau Praktik Kerja Lapangan (PKL) adalah:
+
+- Pas foto peserta.
+- KTM untuk mahasiswa.
+- Kartu Pelajar untuk siswa.
+- Ethical Clearance.
+- Surat Permohonan.
+- Surat Kesehatan resmi.
+
 Informasi lebih detail: lihat Infografis ke-5 dalam seri ini (dokumen KB-004: Informasi yang Wajib Disampaikan dalam Surat Permohonan Magang / Praktik Kerja Lapang).
 
 ### Langkah 4: Isi Form Pelaksanaan Magang / PKL

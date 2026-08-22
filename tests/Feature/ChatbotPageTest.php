@@ -70,6 +70,44 @@ class ChatbotPageTest extends TestCase
         );
     }
 
+    public function test_the_chat_message_endpoint_returns_the_required_magang_submission_documents(): void
+    {
+        foreach ([
+            'Apa saja persyaratan pengajuan magang?',
+            'dokumen apa saja yang harus di persiapkan untuk pengajuan magang?',
+            'Dokumen apa yang diperlukan untuk mengajukan KP?',
+            'Apa saja syarat mendaftar PKL?',
+        ] as $question) {
+            $response = $this
+                ->withCookie('dkp_guestbook_completed', '1')
+                ->withCredentials()
+                ->postJson(route('chatbot.api.messages.send'), [
+                    'session_key' => (string) Str::uuid(),
+                    'message' => $question,
+                ]);
+
+            $response
+                ->assertCreated()
+                ->assertJsonPath('data.message.status', 'success')
+                ->assertJsonPath('data.message.sources.1.document_id', 'KB-007');
+
+            foreach ([
+                'pas foto peserta',
+                'KTM untuk mahasiswa',
+                'Kartu Pelajar untuk siswa',
+                'Ethical Clearance',
+                'Surat Permohonan',
+                'Surat Kesehatan resmi',
+            ] as $requiredDocument) {
+                self::assertStringContainsString(
+                    $requiredDocument,
+                    $response->json('data.message.content'),
+                    $question,
+                );
+            }
+        }
+    }
+
     public function test_the_chat_message_endpoint_returns_the_approved_answer_for_a_wopps_quick_question(): void
     {
         $response = $this
