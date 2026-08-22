@@ -11,6 +11,12 @@ final class ParticipantApplicationDocument extends Model
 
     public const TYPE_REQUEST_LETTER = 'request_letter';
 
+    public const TYPE_ETHICS_APPROVAL = 'ethics_approval';
+
+    public const TYPE_WOPPS_FORM_PROOF = 'wopps_form_proof';
+
+    public const TYPE_INTERNSHIP_FORM_PROOF = 'internship_form_proof';
+
     public const REVIEW_SUBMITTED = 'submitted';
 
     public const REVIEW_REVISION = 'revision_required';

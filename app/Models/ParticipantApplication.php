@@ -67,6 +67,11 @@ class ParticipantApplication extends Model
         return $this->latestDocument(ParticipantApplicationDocument::TYPE_REQUEST_LETTER)?->review_status === ParticipantApplicationDocument::REVIEW_APPROVED;
     }
 
+    public function ethicsApprovalApproved(): bool
+    {
+        return $this->latestDocument(ParticipantApplicationDocument::TYPE_ETHICS_APPROVAL)?->review_status === ParticipantApplicationDocument::REVIEW_APPROVED;
+    }
+
     /**
      * @return array<string, array{label: string, description: string}>
      */

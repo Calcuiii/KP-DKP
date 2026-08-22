@@ -43,6 +43,11 @@ class AdminDocumentReviewTest extends TestCase
         $this->assertSame('Surat sudah sesuai.', $document->review_notes);
         $this->assertNotNull($document->reviewed_at);
         $this->assertSame('letter_approved', $application->fresh()->status);
+
+        $notification = $application->participant->notifications()->sole();
+        $this->assertSame('approved', $notification->data['status']);
+        $this->assertSame('Dokumen disetujui', $notification->data['title']);
+        $this->assertSame('Surat sudah sesuai.', $notification->data['review_notes']);
     }
 
     public function test_an_admin_can_request_a_revision_with_required_notes(): void
@@ -60,6 +65,25 @@ class AdminDocumentReviewTest extends TestCase
         $this->assertSame('Tanggal selesai belum tercantum.', $document->review_notes);
         $this->assertNotNull($document->reviewed_at);
         $this->assertSame('letter_revision_required', $application->fresh()->status);
+
+        $notification = $application->participant->notifications()->sole();
+        $this->assertSame('revision_required', $notification->data['status']);
+        $this->assertSame('Perbaikan dokumen diperlukan', $notification->data['title']);
+        $this->assertSame('Tanggal selesai belum tercantum.', $notification->data['review_notes']);
+    }
+
+    public function test_a_participant_can_read_their_notification(): void
+    {
+        [$admin, $document, $application] = $this->reviewFixture();
+
+        $this->actingAs($admin)->patch(route('admin.pemeriksaan-dokumen.approve', $document));
+        $notification = $application->participant->notifications()->sole();
+
+        $this->actingAs($application->participant, 'peserta')
+            ->post(route('peserta.notifications.read', $notification->id))
+            ->assertRedirect(route('peserta.dashboard').'#persiapan');
+
+        $this->assertNotNull($notification->fresh()->read_at);
     }
 
     /**
