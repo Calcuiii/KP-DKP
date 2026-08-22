@@ -99,7 +99,19 @@
 
 <section id="google-form" class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8 {{ $letterApproved ? '' : 'opacity-60' }}">
     <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between"><div><p class="text-xs font-bold uppercase tracking-[0.18em] text-teal">Tahap 4</p><h2 class="mt-2 text-2xl font-extrabold">Google Form resmi</h2><p class="mt-2 text-sm text-muted-foreground">Tahap ini terbuka setelah surat permohonan dinyatakan lolos oleh admin.</p></div>
-        @if ($letterApproved && ! $application->google_form_confirmed_at)<div class="flex flex-wrap gap-3"><a href="{{ $application->googleFormUrl() }}" target="_blank" class="rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white">Buka Google Form</a><form method="POST" action="{{ route('peserta.google-form.confirm') }}">@csrf<button class="rounded-xl border border-ocean px-5 py-3 text-sm font-bold text-ocean">Saya sudah mengisi</button></form></div>@elseif($application->google_form_confirmed_at)<span class="rounded-full bg-teal/10 px-4 py-2 text-xs font-bold text-teal">Sudah dikonfirmasi</span>@else<span class="rounded-full bg-slate-100 px-4 py-2 text-xs font-bold text-slate-500">Menunggu surat lolos</span>@endif
+        @if ($letterApproved && ! $application->google_form_confirmed_at)
+            <div class="w-full max-w-xl rounded-2xl border border-ocean/10 bg-light/60 p-4 lg:w-auto">
+                <p class="text-xs font-bold text-navy">Pilih formulir sesuai jenjang pendidikan Anda:</p>
+                <div class="mt-3 flex flex-wrap gap-3">
+                    @foreach ($application->googleFormOptions() as $label => $url)
+                        <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white transition hover:bg-ocean">
+                            {{ $label }} <i data-lucide="external-link" class="h-4 w-4" aria-hidden="true"></i>
+                        </a>
+                    @endforeach
+                    <form method="POST" action="{{ route('peserta.google-form.confirm') }}">@csrf<button class="rounded-xl border border-ocean bg-white px-5 py-3 text-sm font-bold text-ocean transition hover:bg-ocean hover:text-white">Saya sudah mengisi</button></form>
+                </div>
+            </div>
+        @elseif($application->google_form_confirmed_at)<span class="rounded-full bg-teal/10 px-4 py-2 text-xs font-bold text-teal">Sudah dikonfirmasi</span>@else<span class="rounded-full bg-slate-100 px-4 py-2 text-xs font-bold text-slate-500">Menunggu surat lolos</span>@endif
     </div>
 </section>
 

@@ -163,6 +163,35 @@ class ParticipantApplicationTest extends TestCase
         $this->assertNotNull($application->fresh()->google_form_confirmed_at);
     }
 
+    public function test_approved_internship_application_shows_google_forms_for_both_education_levels(): void
+    {
+        $participant = Participant::factory()->create(['email_verified_at' => now()]);
+        $application = $participant->applications()->create([
+            'service_type' => ParticipantApplication::SERVICE_MAGANG_PKL,
+            'status' => 'letter_under_review',
+            'guestbook_confirmed_at' => now(),
+            'letter_submitted_at' => now(),
+        ]);
+
+        $application->documents()->create([
+            'type' => ParticipantApplicationDocument::TYPE_REQUEST_LETTER,
+            'version' => 1,
+            'file_path' => 'participant-applications/test/request-letter.pdf',
+            'original_name' => 'surat.pdf',
+            'mime_type' => 'application/pdf',
+            'file_size' => 100,
+            'review_status' => ParticipantApplicationDocument::REVIEW_APPROVED,
+        ]);
+
+        $this->actingAs($participant, 'peserta')
+            ->get(route('peserta.dashboard'))
+            ->assertOk()
+            ->assertSee('https://tinyurl.com/DaftarMagangDKP-SM', false)
+            ->assertSee('https://tinyurl.com/DaftarMagangDKP-PT', false)
+            ->assertSee('SMA/SMK')
+            ->assertSee('Perguruan Tinggi');
+    }
+
     public function test_a_participant_cannot_download_another_participants_document(): void
     {
         Storage::fake('local');
