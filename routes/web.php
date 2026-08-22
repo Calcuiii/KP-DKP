@@ -97,6 +97,7 @@ Route::middleware('auth:peserta')->group(function (): void {
         Route::post('/notifikasi/baca-semua', [ParticipantNotificationController::class, 'readAll'])
             ->middleware('verified')->name('notifications.read-all');
         Route::post('/keluar', [ParticipantAuthController::class, 'destroy'])->name('logout');
+
     });
 });
 
