@@ -15,6 +15,7 @@ import {
     ArrowRight,
     BookOpen,
     CheckCircle,
+    Check,
     Award,
     MessageCircle,
     Search,
@@ -72,7 +73,7 @@ import {
 createIcons({
     icons: {
         Fish, MessageSquare, Menu, X, Zap, ChevronRight, FileText, Send,
-        Shield, ArrowLeft, ArrowRight, BookOpen, CheckCircle, Award, MessageCircle,
+        Shield, ArrowLeft, ArrowRight, BookOpen, CheckCircle, Check, Award, MessageCircle,
         Search, Database, Info, Layers, FileCheck, RefreshCw, TrendingUp,
         ChevronDown, ChevronUp, ChevronLeft, BarChart2, Inbox, ThumbsUp, Settings,
         Users, Activity, LogOut, Bell, Eye, EyeOff, Lock, AlertCircle,
@@ -88,10 +89,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const participantContent = document.querySelector('.participant-dashboard-content');
 
     if (participantContent) {
-        const sections = Array.from(participantContent.querySelectorAll(':scope > section[id]'));
+        const sections = Array.from(participantContent.querySelectorAll(':scope > section[id], #progress'));
         const navigationLinks = Array.from(document.querySelectorAll('[data-participant-nav]'));
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
         Array.from(participantContent.children).forEach((element, index) => {
             element.classList.add('participant-reveal');
             element.style.transitionDelay = reducedMotion ? '0ms' : `${Math.min(index * 55, 220)}ms`;
@@ -126,6 +126,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         sections.forEach((section) => sectionObserver.observe(section));
         setActiveNavigation(sections[0]?.id ?? 'kenali-si-molek');
+
+        navigationLinks.forEach((link) => {
+            link.addEventListener('click', () => {
+                const targetId = link.getAttribute('href')?.replace('#', '');
+
+                if (targetId) {
+                    setActiveNavigation(targetId);
+                }
+            });
+        });
+
+        document.querySelectorAll('[data-request-letter-form]').forEach((form) => {
+            form.addEventListener('submit', () => {
+                const button = form.querySelector('[data-request-letter-submit]');
+
+                if (button) {
+                    button.disabled = true;
+                    button.textContent = 'Sedang memeriksa...';
+                    button.classList.add('cursor-wait', 'opacity-75');
+                }
+            });
+        });
     }
 
     // ── Landing: mobile menu ──────────────────────────────────────────

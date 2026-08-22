@@ -14,6 +14,36 @@
             ['label' => 'Menunggu surat balasan', 'description' => 'Status resmi diperbarui oleh Dinas.'],
             ['label' => 'Pelaksanaan & penyelesaian', 'description' => 'Pantau informasi akhir kegiatan.'],
         ];
+        $sidebarProgress = [
+            ['label' => 'Pilih layanan', 'state' => $application ? 'done' : 'current'],
+        ];
+
+        if ($application) {
+            if ($application->service_type === \App\Models\ParticipantApplication::SERVICE_MAGANG_PKL) {
+                $letterApproved = $application->requestLetterApproved();
+                $hasResponse = filled($application->response_letter_path) || filled($application->decision);
+                $sidebarProgress = [
+                    ['label' => 'Buku Tamu', 'state' => $application->guestbook_confirmed_at ? 'done' : 'current'],
+                    ['label' => 'Info Kuota', 'state' => $application->guestbook_confirmed_at ? 'done' : 'upcoming'],
+                    ['label' => 'Upload Surat', 'state' => $application->letter_submitted_at ? 'done' : ($application->guestbook_confirmed_at ? 'current' : 'upcoming')],
+                    ['label' => 'Pemeriksaan', 'state' => $letterApproved ? 'done' : ($application->letter_submitted_at ? 'current' : 'upcoming')],
+                    ['label' => 'Surat Balasan', 'state' => $hasResponse ? 'done' : ($letterApproved ? 'current' : 'upcoming')],
+                    ['label' => 'Pelaksanaan', 'state' => $application->official_ended_at ? 'done' : (($hasResponse || $application->official_started_at) ? 'current' : 'upcoming')],
+                ];
+            } else {
+                $sidebarProgress = [
+                    ['label' => 'Persiapan', 'state' => 'current'],
+                    ['label' => 'Dokumen', 'state' => 'upcoming'],
+                    ['label' => 'Pengajuan', 'state' => 'upcoming'],
+                    ['label' => 'Tindak lanjut', 'state' => 'upcoming'],
+                ];
+            }
+        }
+
+        $activeProgressIndex = collect($sidebarProgress)->search(fn ($item) => $item['state'] === 'current');
+        $activeProgressIndex = $activeProgressIndex === false ? max(0, count($sidebarProgress) - 1) : $activeProgressIndex;
+        $activeProgressLabel = $sidebarProgress[$activeProgressIndex]['label'];
+        $activeStatusLabel = $application?->status === 'letter_revision_required' ? 'Revisi Surat Diperlukan' : $activeProgressLabel;
     @endphp
 
     <main class="participant-workspace min-h-screen bg-background font-sans text-navy">
@@ -48,10 +78,9 @@
         <nav class="border-b border-border bg-white px-5 py-3 lg:hidden" aria-label="Navigasi portal peserta">
             <div class="flex gap-2 overflow-x-auto pb-1">
                 @foreach ([
-                    ['#kenali-si-molek', 'compass', 'Pengenalan'],
-                    ['#portal-pendampingan', 'layers', 'Portal'],
-                    ['#cara-penggunaan', 'check-circle', 'Cara pakai'],
+                    ['#kenali-si-molek', 'info', 'Informasi Portal'],
                     ['#ringkasan', 'home', 'Dashboard'],
+                    [$application ? '#progress' : '#ringkasan', 'trending-up', 'Progress'],
                     ['#persiapan', 'file-check', 'Dokumen'],
                 ] as [$href, $icon, $label])
                     <a href="{{ $href }}" data-participant-nav class="participant-mobile-nav inline-flex shrink-0 items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-xs font-bold text-muted-foreground">
@@ -65,37 +94,44 @@
             <aside class="hidden w-64 shrink-0 lg:block">
                 <nav class="participant-sidebar sticky top-24 overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#173f78] to-navy p-3 text-white shadow-xl shadow-navy/15">
                     <div class="px-3 pb-4 pt-3">
-                        <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200">Panduan Awal</span>
-                        <p class="mt-1 text-sm font-bold">Mulai dengan memahami portal</p>
+                        <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200">Menu Portal</span>
+                        <p class="mt-1 text-sm font-bold">Informasi dan ruang kerja</p>
                     </div>
                     @foreach ([
-                        ['#kenali-si-molek', 'compass', 'Kenali SI-MELAYUR', '01'],
-                        ['#portal-pendampingan', 'layers', 'Portal Pendampingan', '02'],
-                        ['#cara-penggunaan', 'check-circle', 'Cara Penggunaan', '03'],
-                    ] as [$href, $icon, $label, $number])
-                        <a href="{{ $href }}" data-participant-nav class="participant-sidebar-link flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-semibold text-blue-100 transition">
+                        ['#kenali-si-molek', 'info', 'Informasi Portal'],
+                        ['#ringkasan', 'home', 'Dashboard Saya'],
+                        [$application ? '#progress' : '#ringkasan', 'trending-up', 'Status Pengajuan'],
+                        ['#persiapan', 'file-check', 'Persiapan Dokumen'],
+                    ] as [$href, $icon, $label])
+                        <a href="{{ $href }}" data-participant-nav class="participant-sidebar-link flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-blue-100 transition">
                             <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/10"><i data-lucide="{{ $icon }}" class="h-4 w-4"></i></span>
-                            <span class="min-w-0 flex-1">{{ $label }}</span><span class="text-[10px] text-blue-300">{{ $number }}</span>
+                            <span class="min-w-0 flex-1">{{ $label }}</span>
                         </a>
                     @endforeach
 
                     <div class="mx-3 my-4 border-t border-white/10"></div>
-                    <div class="px-3 pb-2"><span class="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200">Ruang Kerja</span></div>
-                    @foreach ([
-                        ['#ringkasan', 'home', 'Dashboard Saya'],
-                        ['#persiapan', 'file-check', 'Persiapan Dokumen'],
-                        ['#progress', 'trending-up', 'Status Pengajuan'],
-                    ] as [$href, $icon, $label])
-                        <a href="{{ $href }}" data-participant-nav class="participant-sidebar-link flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-blue-100 transition">
-                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/10"><i data-lucide="{{ $icon }}" class="h-4 w-4"></i></span>{{ $label }}
-                        </a>
-                    @endforeach
-
-                    <div class="m-2 mt-5 rounded-2xl bg-white p-4 text-navy shadow-lg">
-                        <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-teal/10 text-teal"><i data-lucide="message-square" class="h-4 w-4"></i></span>
-                        <p class="mt-3 text-xs font-extrabold">Masih bingung?</p>
-                        <p class="mt-1 text-[11px] leading-relaxed text-muted-foreground">Asisten SI-MELAYUR siap membantu mencari informasi resmi.</p>
-                        <a href="{{ route('chatbot') }}" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-ocean">Tanya Asisten <i data-lucide="arrow-right" class="h-3 w-3"></i></a>
+                    <div class="mx-2 rounded-2xl bg-white/[0.07] p-4">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-blue-200">Progress Anda</span>
+                            <span class="rounded-full bg-white/10 px-2 py-1 text-[9px] font-bold text-blue-100">{{ collect($sidebarProgress)->where('state', 'done')->count() }}/{{ count($sidebarProgress) }}</span>
+                        </div>
+                        <ol class="mt-4">
+                            @foreach ($sidebarProgress as $index => $progressItem)
+                                <li class="relative flex min-h-12 gap-3 pb-3 last:min-h-0 last:pb-0">
+                                    @if (! $loop->last)
+                                        <span class="absolute left-[0.69rem] top-6 h-[calc(100%-0.35rem)] w-px {{ $progressItem['state'] === 'done' ? 'bg-teal' : 'bg-white/15' }}"></span>
+                                    @endif
+                                    <span class="relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[10px] font-extrabold {{ $progressItem['state'] === 'done' ? 'border-teal bg-teal text-white' : ($progressItem['state'] === 'current' ? 'border-white bg-white text-ocean ring-4 ring-white/10' : 'border-white/20 bg-navy/40 text-blue-300') }}">
+                                        @if ($progressItem['state'] === 'done')
+                                            <i data-lucide="check" class="h-3.5 w-3.5"></i>
+                                        @else
+                                            {{ $index + 1 }}
+                                        @endif
+                                    </span>
+                                    <span class="pt-0.5 text-[11px] font-bold leading-snug {{ $progressItem['state'] === 'upcoming' ? 'text-blue-300' : 'text-white' }}">{{ $progressItem['label'] }}</span>
+                                </li>
+                            @endforeach
+                        </ol>
                     </div>
                     <a href="{{ route('landing') }}" class="mx-2 mb-1 mt-2 flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-blue-200 transition hover:bg-white/10 hover:text-white"><i data-lucide="arrow-left" class="h-3.5 w-3.5"></i> Beranda SI-MELAYUR</a>
                 </nav>
@@ -109,75 +145,59 @@
                     </div>
                 @endif
 
-                <section id="kenali-si-molek" class="relative isolate overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#176ac7] via-[#258ddd] to-[#74c8ec] px-6 pb-0 pt-8 text-white shadow-xl shadow-ocean/15 sm:px-10 sm:pt-10">
+                <section id="kenali-si-molek" class="relative isolate overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#176ac7] via-[#258ddd] to-[#74c8ec] px-6 py-8 text-white shadow-xl shadow-ocean/15 sm:px-10 sm:py-10">
                     <div class="pointer-events-none absolute left-8 top-10 h-6 w-20 rounded-full bg-white/30 blur-sm"></div>
                     <div class="pointer-events-none absolute right-12 top-16 h-8 w-28 rounded-full bg-white/20 blur-sm"></div>
-                    <div class="relative mx-auto max-w-3xl text-center">
-                        <span class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/15 px-3 py-1.5 text-[11px] font-bold backdrop-blur">
-                            <i data-lucide="fish" class="h-3.5 w-3.5" aria-hidden="true"></i> MULAI DARI SINI
-                        </span>
-                        <h1 class="mt-5 text-3xl font-extrabold tracking-tight sm:text-4xl">Selamat datang di SI-MELAYUR, {{ $participant->name }}!</h1>
-                        <p class="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-blue-50 sm:text-base">
-                            SI-MELAYUR adalah <strong>Sistem Informasi Magang, Penelitian, dan Data Kelautan Jawa Timur</strong> milik Dinas Kelautan dan Perikanan Provinsi Jawa Timur. Nama ini terinspirasi dari ikan layur sebagai identitas bahari DKP Jawa Timur.
-                        </p>
-                    </div>
+                    <div class="pointer-events-none absolute -bottom-28 -right-20 h-72 w-72 rounded-full border-[3rem] border-white/[0.08]"></div>
+                    <span class="relative z-20 mx-auto flex w-fit items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-2 text-[11px] font-bold text-white shadow-sm backdrop-blur">
+                        <i data-lucide="fish" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                        <span>MULAI DARI SINI</span>
+                    </span>
 
-                    <div class="relative mx-auto mt-8 max-w-3xl translate-y-6 rounded-t-[1.75rem] border border-white/60 bg-white p-4 text-navy shadow-2xl sm:p-5">
-                        <div class="grid gap-3 sm:grid-cols-3">
-                            <div class="rounded-2xl bg-navy p-4 text-white"><span class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15"><i data-lucide="file-check" class="h-4 w-4"></i></span><p class="mt-4 text-sm font-bold">Persiapan Terarah</p><p class="mt-1 text-xs leading-relaxed text-blue-100">Menata kebutuhan sebelum pengajuan resmi.</p></div>
-                            <div class="rounded-2xl bg-light p-4"><span class="flex h-9 w-9 items-center justify-center rounded-xl bg-teal/10 text-teal"><i data-lucide="book-open" class="h-4 w-4"></i></span><p class="mt-4 text-sm font-bold">Panduan Resmi</p><p class="mt-1 text-xs leading-relaxed text-muted-foreground">Informasi layanan lebih mudah dipahami.</p></div>
-                            <div class="rounded-2xl bg-light p-4"><span class="flex h-9 w-9 items-center justify-center rounded-xl bg-ocean/10 text-ocean"><i data-lucide="message-square" class="h-4 w-4"></i></span><p class="mt-4 text-sm font-bold">Bantuan Informasi</p><p class="mt-1 text-xs leading-relaxed text-muted-foreground">Asisten menjawab dari dokumen yang tersedia.</p></div>
-                        </div>
-                    </div>
-                    <div class="h-10"></div>
-                </section>
+                    <div class="participant-intro-content">
+                        <div class="participant-intro-content-inner">
+                            <div class="relative mx-auto max-w-3xl pt-5 text-center">
+                                <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">Selamat datang di SI-MELAYUR, {{ $participant->name }}!</h1>
+                                <p class="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-blue-50 sm:text-base">
+                                    SI-MELAYUR adalah <strong>Sistem Informasi Magang, Penelitian, dan Data Kelautan Jawa Timur</strong> milik Dinas Kelautan dan Perikanan Provinsi Jawa Timur. Nama ini terinspirasi dari ikan layur sebagai identitas bahari DKP Jawa Timur.
+                                </p>
+                            </div>
 
-                <section id="portal-pendampingan" class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8">
-                    <div class="grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
-                        <div>
-                            <span class="text-xs font-bold uppercase tracking-[0.2em] text-teal">Portal Pendampingan Peserta</span>
-                            <h2 class="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">Apa fungsi portal ini?</h2>
-                            <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Portal Pendampingan adalah ruang kerja pribadi Anda di dalam SI-MELAYUR. Di sini, Anda dipandu untuk memahami tahapan dan mempersiapkan kebutuhan layanan sebelum menuju kanal pengajuan resmi DKP.</p>
+                    <div id="portal-pendampingan" class="relative mt-9 scroll-mt-28 overflow-hidden rounded-[2rem] border border-white/70 bg-gradient-to-br from-[#edf8ff] via-white to-[#e7f8f5] px-5 py-7 text-navy shadow-2xl shadow-navy/15 sm:px-8 sm:py-9">
+                        <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                            <div class="max-w-3xl">
+                                <span class="inline-flex items-center gap-2 rounded-full bg-teal/10 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.18em] text-teal">
+                                    <i data-lucide="map" class="h-3.5 w-3.5"></i> Panduan Portal Peserta
+                                </span>
+                                <h2 class="mt-4 text-2xl font-extrabold tracking-tight sm:text-3xl">Empat langkah menggunakan portal</h2>
+                                <p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">Pilih layanan, siapkan kebutuhan, gunakan panduan saat diperlukan, lalu pantau proses sampai layanan Anda selesai.</p>
+                            </div>
+                            <a href="#ringkasan" class="inline-flex w-fit shrink-0 items-center gap-2 rounded-full bg-navy px-5 py-3 text-xs font-bold text-white shadow-lg shadow-navy/15 transition hover:-translate-y-0.5 hover:bg-ocean">Mulai persiapan <i data-lucide="arrow-down" class="h-3.5 w-3.5"></i></a>
                         </div>
-                        <div class="grid gap-3 sm:grid-cols-3">
+
+                        <ol id="cara-penggunaan" class="mt-7 grid scroll-mt-28 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                             @foreach ([
-                                ['01', 'Pilih layanan', 'Tentukan Magang/PKL atau WOPPS.'],
-                                ['02', 'Siapkan kebutuhan', 'Pelajari checklist dan dokumen awal.'],
-                                ['03', 'Pantau tahapan', 'Lihat posisi proses layanan Anda.'],
-                            ] as [$number, $title, $description])
-                                <div class="rounded-2xl border border-border bg-background p-4">
-                                    <span class="text-xs font-extrabold text-ocean">{{ $number }}</span>
-                                    <h3 class="mt-5 text-sm font-extrabold">{{ $title }}</h3>
+                                ['target', 'Pilih layanan', 'Tentukan layanan Magang/PKL atau WOPPS yang ingin Anda gunakan.'],
+                                ['clipboard-check', 'Siapkan kebutuhan', 'Baca checklist dan lengkapi dokumen sesuai layanan pilihan.'],
+                                ['book-open', 'Gunakan panduan', 'Cari informasi resmi melalui panduan atau Asisten SI-MELAYUR.'],
+                                ['trending-up', 'Pantau proses', 'Ikuti status dan tindak lanjut yang tersedia hingga layanan selesai.'],
+                            ] as $index => [$icon, $title, $description])
+                                <li class="relative rounded-2xl border border-ocean/10 bg-white/90 p-4 shadow-sm">
+                                    <div class="flex items-center gap-3">
+                                        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-ocean to-teal text-white"><i data-lucide="{{ $icon }}" class="h-4 w-4"></i></span>
+                                        <span class="text-[10px] font-extrabold uppercase tracking-[0.15em] text-ocean/60">Langkah {{ $index + 1 }}</span>
+                                    </div>
+                                    <h3 class="mt-4 text-sm font-extrabold">{{ $title }}</h3>
                                     <p class="mt-1 text-xs leading-relaxed text-muted-foreground">{{ $description }}</p>
-                                </div>
+                                    @if ($index < 3)
+                                        <span class="absolute -right-2 top-1/2 z-10 hidden h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full bg-white text-ocean shadow-sm xl:flex"><i data-lucide="chevron-right" class="h-3 w-3"></i></span>
+                                    @endif
+                                </li>
                             @endforeach
+                        </ol>
+                    </div>
                         </div>
                     </div>
-                </section>
-
-                <section id="cara-penggunaan" class="rounded-[2rem] bg-navy p-6 text-white shadow-sm sm:p-8">
-                    <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-                        <div class="max-w-lg">
-                            <span class="text-xs font-bold uppercase tracking-[0.2em] text-teal-200">Cara Penggunaan</span>
-                            <h2 class="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">Empat langkah untuk memulai</h2>
-                            <p class="mt-3 text-sm leading-relaxed text-blue-100">Setelah memahami alurnya, lanjutkan ke bagian dashboard di bawah untuk memulai persiapan.</p>
-                        </div>
-                        <a href="#ringkasan" class="inline-flex w-fit items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-bold text-navy transition hover:bg-blue-50">Mulai sekarang <i data-lucide="arrow-down" class="h-4 w-4"></i></a>
-                    </div>
-                    <ol class="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                        @foreach ([
-                            ['Buat persiapan', 'Pilih jenis layanan yang dibutuhkan.'],
-                            ['Baca checklist', 'Pahami data dan dokumen yang perlu disiapkan.'],
-                            ['Gunakan panduan', 'Buka infografis atau Asisten jika membutuhkan informasi.'],
-                            ['Lanjutkan proses', 'Ikuti tahapan sampai kanal pengajuan resmi tersedia.'],
-                        ] as $index => [$title, $description])
-                            <li class="rounded-2xl border border-white/10 bg-white/[0.07] p-4">
-                                <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal text-xs font-extrabold">{{ $index + 1 }}</span>
-                                <h3 class="mt-4 text-sm font-bold">{{ $title }}</h3>
-                                <p class="mt-1 text-xs leading-relaxed text-blue-100">{{ $description }}</p>
-                            </li>
-                        @endforeach
-                    </ol>
                 </section>
 
                 @if (! $application)
@@ -233,17 +253,36 @@
                             <div class="max-w-2xl">
                                 <p class="text-xs font-bold uppercase tracking-[0.22em] text-teal-200">{{ $application->serviceLabel() }}</p>
                                 <h1 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">Halo, {{ $participant->name }} 👋</h1>
-                                <p class="mt-3 text-sm leading-relaxed text-blue-100 sm:text-base">Anda sedang berada pada tahap persiapan pengajuan. Lengkapi kebutuhan terlebih dahulu sebelum menuju Google Form resmi DKP.</p>
+                                <p class="mt-3 text-sm leading-relaxed text-blue-100 sm:text-base">Tahap aktif Anda adalah <strong class="text-white">{{ $activeStatusLabel }}</strong>. Ikuti langkah yang ditandai untuk melanjutkan proses layanan.</p>
                             </div>
                             <div class="rounded-3xl border border-white/15 bg-white/10 px-5 py-4 backdrop-blur-sm">
                                 <p class="text-xs font-bold uppercase tracking-wider text-blue-200">Status saat ini</p>
-                                <p class="mt-1 text-lg font-extrabold">Persiapan Pengajuan</p>
+                                <p class="mt-1 text-lg font-extrabold">{{ $activeStatusLabel }}</p>
                             </div>
                         </div>
-                        <div class="mt-8">
-                            <div class="flex items-center justify-between text-xs font-bold text-blue-100"><span>Tahap 1 dari {{ count($steps) }}</span><span>Persiapan</span></div>
-                            <div class="mt-2 h-3 overflow-hidden rounded-full bg-white/15"><div class="h-full w-1/5 rounded-full bg-teal"></div></div>
-                        </div>
+                        @if ($application->service_type === \App\Models\ParticipantApplication::SERVICE_MAGANG_PKL)
+                            <div id="progress" class="scroll-mt-28 mt-8 border-t border-white/10 pt-6">
+                                <div class="flex items-center justify-between text-xs font-bold text-blue-100">
+                                    <span>Alur Magang / PKL / Kerja Praktik</span>
+                                    <span>Tahap {{ $activeProgressIndex + 1 }} dari {{ count($sidebarProgress) }}</span>
+                                </div>
+                                <ol class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+                                    @foreach ($sidebarProgress as $index => $progressItem)
+                                        <li class="rounded-2xl border p-3.5 {{ $progressItem['state'] === 'done' ? 'border-teal/50 bg-teal/15' : ($progressItem['state'] === 'current' ? 'border-white/60 bg-white/15 ring-2 ring-white/10' : 'border-white/10 bg-white/[0.04]') }}">
+                                            <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-extrabold {{ $progressItem['state'] === 'done' ? 'bg-teal text-white' : ($progressItem['state'] === 'current' ? 'bg-white text-ocean' : 'bg-white/10 text-blue-300') }}">
+                                                @if ($progressItem['state'] === 'done')<i data-lucide="check" class="h-3.5 w-3.5"></i>@else{{ $index + 1 }}@endif
+                                            </span>
+                                            <span class="mt-3 block text-xs font-bold {{ $progressItem['state'] === 'upcoming' ? 'text-blue-300' : 'text-white' }}">{{ $progressItem['label'] }}</span>
+                                        </li>
+                                    @endforeach
+                                </ol>
+                            </div>
+                        @else
+                            <div id="progress" class="scroll-mt-28 mt-8">
+                                <div class="flex items-center justify-between text-xs font-bold text-blue-100"><span>Tahap {{ $activeProgressIndex + 1 }} dari {{ count($sidebarProgress) }}</span><span>{{ $activeProgressLabel }}</span></div>
+                                <div class="mt-2 h-3 overflow-hidden rounded-full bg-white/15"><div class="h-full rounded-full bg-teal" style="width: {{ (($activeProgressIndex + 1) / count($sidebarProgress)) * 100 }}%"></div></div>
+                            </div>
+                        @endif
                     </section>
 
                     @if ($application->service_type === \App\Models\ParticipantApplication::SERVICE_MAGANG_PKL)
