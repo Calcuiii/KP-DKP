@@ -32,6 +32,10 @@ final class OfficialChatbotFaqResponder
             return $this->guestbookAccess();
         }
 
+        if ($this->isSubmissionRequirementsQuestion($normalizedQuestion)) {
+            return $this->submissionRequirements();
+        }
+
         if ($this->isRequestLetterContentsQuestion($normalizedQuestion)) {
             return $this->requestLetterContents();
         }
@@ -55,6 +59,37 @@ final class OfficialChatbotFaqResponder
             'ke mana saya mengirimkan dokumen pengajuan?' => $this->woppsDestination(),
             default => null,
         };
+    }
+
+    private function isSubmissionRequirementsQuestion(string $normalizedQuestion): bool
+    {
+        $mentionsInternship = $this->containsAny($normalizedQuestion, [
+            'magang',
+            'kerja praktik',
+            'kerja praktek',
+            'pkl',
+        ]) || preg_match('/\bkp\b/u', $normalizedQuestion) === 1;
+
+        $asksForRequirements = $this->containsAny($normalizedQuestion, [
+            'persyaratan',
+            'syarat',
+            'dokumen apa',
+            'dokumen yang harus',
+            'dokumen yang perlu',
+        ]);
+
+        return $mentionsInternship
+            && $asksForRequirements
+            && $this->containsAny($normalizedQuestion, [
+                'pengajuan',
+                'mengajukan',
+                'daftar',
+                'mendaftar',
+                'dipersiapkan',
+                'disiapkan',
+                'dibutuhkan',
+                'diperlukan',
+            ]);
     }
 
     private function isGuestbookAccessQuestion(string $normalizedQuestion): bool
@@ -227,7 +262,13 @@ Untuk mengajukan Magang atau PKL, calon peserta perlu:
 
 - Mengisi Buku Tamu Magang / PKL melalui `bit.ly/DaftarMagangPKL_DKP_JATIM`.
 - Berkoordinasi mengenai ketersediaan kuota dan kesesuaian program studi atau jurusan.
-- Menyiapkan Surat Permohonan resmi dari institusi pendidikan.
+- Menyiapkan dokumen pengajuan berikut:
+  - pas foto peserta;
+  - KTM untuk mahasiswa;
+  - Kartu Pelajar untuk siswa;
+  - Ethical Clearance;
+  - Surat Permohonan; dan
+  - Surat Kesehatan resmi.
 - Memastikan Surat Permohonan memuat:
   - nama lengkap;
   - NIS atau NIM tiap peserta;
@@ -246,7 +287,7 @@ Template Surat Permohonan tersedia di https://bit.ly/Surat_Permohonan_DKP.
 MARKDOWN,
             [
                 $this->source('KB-004', 'Informasi Wajib dalam Surat Permohonan Magang / PKL', 'Persyaratan Pengajuan — Ruang Lingkup'),
-                $this->source('KB-007', 'Alur Utama Magang / Praktik Kerja Lapang (PKL)', 'Tahap 1: Pengajuan'),
+                $this->source('KB-007', 'Alur Utama Magang / Praktik Kerja Lapang (PKL)', 'Langkah 3: Ajukan Surat Permohonan'),
             ],
         );
     }

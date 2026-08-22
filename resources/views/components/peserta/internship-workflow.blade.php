@@ -12,31 +12,11 @@
     $today = now()->startOfDay();
     $daysRemaining = $officialEnded ? max(0, $today->diffInDays($officialEnded->copy()->startOfDay(), false)) : null;
     $availableCount = $locations->where('quota_status', 'available')->count();
+    $stageFiveUnlocked = $application->google_form_confirmed_at !== null;
+    $stageSixUnlocked = $officialStarted !== null || in_array(mb_strtolower((string) $application->decision), ['accepted', 'approved', 'diterima'], true);
 @endphp
 
-<section id="progress" class="rounded-[2rem] border border-border bg-white p-5 shadow-sm sm:p-7">
-    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div><p class="text-xs font-bold uppercase tracking-[0.18em] text-teal">Alur Magang / PKL / Kerja Praktik</p><h2 class="mt-2 text-2xl font-extrabold">Progress persiapan Anda</h2></div>
-        <span class="inline-flex w-fit rounded-full bg-ocean/10 px-4 py-2 text-xs font-bold text-ocean">{{ $application->status === 'preparation' ? 'Mulai dari Buku Tamu' : str($application->status)->replace('_', ' ')->title() }}</span>
-    </div>
-    <ol class="mt-7 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
-        @foreach ([
-            ['Buku Tamu', $guestbookProof !== null],
-            ['Info Kuota', $guestbookProof !== null],
-            ['Upload Surat', $requestLetter !== null],
-            ['Pemeriksaan', $letterApproved],
-            ['Surat Balasan', $application->decision !== null],
-            ['Pelaksanaan', $officialStarted !== null],
-        ] as $index => [$label, $done])
-            <li class="rounded-2xl border p-3 {{ $done ? 'border-teal/30 bg-teal/[0.06]' : 'border-border bg-light/40' }}">
-                <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-extrabold {{ $done ? 'bg-teal text-white' : 'bg-muted text-muted-foreground' }}">{{ $done ? '✓' : $index + 1 }}</span>
-                <span class="mt-3 block text-xs font-bold text-navy">{{ $label }}</span>
-            </li>
-        @endforeach
-    </ol>
-</section>
-
-<section id="persiapan" class="grid gap-6 xl:grid-cols-[1.15fr_.85fr]">
+<section id="persiapan">
     <article class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8">
         <div class="flex items-start gap-4">
             <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl {{ $guestbookProof ? 'bg-teal text-white' : 'bg-ocean/10 text-ocean' }}"><i data-lucide="book-open" class="h-5 w-5"></i></span>
@@ -61,11 +41,11 @@
                 <button class="mt-4 rounded-xl bg-ocean px-5 py-2.5 text-sm font-bold text-white">Simpan Bukti</button>
             </form>
         @endif
+        <div class="mt-6 flex items-start gap-3 rounded-2xl border border-ocean/15 bg-ocean/[0.05] p-4">
+            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-ocean/10 text-ocean"><i data-lucide="info" class="h-4 w-4"></i></span>
+            <div><p class="text-sm font-extrabold">Mengapa Buku Tamu wajib?</p><p class="mt-1 text-xs leading-relaxed text-muted-foreground">Buku Tamu menjadi pendataan awal peserta sebelum surat diproses. Bukti dapat berupa screenshot halaman selesai atau PDF respons pengisian, maksimal 5 MB.</p></div>
+        </div>
     </article>
-
-    <aside class="rounded-[2rem] border border-border bg-navy p-6 text-white shadow-sm sm:p-7">
-        <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10"><i data-lucide="info" class="h-5 w-5"></i></span><h2 class="mt-5 text-xl font-extrabold">Mengapa wajib?</h2><p class="mt-2 text-sm leading-relaxed text-blue-100">Buku Tamu menjadi pendataan awal peserta sebelum surat permohonan diproses.</p><div class="mt-5 rounded-2xl bg-white/10 p-4 text-xs leading-relaxed text-blue-100">Bukti dapat berupa screenshot halaman selesai atau PDF respons pengisian, maksimal 5 MB.</div>
-    </aside>
 </section>
 
 <section id="lokasi-kuota" class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8 {{ $guestbookProof ? '' : 'opacity-60' }}">
@@ -88,10 +68,12 @@
     @endif
 </section>
 
-<section id="surat-permohonan" class="grid gap-6 xl:grid-cols-[.8fr_1.2fr]">
-    <aside class="rounded-[2rem] bg-gradient-to-br from-ocean to-navy p-6 text-white sm:p-8"><p class="text-xs font-bold uppercase tracking-[0.18em] text-blue-200">Tahap 3</p><h2 class="mt-2 text-2xl font-extrabold">Siapkan surat permohonan</h2><p class="mt-3 text-sm leading-relaxed text-blue-100">Surat wajib memuat lokasi tujuan dan rentang tanggal yang diajukan. Keduanya akan dibaca oleh pemeriksa dari surat.</p><ul class="mt-5 space-y-2 text-xs text-blue-100"><li>✓ Ditujukan kepada Kepala Dinas</li><li>✓ Mencantumkan lokasi tujuan</li><li>✓ Mencantumkan tanggal mulai dan selesai</li><li>✓ Mencantumkan identitas peserta</li></ul></aside>
+<section id="surat-permohonan">
     <article class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8 {{ $guestbookProof ? '' : 'pointer-events-none opacity-60' }}">
-        <div class="flex items-center justify-between gap-3"><div><h2 class="text-xl font-extrabold">Upload surat PDF</h2><p class="mt-1 text-sm text-muted-foreground">Maksimal 10 MB. Setiap upload disimpan sebagai versi baru.</p></div>@if($requestLetter)<span class="rounded-full px-3 py-1.5 text-xs font-bold {{ ($letterNeedsRevision || $automatedNeedsRevision) ? 'bg-red-50 text-red-700' : ($letterApproved ? 'bg-teal/10 text-teal' : 'bg-amber-50 text-amber-700') }}">{{ ($letterNeedsRevision || $automatedNeedsRevision) ? 'Perlu perbaikan' : ($letterApproved ? 'Lolos' : 'Menunggu admin') }}</span>@endif</div>
+        <div class="flex flex-col justify-between gap-5 lg:flex-row lg:items-start">
+            <div class="max-w-2xl"><p class="text-xs font-bold uppercase tracking-[0.18em] text-ocean">Tahap 3</p><h2 class="mt-2 text-2xl font-extrabold">Siapkan dan upload surat permohonan</h2><p class="mt-2 text-sm leading-relaxed text-muted-foreground">Pastikan surat ditujukan kepada Kepala Dinas serta mencantumkan lokasi, tanggal mulai dan selesai, dan identitas peserta. Upload dalam format PDF maksimal 10 MB.</p></div>
+            @if($requestLetter)<span class="inline-flex w-fit rounded-full px-3 py-1.5 text-xs font-bold {{ ($letterNeedsRevision || $automatedNeedsRevision) ? 'bg-red-50 text-red-700' : ($letterApproved ? 'bg-teal/10 text-teal' : 'bg-amber-50 text-amber-700') }}">{{ ($letterNeedsRevision || $automatedNeedsRevision) ? 'Perlu perbaikan' : ($letterApproved ? 'Lolos' : 'Menunggu admin') }}</span>@endif
+        </div>
         @if ($letterNeedsRevision)
             <div class="mt-5 rounded-2xl border border-red-200 bg-red-50 p-4"><p class="text-sm font-bold text-red-800">Surat perlu diperbaiki</p><p class="mt-1 text-sm leading-relaxed text-red-700">{{ $requestLetter->review_notes ?: 'Silakan periksa kembali kelengkapan surat dan unggah versi terbaru.' }}</p></div>
         @elseif ($requestLetter)
@@ -110,7 +92,7 @@
             </div>
         @endif
         @if ($canUploadLetter)
-            <form method="POST" action="{{ route('peserta.request-letter.store') }}" enctype="multipart/form-data" class="mt-5">@csrf<input type="file" name="request_letter" accept=".pdf" required class="block w-full rounded-xl border border-border bg-background p-3 text-sm">@error('request_letter')<p class="mt-2 text-xs font-semibold text-destructive">{{ $message }}</p>@enderror<label class="mt-4 flex items-start gap-3 text-xs leading-relaxed text-muted-foreground"><input type="checkbox" name="letter_declaration" value="1" required class="mt-0.5">Saya memastikan lokasi tujuan dan rentang tanggal sudah tercantum dalam surat.</label><button class="mt-4 rounded-xl bg-ocean px-5 py-2.5 text-sm font-bold text-white">{{ ($letterNeedsRevision || $automatedNeedsRevision) ? 'Kirim Versi Perbaikan' : 'Kirim Surat' }}</button></form>
+            <form data-request-letter-form method="POST" action="{{ route('peserta.request-letter.store') }}" enctype="multipart/form-data" class="mt-5">@csrf<input type="file" name="request_letter" accept=".pdf" required class="block w-full rounded-xl border border-border bg-background p-3 text-sm">@error('request_letter')<p class="mt-2 text-xs font-semibold text-destructive">{{ $message }}</p>@enderror<label class="mt-4 flex items-start gap-3 text-xs leading-relaxed text-muted-foreground"><input type="checkbox" name="letter_declaration" value="1" required class="mt-0.5">Saya memastikan lokasi tujuan dan rentang tanggal sudah tercantum dalam surat.</label><button data-request-letter-submit class="mt-4 rounded-xl bg-ocean px-5 py-2.5 text-sm font-bold text-white transition disabled:pointer-events-none">{{ ($letterNeedsRevision || $automatedNeedsRevision) ? 'Unggah & Periksa Ulang' : 'Unggah & Periksa Surat' }}</button></form>
         @endif
     </article>
 </section>
@@ -122,6 +104,12 @@
 </section>
 
 <section id="keputusan" class="grid gap-6 md:grid-cols-2">
-    <article class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8"><p class="text-xs font-bold uppercase tracking-[0.18em] text-teal">Tahap 5</p><h2 class="mt-2 text-xl font-extrabold">Surat balasan Dinas</h2>@if($application->decision)<p class="mt-3 text-sm text-muted-foreground">Keputusan: <strong class="text-navy">{{ str($application->decision)->title() }}</strong></p>@else<p class="mt-3 text-sm leading-relaxed text-muted-foreground">Setelah Google Form dikonfirmasi, keputusan dan surat balasan akan tampil di sini serta dapat dikirim melalui email.</p>@endif</article>
-    <article class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8"><p class="text-xs font-bold uppercase tracking-[0.18em] text-ocean">Tahap 6</p><h2 class="mt-2 text-xl font-extrabold">Kalender pelaksanaan</h2>@if($officialStarted && $officialEnded)<div class="mt-5 rounded-2xl bg-navy p-5 text-white"><p class="text-3xl font-extrabold">{{ $daysRemaining }} hari</p><p class="mt-1 text-xs text-blue-200">tersisa hingga {{ $officialEnded->format('d M Y') }}</p><div class="mt-4 flex justify-between text-xs"><span>{{ $officialStarted->format('d M Y') }}</span><span>{{ $officialEnded->format('d M Y') }}</span></div></div>@else<p class="mt-3 text-sm leading-relaxed text-muted-foreground">Kalender aktif setelah admin menetapkan tanggal mulai dan selesai resmi untuk peserta yang diterima.</p>@endif</article>
+    <article class="rounded-[2rem] border border-border bg-white p-6 shadow-sm transition sm:p-8 {{ $stageFiveUnlocked ? '' : 'pointer-events-none opacity-60' }}">
+        <div class="flex items-start justify-between gap-3"><div><p class="text-xs font-bold uppercase tracking-[0.18em] text-teal">Tahap 5</p><h2 class="mt-2 text-xl font-extrabold">Surat balasan Dinas</h2></div>@unless($stageFiveUnlocked)<span class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500"><i data-lucide="lock" class="h-4 w-4"></i></span>@endunless</div>
+        @if (! $stageFiveUnlocked)<p class="mt-3 text-sm leading-relaxed text-muted-foreground">Selesaikan pengisian Google Form resmi pada Tahap 4 untuk membuka tahap ini.</p>@elseif($application->decision)<p class="mt-3 text-sm text-muted-foreground">Keputusan: <strong class="text-navy">{{ str($application->decision)->title() }}</strong></p>@else<p class="mt-3 text-sm leading-relaxed text-muted-foreground">Keputusan dan surat balasan akan tampil di sini serta dapat dikirim melalui email.</p>@endif
+    </article>
+    <article class="rounded-[2rem] border border-border bg-white p-6 shadow-sm transition sm:p-8 {{ $stageSixUnlocked ? '' : 'pointer-events-none opacity-60' }}">
+        <div class="flex items-start justify-between gap-3"><div><p class="text-xs font-bold uppercase tracking-[0.18em] text-ocean">Tahap 6</p><h2 class="mt-2 text-xl font-extrabold">Kalender pelaksanaan</h2></div>@unless($stageSixUnlocked)<span class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500"><i data-lucide="lock" class="h-4 w-4"></i></span>@endunless</div>
+        @if (! $stageSixUnlocked)<p class="mt-3 text-sm leading-relaxed text-muted-foreground">Tahap ini terbuka setelah peserta dinyatakan diterima pada Tahap 5.</p>@elseif($officialStarted && $officialEnded)<div class="mt-5 rounded-2xl bg-navy p-5 text-white"><p class="text-3xl font-extrabold">{{ $daysRemaining }} hari</p><p class="mt-1 text-xs text-blue-200">tersisa hingga {{ $officialEnded->format('d M Y') }}</p><div class="mt-4 flex justify-between text-xs"><span>{{ $officialStarted->format('d M Y') }}</span><span>{{ $officialEnded->format('d M Y') }}</span></div></div>@else<p class="mt-3 text-sm leading-relaxed text-muted-foreground">Menunggu admin menetapkan tanggal mulai dan selesai resmi.</p>@endif
+    </article>
 </section>
