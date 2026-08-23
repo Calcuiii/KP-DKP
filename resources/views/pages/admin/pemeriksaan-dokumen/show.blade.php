@@ -484,6 +484,7 @@
                         >
 
                             @csrf
+                            @method('PATCH')
 
                             <textarea
                                 name="review_notes"
