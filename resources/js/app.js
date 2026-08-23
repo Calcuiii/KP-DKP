@@ -68,6 +68,19 @@ import {
     ScanSearch,
     ExternalLink,
     Circle,
+    ListChecks,
+    UserRound,
+    Badge,
+    CalendarRange,
+    GraduationCap,
+    Building2,
+    School,
+    Contact,
+    CalendarClock,
+    ShieldCheck,
+    UserCheck,
+    Stamp,
+    CheckCircle2,
 } from 'lucide';
 
 createIcons({
@@ -81,6 +94,10 @@ createIcons({
         Download, Edit2, Home, HelpCircle, Compass, ArrowDown, ClipboardList, Images,
         Map, FileCheck2, LayoutGrid, ClipboardCheck, Target, Waves, CircleCheck,
         CircleHelp, ArrowUpRight, ScanSearch, ExternalLink, Circle,
+        ListChecks, UserRound, Badge, CalendarRange, GraduationCap, Building2,
+        School, Contact, CalendarClock,
+        ShieldCheck, UserCheck, Stamp,
+        CheckCircle2,
     },
 });
 
@@ -89,6 +106,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const participantContent = document.querySelector('.participant-dashboard-content');
 
     if (participantContent) {
+        const notificationCenter = document.querySelector('[data-notification-center]');
+        const notificationToggle = document.querySelector('[data-notification-toggle]');
+        const notificationPanel = document.querySelector('[data-notification-panel]');
+
+        if (notificationCenter && notificationToggle && notificationPanel) {
+            const closeNotifications = () => {
+                notificationPanel.classList.add('hidden');
+                notificationToggle.setAttribute('aria-expanded', 'false');
+            };
+
+            notificationToggle.addEventListener('click', () => {
+                const willOpen = notificationPanel.classList.contains('hidden');
+                notificationPanel.classList.toggle('hidden', !willOpen);
+                notificationToggle.setAttribute('aria-expanded', String(willOpen));
+            });
+
+            document.addEventListener('click', (event) => {
+                if (! notificationCenter.contains(event.target)) closeNotifications();
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') closeNotifications();
+            });
+        }
+
         const sections = Array.from(participantContent.querySelectorAll(':scope > section[id], #progress'));
         const navigationLinks = Array.from(document.querySelectorAll('[data-participant-nav]'));
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

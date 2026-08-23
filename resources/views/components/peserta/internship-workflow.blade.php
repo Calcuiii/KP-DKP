@@ -3,6 +3,7 @@
 
     $guestbookProof = $application->latestDocument(ParticipantApplicationDocument::TYPE_GUESTBOOK);
     $requestLetter = $application->latestDocument(ParticipantApplicationDocument::TYPE_REQUEST_LETTER);
+    $internshipFormProof = $application->latestDocument(ParticipantApplicationDocument::TYPE_INTERNSHIP_FORM_PROOF);
     $letterApproved = $application->requestLetterApproved();
     $letterNeedsRevision = $requestLetter?->review_status === ParticipantApplicationDocument::REVIEW_REVISION;
     $automatedNeedsRevision = in_array($requestLetter?->automated_check_status, ['needs_revision', 'unreadable'], true);
@@ -12,8 +13,12 @@
     $today = now()->startOfDay();
     $daysRemaining = $officialEnded ? max(0, $today->diffInDays($officialEnded->copy()->startOfDay(), false)) : null;
     $availableCount = $locations->where('quota_status', 'available')->count();
-    $stageFiveUnlocked = $application->google_form_confirmed_at !== null;
-    $stageSixUnlocked = $officialStarted !== null || in_array(mb_strtolower((string) $application->decision), ['accepted', 'approved', 'diterima'], true);
+    $internshipFormCompleted = $application->google_form_confirmed_at !== null && $internshipFormProof;
+    $stageFiveUnlocked = $internshipFormCompleted;
+    $normalizedDecision = mb_strtolower((string) $application->decision);
+    $applicationAccepted = in_array($normalizedDecision, ['accepted', 'approved', 'diterima'], true);
+    $applicationRejected = in_array($normalizedDecision, ['rejected', 'declined', 'ditolak'], true);
+    $stageSixUnlocked = $officialStarted !== null || $applicationAccepted;
 @endphp
 
 <section id="persiapan">
@@ -97,17 +102,69 @@
     </article>
 </section>
 
-<section id="google-form" class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8 {{ $letterApproved ? '' : 'opacity-60' }}">
-    <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between"><div><p class="text-xs font-bold uppercase tracking-[0.18em] text-teal">Tahap 4</p><h2 class="mt-2 text-2xl font-extrabold">Google Form resmi</h2><p class="mt-2 text-sm text-muted-foreground">Tahap ini terbuka setelah surat permohonan dinyatakan lolos oleh admin.</p></div>
-        @if ($letterApproved && ! $application->google_form_confirmed_at)<div class="flex flex-wrap gap-3"><a href="{{ $application->googleFormUrl() }}" target="_blank" class="rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white">Buka Google Form</a><form method="POST" action="{{ route('peserta.google-form.confirm') }}">@csrf<button class="rounded-xl border border-ocean px-5 py-3 text-sm font-bold text-ocean">Saya sudah mengisi</button></form></div>@elseif($application->google_form_confirmed_at)<span class="rounded-full bg-teal/10 px-4 py-2 text-xs font-bold text-teal">Sudah dikonfirmasi</span>@else<span class="rounded-full bg-slate-100 px-4 py-2 text-xs font-bold text-slate-500">Menunggu surat lolos</span>@endif
+<section id="google-form" class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8 {{ $letterApproved ? '' : 'pointer-events-none opacity-60' }}">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div class="flex items-start gap-4"><span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl {{ $internshipFormCompleted ? 'bg-teal text-white' : 'bg-ocean text-white' }}"><i data-lucide="clipboard-check" class="h-5 w-5"></i></span><div><p class="text-xs font-bold uppercase tracking-[0.18em] text-teal">Magang / PKL / KP · Tahap 4</p><h2 class="mt-2 text-2xl font-extrabold">Isi dan buktikan Google Form resmi</h2></div></div>
+        @if($internshipFormCompleted)<span class="inline-flex w-fit items-center gap-2 rounded-full bg-teal/10 px-4 py-2 text-xs font-bold text-teal"><i data-lucide="check-circle" class="h-4 w-4"></i>Bukti tersimpan</span>@elseif(!$letterApproved)<span class="rounded-full bg-slate-100 px-4 py-2 text-xs font-bold text-slate-500">Menunggu surat lolos</span>@endif
     </div>
+    <p class="mt-5 max-w-4xl text-sm leading-relaxed text-muted-foreground">Setelah surat permohonan disetujui, pilih Google Form sesuai jenjang pendidikan dan isi hingga selesai. Kemudian unggah screenshot halaman konfirmasi pengiriman sebagai bukti.</p>
+
+    @if($letterApproved)
+        <div class="mt-6 grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+            <div class="rounded-[1.75rem] bg-gradient-to-br from-navy to-ocean p-6 text-white">
+                <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15"><i data-lucide="external-link" class="h-5 w-5"></i></span>
+                <h3 class="mt-5 text-lg font-extrabold">Google Form pendaftaran resmi</h3>
+                <p class="mt-2 text-sm leading-relaxed text-blue-100">Pilih formulir berdasarkan jenjang pendidikan Anda. Form akan dibuka di tab baru.</p>
+                <div class="mt-5 flex flex-wrap gap-3">
+                    @foreach ($application->googleFormOptions() as $label => $url)
+                        <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-bold text-ocean transition hover:bg-blue-50">{{ $label }} <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a>
+                    @endforeach
+                </div>
+            </div>
+
+            @if($internshipFormProof)
+                <div class="rounded-[1.75rem] border border-teal/25 bg-teal/[0.05] p-6">
+                    <div class="flex items-start gap-4"><span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-teal/10 text-teal"><i data-lucide="file-check" class="h-5 w-5"></i></span><div><p class="text-sm font-extrabold">Bukti pengisian sudah dikirim</p><p class="mt-1 text-xs text-muted-foreground">{{ $internshipFormProof->original_name }} · {{ $internshipFormProof->created_at->format('d M Y, H:i') }}</p><a href="{{ route('peserta.document.download', $internshipFormProof) }}" class="mt-4 inline-flex items-center gap-2 text-xs font-bold text-ocean"><i data-lucide="download" class="h-4 w-4"></i>Lihat bukti</a></div></div>
+                    <div class="mt-6 rounded-2xl border border-teal/25 bg-teal/[0.08] p-4 text-sm font-semibold leading-relaxed text-teal">Tahap 4 selesai. Silakan menunggu keputusan dan surat balasan dari Dinas melalui portal.</div>
+                </div>
+            @else
+                <form method="POST" action="{{ route('peserta.internship-form-proof.store') }}" enctype="multipart/form-data" class="rounded-[1.75rem] border border-dashed border-ocean/30 bg-background p-6">
+                    @csrf
+                    <label class="text-sm font-extrabold">Upload screenshot bukti pengisian</label><p class="mt-1 text-xs leading-relaxed text-muted-foreground">Gunakan screenshot halaman yang menyatakan respons berhasil dikirim. Format JPG, PNG, atau PDF, maksimal 5 MB.</p>
+                    <input type="file" name="internship_form_proof" accept=".jpg,.jpeg,.png,.pdf" required class="mt-4 block w-full rounded-xl border border-border bg-white p-3 text-sm">
+                    @error('internship_form_proof')<p class="mt-2 text-xs font-semibold text-destructive">{{ $message }}</p>@enderror
+                    <label class="mt-4 flex items-start gap-3 text-xs leading-relaxed text-muted-foreground"><input type="checkbox" name="internship_form_declaration" value="1" required class="mt-0.5">Saya menyatakan telah mengisi Google Form sesuai jenjang pendidikan dengan data yang benar.</label>
+                    <button class="mt-5 inline-flex items-center gap-2 rounded-xl bg-ocean px-5 py-3 text-sm font-bold text-white"><i data-lucide="upload" class="h-4 w-4"></i>Simpan Bukti Pengisian</button>
+                </form>
+            @endif
+        </div>
+    @endif
 </section>
 
-<section id="keputusan" class="grid gap-6 md:grid-cols-2">
+<section id="keputusan" class="space-y-6">
     <article class="rounded-[2rem] border border-border bg-white p-6 shadow-sm transition sm:p-8 {{ $stageFiveUnlocked ? '' : 'pointer-events-none opacity-60' }}">
-        <div class="flex items-start justify-between gap-3"><div><p class="text-xs font-bold uppercase tracking-[0.18em] text-teal">Tahap 5</p><h2 class="mt-2 text-xl font-extrabold">Surat balasan Dinas</h2></div>@unless($stageFiveUnlocked)<span class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500"><i data-lucide="lock" class="h-4 w-4"></i></span>@endunless</div>
-        @if (! $stageFiveUnlocked)<p class="mt-3 text-sm leading-relaxed text-muted-foreground">Selesaikan pengisian Google Form resmi pada Tahap 4 untuk membuka tahap ini.</p>@elseif($application->decision)<p class="mt-3 text-sm text-muted-foreground">Keputusan: <strong class="text-navy">{{ str($application->decision)->title() }}</strong></p>@else<p class="mt-3 text-sm leading-relaxed text-muted-foreground">Keputusan dan surat balasan akan tampil di sini serta dapat dikirim melalui email.</p>@endif
+        <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+            <div class="flex items-start gap-4"><span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl {{ $applicationAccepted ? 'bg-teal text-white' : ($applicationRejected ? 'bg-red-600 text-white' : 'bg-ocean/10 text-ocean') }}"><i data-lucide="file-check" class="h-5 w-5"></i></span><div><p class="text-xs font-bold uppercase tracking-[0.18em] text-teal">Tahap 5</p><h2 class="mt-2 text-2xl font-extrabold">Keputusan dan surat balasan Dinas</h2><p class="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">Pantau hasil pengajuan Anda di bagian ini. Pemberitahuan juga akan muncul pada ikon lonceng ketika Dinas memperbarui keputusan.</p></div></div>
+            @unless($stageFiveUnlocked)<span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500"><i data-lucide="lock" class="h-4 w-4"></i></span>@endunless
+        </div>
+
+        @if (! $stageFiveUnlocked)
+            <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5"><p class="text-sm font-extrabold text-navy">Tahap belum tersedia</p><p class="mt-1 text-sm leading-relaxed text-muted-foreground">Unggah bukti pengisian Google Form resmi pada Tahap 4 untuk membuka pemantauan keputusan.</p></div>
+        @elseif($applicationAccepted)
+            <div class="mt-6 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+                <div class="rounded-[1.75rem] border border-teal/25 bg-teal/[0.06] p-6"><div class="flex items-start gap-4"><span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-teal text-white"><i data-lucide="check" class="h-5 w-5"></i></span><div><p class="text-xs font-bold uppercase tracking-[0.16em] text-teal">Pengajuan diterima</p><h3 class="mt-2 text-xl font-extrabold text-navy">Selamat, Anda dapat melanjutkan ke tahap pelaksanaan.</h3><p class="mt-2 text-sm leading-relaxed text-muted-foreground">Periksa surat balasan dan tunggu admin menetapkan tanggal mulai serta selesai kegiatan.</p></div></div></div>
+                <div class="rounded-[1.75rem] border border-border bg-background p-6"><p class="text-sm font-extrabold text-navy">Surat balasan resmi</p>@if($application->response_letter_path)<p class="mt-2 text-xs leading-relaxed text-muted-foreground">Dokumen balasan dari Dinas sudah tersedia.</p><a href="{{ route('peserta.response-letter.download') }}" class="mt-5 inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white"><i data-lucide="download" class="h-4 w-4"></i>Unduh Surat Balasan</a>@else<p class="mt-2 text-sm leading-relaxed text-muted-foreground">Keputusan telah diperbarui. Dokumen surat balasan masih disiapkan oleh Dinas.</p>@endif</div>
+            </div>
+        @elseif($applicationRejected)
+            <div class="mt-6 rounded-[1.75rem] border border-red-200 bg-red-50 p-6"><div class="flex items-start gap-4"><span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-600 text-white"><i data-lucide="x" class="h-5 w-5"></i></span><div><p class="text-xs font-bold uppercase tracking-[0.16em] text-red-700">Pengajuan belum dapat diterima</p><h3 class="mt-2 text-xl font-extrabold text-navy">Silakan periksa keputusan resmi dari Dinas.</h3><p class="mt-2 text-sm leading-relaxed text-red-800">Baca surat balasan untuk mengetahui informasi lebih lanjut atau arahan yang perlu dilakukan.</p>@if($application->response_letter_path)<a href="{{ route('peserta.response-letter.download') }}" class="mt-5 inline-flex items-center gap-2 rounded-xl bg-red-700 px-5 py-3 text-sm font-bold text-white"><i data-lucide="download" class="h-4 w-4"></i>Unduh Surat Balasan</a>@endif</div></div></div>
+        @else
+            <div class="mt-6 grid gap-5 lg:grid-cols-[0.75fr_1.25fr]">
+                <div class="rounded-[1.75rem] bg-gradient-to-br from-navy to-ocean p-6 text-white"><span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15"><i data-lucide="clock" class="h-5 w-5"></i></span><p class="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-blue-200">Status saat ini</p><h3 class="mt-2 text-xl font-extrabold">Menunggu keputusan Dinas</h3></div>
+                <div class="rounded-[1.75rem] border border-border bg-background p-6"><h3 class="text-sm font-extrabold text-navy">Apa yang perlu Anda lakukan?</h3><div class="mt-4 space-y-3 text-sm text-muted-foreground"><p class="flex items-start gap-3"><span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ocean/10 text-xs font-bold text-ocean">1</span>Pastikan email dan nomor kontak peserta tetap aktif.</p><p class="flex items-start gap-3"><span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ocean/10 text-xs font-bold text-ocean">2</span>Pantau notifikasi portal untuk keputusan atau surat balasan.</p><p class="flex items-start gap-3"><span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ocean/10 text-xs font-bold text-ocean">3</span>Tahap pelaksanaan akan terbuka setelah pengajuan dinyatakan diterima.</p></div></div>
+            </div>
+        @endif
     </article>
+
     <article class="rounded-[2rem] border border-border bg-white p-6 shadow-sm transition sm:p-8 {{ $stageSixUnlocked ? '' : 'pointer-events-none opacity-60' }}">
         <div class="flex items-start justify-between gap-3"><div><p class="text-xs font-bold uppercase tracking-[0.18em] text-ocean">Tahap 6</p><h2 class="mt-2 text-xl font-extrabold">Kalender pelaksanaan</h2></div>@unless($stageSixUnlocked)<span class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500"><i data-lucide="lock" class="h-4 w-4"></i></span>@endunless</div>
         @if (! $stageSixUnlocked)<p class="mt-3 text-sm leading-relaxed text-muted-foreground">Tahap ini terbuka setelah peserta dinyatakan diterima pada Tahap 5.</p>@elseif($officialStarted && $officialEnded)<div class="mt-5 rounded-2xl bg-navy p-5 text-white"><p class="text-3xl font-extrabold">{{ $daysRemaining }} hari</p><p class="mt-1 text-xs text-blue-200">tersisa hingga {{ $officialEnded->format('d M Y') }}</p><div class="mt-4 flex justify-between text-xs"><span>{{ $officialStarted->format('d M Y') }}</span><span>{{ $officialEnded->format('d M Y') }}</span></div></div>@else<p class="mt-3 text-sm leading-relaxed text-muted-foreground">Menunggu admin menetapkan tanggal mulai dan selesai resmi.</p>@endif

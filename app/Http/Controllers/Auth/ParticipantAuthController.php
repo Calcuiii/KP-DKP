@@ -57,6 +57,8 @@ final class ParticipantAuthController extends Controller
 
         return view('pages.peserta.dashboard', [
             'application' => $application,
+            'participantNotifications' => $participant->notifications()->latest()->limit(8)->get(),
+            'unreadNotificationCount' => $participant->unreadNotifications()->count(),
             'serviceOptions' => ParticipantApplication::serviceOptions(),
             'internshipLocations' => InternshipLocation::query()->orderBy('display_order')->get(),
             'internshipGuestbookUrl' => config('services.dkp.internship_guestbook_url'),

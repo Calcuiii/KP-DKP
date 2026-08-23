@@ -21,21 +21,26 @@
         if ($application) {
             if ($application->service_type === \App\Models\ParticipantApplication::SERVICE_MAGANG_PKL) {
                 $letterApproved = $application->requestLetterApproved();
+                $internshipFormCompleted = $application->google_form_confirmed_at !== null
+                    && $application->latestDocument(\App\Models\ParticipantApplicationDocument::TYPE_INTERNSHIP_FORM_PROOF);
                 $hasResponse = filled($application->response_letter_path) || filled($application->decision);
                 $sidebarProgress = [
                     ['label' => 'Buku Tamu', 'state' => $application->guestbook_confirmed_at ? 'done' : 'current'],
-                    ['label' => 'Info Kuota', 'state' => $application->guestbook_confirmed_at ? 'done' : 'upcoming'],
                     ['label' => 'Upload Surat', 'state' => $application->letter_submitted_at ? 'done' : ($application->guestbook_confirmed_at ? 'current' : 'upcoming')],
                     ['label' => 'Pemeriksaan', 'state' => $letterApproved ? 'done' : ($application->letter_submitted_at ? 'current' : 'upcoming')],
-                    ['label' => 'Surat Balasan', 'state' => $hasResponse ? 'done' : ($letterApproved ? 'current' : 'upcoming')],
+                    ['label' => 'Form Resmi', 'state' => $internshipFormCompleted ? 'done' : ($letterApproved ? 'current' : 'upcoming')],
+                    ['label' => 'Surat Balasan', 'state' => $hasResponse ? 'done' : ($internshipFormCompleted ? 'current' : 'upcoming')],
                     ['label' => 'Pelaksanaan', 'state' => $application->official_ended_at ? 'done' : (($hasResponse || $application->official_started_at) ? 'current' : 'upcoming')],
                 ];
             } else {
+                $letterApproved = $application->requestLetterApproved();
+                $ethicsApproved = $application->ethicsApprovalApproved();
+                $woppsFormCompleted = $application->google_form_confirmed_at !== null;
                 $sidebarProgress = [
-                    ['label' => 'Persiapan', 'state' => 'current'],
-                    ['label' => 'Dokumen', 'state' => 'upcoming'],
-                    ['label' => 'Pengajuan', 'state' => 'upcoming'],
-                    ['label' => 'Tindak lanjut', 'state' => 'upcoming'],
+                    ['label' => 'Pemeriksaan Surat', 'state' => $letterApproved ? 'done' : 'current'],
+                    ['label' => 'Ethics Approval', 'state' => $ethicsApproved ? 'done' : ($letterApproved ? 'current' : 'upcoming')],
+                    ['label' => 'Form WOPPS', 'state' => $woppsFormCompleted ? 'done' : ($ethicsApproved ? 'current' : 'upcoming')],
+                    ['label' => 'Tindak Lanjut', 'state' => $woppsFormCompleted ? 'current' : 'upcoming'],
                 ];
             }
         }
@@ -43,7 +48,12 @@
         $activeProgressIndex = collect($sidebarProgress)->search(fn ($item) => $item['state'] === 'current');
         $activeProgressIndex = $activeProgressIndex === false ? max(0, count($sidebarProgress) - 1) : $activeProgressIndex;
         $activeProgressLabel = $sidebarProgress[$activeProgressIndex]['label'];
-        $activeStatusLabel = $application?->status === 'letter_revision_required' ? 'Revisi Surat Diperlukan' : $activeProgressLabel;
+        $activeStatusLabel = match ($application?->status) {
+            'letter_revision_required' => 'Revisi Surat Diperlukan',
+            'ethics_revision_required' => 'Revisi Ethics Approval Diperlukan',
+            'ethics_under_review' => 'Ethics Approval Sedang Diperiksa',
+            default => $activeProgressLabel,
+        };
     @endphp
 
     <main class="participant-workspace min-h-screen bg-background font-sans text-navy">
@@ -60,6 +70,67 @@
                 </a>
 
                 <div class="flex items-center gap-3">
+                    <div class="relative" data-notification-center>
+                        <button type="button" data-notification-toggle aria-expanded="false" aria-controls="participant-notification-panel" aria-label="Buka notifikasi" class="relative flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white text-muted-foreground shadow-sm transition hover:border-ocean/30 hover:text-ocean">
+                            <i data-lucide="bell" class="h-4.5 w-4.5" aria-hidden="true"></i>
+                            @if ($unreadNotificationCount > 0)
+                                <span class="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-[9px] font-extrabold text-white ring-2 ring-white">{{ $unreadNotificationCount > 9 ? '9+' : $unreadNotificationCount }}</span>
+                            @endif
+                        </button>
+
+                        <div id="participant-notification-panel" data-notification-panel class="absolute right-0 top-12 z-50 hidden w-[min(24rem,calc(100vw-2.5rem))] overflow-hidden rounded-3xl border border-border bg-white shadow-2xl shadow-navy/15">
+                            <div class="flex items-center justify-between gap-4 border-b border-border px-5 py-4">
+                                <div>
+                                    <h2 class="text-sm font-extrabold text-navy">Notifikasi</h2>
+                                    <p class="mt-0.5 text-[11px] text-muted-foreground">Pembaruan pemeriksaan dokumen Anda</p>
+                                </div>
+                                @if ($unreadNotificationCount > 0)
+                                    <span class="rounded-full bg-ocean/10 px-2.5 py-1 text-[10px] font-extrabold text-ocean">{{ $unreadNotificationCount }} baru</span>
+                                @endif
+                            </div>
+
+                            <div class="max-h-[25rem] overflow-y-auto">
+                                @forelse ($participantNotifications as $notification)
+                                    @php
+                                        $notificationData = $notification->data;
+                                        $isApprovedNotification = ($notificationData['status'] ?? '') === 'approved';
+                                    @endphp
+                                    <form method="POST" action="{{ route('peserta.notifications.read', $notification->id) }}" class="border-b border-border last:border-b-0">
+                                        @csrf
+                                        <button type="submit" class="group flex w-full items-start gap-3 px-5 py-4 text-left transition hover:bg-light/70 {{ $notification->read_at ? 'bg-white' : 'bg-ocean/[0.035]' }}">
+                                            <span class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl {{ $isApprovedNotification ? 'bg-teal/10 text-teal' : 'bg-amber-100 text-amber-600' }}">
+                                                <i data-lucide="{{ $isApprovedNotification ? 'circle-check' : 'alert-circle' }}" class="h-4 w-4" aria-hidden="true"></i>
+                                            </span>
+                                            <span class="min-w-0 flex-1">
+                                                <span class="flex items-start justify-between gap-2">
+                                                    <span class="text-xs font-extrabold text-navy">{{ $notificationData['title'] ?? 'Pembaruan dokumen' }}</span>
+                                                    @if (! $notification->read_at)<span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-ocean" aria-label="Belum dibaca"></span>@endif
+                                                </span>
+                                                <span class="mt-1 block text-[11px] leading-relaxed text-muted-foreground">{{ $notificationData['message'] ?? '' }}</span>
+                                                @if (filled($notificationData['review_notes'] ?? null))
+                                                    <span class="mt-2 block rounded-xl bg-light px-3 py-2 text-[11px] font-medium leading-relaxed text-navy"><strong>Catatan admin:</strong> {{ $notificationData['review_notes'] }}</span>
+                                                @endif
+                                                <span class="mt-2 block text-[10px] font-semibold text-ocean">{{ $notification->created_at->diffForHumans() }} · Lihat dokumen</span>
+                                            </span>
+                                        </button>
+                                    </form>
+                                @empty
+                                    <div class="px-6 py-10 text-center">
+                                        <span class="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl bg-light text-muted-foreground"><i data-lucide="bell" class="h-5 w-5"></i></span>
+                                        <p class="mt-3 text-xs font-bold text-navy">Belum ada notifikasi</p>
+                                        <p class="mt-1 text-[11px] text-muted-foreground">Pembaruan dari admin akan muncul di sini.</p>
+                                    </div>
+                                @endforelse
+                            </div>
+
+                            @if ($unreadNotificationCount > 0)
+                                <form method="POST" action="{{ route('peserta.notifications.read-all') }}" class="border-t border-border p-3">
+                                    @csrf
+                                    <button type="submit" class="w-full rounded-xl px-3 py-2 text-xs font-bold text-ocean transition hover:bg-ocean/5">Tandai semua sudah dibaca</button>
+                                </form>
+                            @endif
+                        </div>
+                    </div>
                     <span class="hidden text-right sm:block">
                         <span class="block text-sm font-bold">{{ $participant->name }}</span>
                         <span class="block text-xs text-muted-foreground">Peserta terverifikasi</span>
@@ -260,13 +331,13 @@
                                 <p class="mt-1 text-lg font-extrabold">{{ $activeStatusLabel }}</p>
                             </div>
                         </div>
-                        @if ($application->service_type === \App\Models\ParticipantApplication::SERVICE_MAGANG_PKL)
+                        @if (in_array($application->service_type, [\App\Models\ParticipantApplication::SERVICE_MAGANG_PKL, \App\Models\ParticipantApplication::SERVICE_WOPPS], true))
                             <div id="progress" class="scroll-mt-28 mt-8 border-t border-white/10 pt-6">
                                 <div class="flex items-center justify-between text-xs font-bold text-blue-100">
-                                    <span>Alur Magang / PKL / Kerja Praktik</span>
+                                    <span>{{ $application->service_type === \App\Models\ParticipantApplication::SERVICE_WOPPS ? 'Alur WOPPS' : 'Alur Magang / PKL / Kerja Praktik' }}</span>
                                     <span>Tahap {{ $activeProgressIndex + 1 }} dari {{ count($sidebarProgress) }}</span>
                                 </div>
-                                <ol class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+                                <ol class="mt-4 grid gap-3 sm:grid-cols-2 {{ $application->service_type === \App\Models\ParticipantApplication::SERVICE_WOPPS ? 'xl:grid-cols-3' : 'xl:grid-cols-6' }}">
                                     @foreach ($sidebarProgress as $index => $progressItem)
                                         <li class="rounded-2xl border p-3.5 {{ $progressItem['state'] === 'done' ? 'border-teal/50 bg-teal/15' : ($progressItem['state'] === 'current' ? 'border-white/60 bg-white/15 ring-2 ring-white/10' : 'border-white/10 bg-white/[0.04]') }}">
                                             <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-extrabold {{ $progressItem['state'] === 'done' ? 'bg-teal text-white' : ($progressItem['state'] === 'current' ? 'bg-white text-ocean' : 'bg-white/10 text-blue-300') }}">
@@ -291,59 +362,10 @@
                             'locations' => $internshipLocations,
                             'guestbookUrl' => $internshipGuestbookUrl,
                         ])
-                    @elseif ($application->service_type === \App\Models\ParticipantApplication::SERVICE_WOPPS)
-                        @include('components.peserta.wopps-workflow', [
-                            'application' => $application,
-                        ])
+                    @else
+                        @include('components.peserta.wopps-workflow', ['application' => $application])
                     @endif
-
-                    <section id="persiapan" class="grid gap-6 xl:grid-cols-[1.35fr_0.65fr]">
-                        <article class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8">
-                            <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
-                                <div>
-                                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-teal">Persiapan pengajuan</p>
-                                    <h2 class="mt-2 text-2xl font-extrabold tracking-tight">Checklist dokumen awal</h2>
-                                    <p class="mt-2 text-sm leading-relaxed text-muted-foreground">Checklist ini membantu Anda menyiapkan dokumen. Status belum menjadi verifikasi resmi Dinas.</p>
-                                </div>
-                                <span class="inline-flex w-fit rounded-full bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-700">Belum ditinjau</span>
-                            </div>
-                            <div class="mt-6 divide-y divide-border rounded-2xl border border-border">
-                                @foreach ($application->preparationChecklist() as $item)
-                                    <div class="flex gap-4 px-4 py-4 sm:px-5">
-                                        <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground"><i data-lucide="circle" class="h-4 w-4" aria-hidden="true"></i></span>
-                                        <span>
-                                            <span class="block text-sm font-bold text-navy">{{ $item['label'] }}</span>
-                                            <span class="mt-0.5 block text-sm leading-relaxed text-muted-foreground">{{ $item['description'] }}</span>
-                                        </span>
-                                    </div>
-                                @endforeach
-                            </div>
-                            <p class="mt-5 text-xs leading-relaxed text-muted-foreground">Fitur unggah dan pemeriksaan dokumen akan ditambahkan setelah fondasi persiapan ini selesai.</p>
-                        </article>
-
-                        <aside class="rounded-[2rem] border border-border bg-light/60 p-6 sm:p-7">
-                            <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-ocean shadow-sm"><i data-lucide="circle-help" class="h-5 w-5" aria-hidden="true"></i></span>
-                            <h2 class="mt-5 text-xl font-extrabold">Butuh bantuan?</h2>
-                            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">Gunakan Asisten SI-MELAYUR untuk menanyakan persyaratan, alur, atau kontak layanan.</p>
-                            <a href="{{ route('chatbot') }}" class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-ocean transition hover:text-navy">Buka Asisten SI-MELAYUR <i data-lucide="arrow-up-right" class="h-4 w-4" aria-hidden="true"></i></a>
-                        </aside>
-                    </section>
-
-                    <section id="progress" class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8">
-                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-teal">Monitoring pendamping</p>
-                        <h2 class="mt-2 text-2xl font-extrabold tracking-tight">Progress pengajuan</h2>
-                        <p class="mt-2 text-sm leading-relaxed text-muted-foreground">Status Dinas akan terlihat di sini ketika fitur monitoring administrasi telah diaktifkan oleh pengelola.</p>
-                        <ol class="mt-7 grid gap-4 md:grid-cols-5">
-                            @foreach ($steps as $index => $step)
-                                <li class="relative rounded-2xl border p-4 {{ $index === 0 ? 'border-ocean bg-ocean/[0.04]' : 'border-border bg-light/40' }}">
-                                    <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-extrabold {{ $index === 0 ? 'bg-ocean text-white' : 'bg-muted text-muted-foreground' }}">{{ $index + 1 }}</span>
-                                    <span class="mt-3 block text-sm font-extrabold text-navy">{{ $step['label'] }}</span>
-                                    <span class="mt-1 block text-xs leading-relaxed text-muted-foreground">{{ $step['description'] }}</span>
-                                </li>
-                            @endforeach
-                        </ol>
-                    </section>
-                    @endif
+                @endif
             </div>
         </div>
     </main>

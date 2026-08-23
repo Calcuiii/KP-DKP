@@ -67,6 +67,11 @@ class ParticipantApplication extends Model
         return $this->latestDocument(ParticipantApplicationDocument::TYPE_REQUEST_LETTER)?->review_status === ParticipantApplicationDocument::REVIEW_APPROVED;
     }
 
+    public function ethicsApprovalApproved(): bool
+    {
+        return $this->latestDocument(ParticipantApplicationDocument::TYPE_ETHICS_APPROVAL)?->review_status === ParticipantApplicationDocument::REVIEW_APPROVED;
+    }
+
     /**
      * @return array<string, array{label: string, description: string}>
      */
@@ -93,7 +98,23 @@ class ParticipantApplication extends Model
     {
         return match ($this->service_type) {
             self::SERVICE_WOPPS => 'https://bit.ly/WOPPS',
-            default => 'https://bit.ly/DaftarMagangPKL_DKP_JATIM',
+            default => 'https://tinyurl.com/DaftarMagangDKP-PT',
+        };
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function googleFormOptions(): array
+    {
+        return match ($this->service_type) {
+            self::SERVICE_WOPPS => [
+                'Buka Google Form WOPPS' => 'https://bit.ly/WOPPS',
+            ],
+            default => [
+                'SMA/SMK' => 'https://tinyurl.com/DaftarMagangDKP-SM',
+                'Perguruan Tinggi' => 'https://tinyurl.com/DaftarMagangDKP-PT',
+            ],
         };
     }
 
