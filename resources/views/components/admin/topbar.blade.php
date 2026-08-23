@@ -8,7 +8,7 @@ $initials = collect(explode(' ', auth()->user()->name))
 @endphp
 
 <div class="flex items-center gap-3 border-b border-border bg-white px-5 py-3">
-    <button type="button" data-sidebar-toggle class="rounded-xl p-2 hover:bg-accent">
+    <button type="button" data-sidebar-toggle aria-controls="admin-sidebar" aria-expanded="true" aria-label="Sembunyikan menu admin" class="rounded-xl p-2 hover:bg-accent">
         <i data-lucide="menu" class="h-4 w-4" aria-hidden="true"></i>
     </button>
 

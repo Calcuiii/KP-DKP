@@ -4,10 +4,12 @@ namespace Tests\Feature;
 
 use App\Models\Participant;
 use App\Models\User;
-use Illuminate\Auth\Notifications\VerifyEmail;
+use App\Notifications\ParticipantVerifyEmail;
+use App\Notifications\ParticipantResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
@@ -35,7 +37,7 @@ class ParticipantAuthenticationTest extends TestCase
         $this->assertTrue(Hash::check('password123', $participant->password));
         $this->assertDatabaseMissing('users', ['email' => $participant->email]);
         $this->assertAuthenticatedAs($participant, 'peserta');
-        Notification::assertSentTo($participant, VerifyEmail::class);
+        Notification::assertSentTo($participant, ParticipantVerifyEmail::class);
     }
 
     public function test_registration_validates_the_input_and_unique_participant_email(): void
@@ -96,7 +98,8 @@ class ParticipantAuthenticationTest extends TestCase
     {
         $this->get(route('peserta.login'))
             ->assertOk()
-            ->assertSee('Lupa Kata Sandi? Segera hadir')
+            ->assertSee('Lupa Kata Sandi?')
+            ->assertSee(route('peserta.password.request'), false)
             ->assertSee('Daftar Akun');
 
         $this->get(route('peserta.register'))
@@ -114,6 +117,52 @@ class ParticipantAuthenticationTest extends TestCase
             ->assertOk()
             ->assertSee('Halo, Calon Peserta')
             ->assertSee('Pilih layanan yang akan dipersiapkan');
+    }
+
+    public function test_a_participant_can_request_a_password_reset_link_without_disclosing_account_existence(): void
+    {
+        Notification::fake();
+        $participant = Participant::factory()->create(['email' => 'peserta@example.test']);
+
+        $message = 'Jika email terdaftar, tautan untuk mengatur ulang kata sandi akan segera dikirim. Silakan periksa kotak masuk dan folder spam.';
+
+        $this->post(route('peserta.password.email'), ['email' => $participant->email])
+            ->assertSessionHas('status', $message);
+        $this->post(route('peserta.password.email'), ['email' => 'tidak-ada@example.test'])
+            ->assertSessionHas('status', $message);
+
+        Notification::assertSentTo($participant, ParticipantResetPassword::class);
+    }
+
+    public function test_a_participant_can_reset_their_password_with_a_valid_token(): void
+    {
+        $participant = Participant::factory()->create([
+            'email' => 'peserta@example.test',
+            'password' => Hash::make('password-lama'),
+        ]);
+        $token = Password::broker('participants')->createToken($participant);
+
+        $this->post(route('peserta.password.update'), [
+            'token' => $token,
+            'email' => $participant->email,
+            'password' => 'password-baru',
+            'password_confirmation' => 'password-baru',
+        ])->assertRedirect(route('peserta.login'))
+            ->assertSessionHas('status', 'Kata sandi berhasil diperbarui. Silakan masuk menggunakan kata sandi baru.');
+
+        $this->assertTrue(Hash::check('password-baru', $participant->fresh()->password));
+    }
+
+    public function test_an_invalid_password_reset_token_is_rejected(): void
+    {
+        $participant = Participant::factory()->create(['email' => 'peserta@example.test']);
+
+        $this->post(route('peserta.password.update'), [
+            'token' => 'token-tidak-valid',
+            'email' => $participant->email,
+            'password' => 'password-baru',
+            'password_confirmation' => 'password-baru',
+        ])->assertSessionHasErrors('email');
     }
 
     public function test_the_landing_page_provides_participant_login_and_registration_access(): void
@@ -226,7 +275,25 @@ class ParticipantAuthenticationTest extends TestCase
             ->post(route('verification.send'))
             ->assertSessionHas('status', 'Tautan verifikasi baru telah dikirim ke email Anda.');
 
-        Notification::assertSentTo($participant, VerifyEmail::class);
+        Notification::assertSentTo($participant, ParticipantVerifyEmail::class);
+    }
+
+    public function test_the_participant_verification_email_uses_si_melayur_branding(): void
+    {
+        $participant = Participant::factory()->create([
+            'name' => 'Peserta Uji',
+            'email_verified_at' => null,
+        ]);
+
+        $message = (new ParticipantVerifyEmail)->toMail($participant);
+        $html = $message->render();
+
+        $this->assertSame('Verifikasi akun peserta SI-MELAYUR', $message->subject);
+        $this->assertStringContainsString('SI-MELAYUR', $html);
+        $this->assertStringContainsString('Selamat datang, Peserta Uji!', $html);
+        $this->assertStringContainsString('Verifikasi Email Saya', $html);
+        $this->assertStringNotContainsString('Laravel Logo', $html);
+        $this->assertStringNotContainsString('Regards,<br>Laravel', $html);
     }
 
     public function test_a_participant_cannot_access_administrator_pages(): void

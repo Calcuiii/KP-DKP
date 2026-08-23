@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Notifications\ParticipantVerifyEmail;
+use App\Notifications\ParticipantResetPassword;
 use Database\Factories\ParticipantFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -48,5 +50,15 @@ class Participant extends Authenticatable implements MustVerifyEmail
     public function applications(): HasMany
     {
         return $this->hasMany(ParticipantApplication::class);
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new ParticipantVerifyEmail);
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ParticipantResetPassword($token));
     }
 }
