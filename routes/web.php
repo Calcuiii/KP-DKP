@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\UnansweredQuestionController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\ParticipantAuthController;
 use App\Http\Controllers\Auth\ParticipantEmailVerificationController;
+use App\Http\Controllers\Auth\ParticipantPasswordResetController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\GuestbookCheckinController;
 use App\Http\Controllers\Peserta\ParticipantApplicationController;
@@ -57,6 +58,10 @@ Route::prefix('akun')->name('peserta.')->middleware('guest:peserta')->group(func
     Route::post('/masuk', [ParticipantAuthController::class, 'storeLogin'])->name('login.store');
     Route::get('/daftar', [ParticipantAuthController::class, 'createRegister'])->name('register');
     Route::post('/daftar', [ParticipantAuthController::class, 'storeRegister'])->name('register.store');
+    Route::get('/lupa-kata-sandi', [ParticipantPasswordResetController::class, 'create'])->name('password.request');
+    Route::post('/lupa-kata-sandi', [ParticipantPasswordResetController::class, 'store'])->middleware('throttle:3,1')->name('password.email');
+    Route::get('/atur-ulang-kata-sandi/{token}', [ParticipantPasswordResetController::class, 'edit'])->name('password.reset');
+    Route::post('/atur-ulang-kata-sandi', [ParticipantPasswordResetController::class, 'update'])->middleware('throttle:6,1')->name('password.update');
 });
 
 Route::middleware('auth:peserta')->group(function (): void {

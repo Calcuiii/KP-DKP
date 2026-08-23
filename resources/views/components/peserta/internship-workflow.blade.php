@@ -19,6 +19,15 @@
     $applicationAccepted = in_array($normalizedDecision, ['accepted', 'approved', 'diterima'], true);
     $applicationRejected = in_array($normalizedDecision, ['rejected', 'declined', 'ditolak'], true);
     $stageSixUnlocked = $officialStarted !== null || $applicationAccepted;
+    $calendarMonth = $officialStarted && $officialEnded
+        ? ($today->betweenIncluded($officialStarted->copy()->startOfDay(), $officialEnded->copy()->startOfDay()) ? $today->copy() : $officialStarted->copy())->startOfMonth()
+        : null;
+    $calendarDays = $calendarMonth
+        ? \Carbon\CarbonPeriod::create(
+            $calendarMonth->copy()->startOfWeek(\Carbon\CarbonInterface::MONDAY),
+            $calendarMonth->copy()->endOfMonth()->endOfWeek(\Carbon\CarbonInterface::SUNDAY),
+        )
+        : collect();
 @endphp
 
 <section id="persiapan">
@@ -167,6 +176,69 @@
 
     <article class="rounded-[2rem] border border-border bg-white p-6 shadow-sm transition sm:p-8 {{ $stageSixUnlocked ? '' : 'pointer-events-none opacity-60' }}">
         <div class="flex items-start justify-between gap-3"><div><p class="text-xs font-bold uppercase tracking-[0.18em] text-ocean">Tahap 6</p><h2 class="mt-2 text-xl font-extrabold">Kalender pelaksanaan</h2></div>@unless($stageSixUnlocked)<span class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500"><i data-lucide="lock" class="h-4 w-4"></i></span>@endunless</div>
-        @if (! $stageSixUnlocked)<p class="mt-3 text-sm leading-relaxed text-muted-foreground">Tahap ini terbuka setelah peserta dinyatakan diterima pada Tahap 5.</p>@elseif($officialStarted && $officialEnded)<div class="mt-5 rounded-2xl bg-navy p-5 text-white"><p class="text-3xl font-extrabold">{{ $daysRemaining }} hari</p><p class="mt-1 text-xs text-blue-200">tersisa hingga {{ $officialEnded->format('d M Y') }}</p><div class="mt-4 flex justify-between text-xs"><span>{{ $officialStarted->format('d M Y') }}</span><span>{{ $officialEnded->format('d M Y') }}</span></div></div>@else<p class="mt-3 text-sm leading-relaxed text-muted-foreground">Menunggu admin menetapkan tanggal mulai dan selesai resmi.</p>@endif
+        @if (! $stageSixUnlocked)
+            <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Tahap ini terbuka setelah peserta dinyatakan diterima pada Tahap 5.</p>
+        @elseif($officialStarted && $officialEnded)
+            <div class="mt-5 overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-navy via-[#123d72] to-ocean text-white">
+                <div class="flex flex-col gap-5 p-5 sm:flex-row sm:items-end sm:justify-between sm:p-6">
+                    <div>
+                        <p class="text-3xl font-extrabold">{{ $daysRemaining }} hari</p>
+                        <p class="mt-1 text-xs text-blue-200">tersisa hingga {{ $officialEnded->translatedFormat('d F Y') }}</p>
+                        <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold text-blue-100">
+                            <span class="inline-flex items-center gap-2"><i data-lucide="calendar-range" class="h-4 w-4 text-teal-200"></i>{{ $officialStarted->translatedFormat('d M Y') }}</span>
+                            <span class="text-blue-300">sampai</span>
+                            <span>{{ $officialEnded->translatedFormat('d M Y') }}</span>
+                        </div>
+                    </div>
+                    <button type="button" data-internship-calendar-toggle aria-expanded="false" aria-controls="internship-calendar-detail" class="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-extrabold text-ocean shadow-lg shadow-navy/20 transition hover:-translate-y-0.5 hover:bg-blue-50">
+                        <i data-lucide="calendar-range" class="h-4 w-4"></i>
+                        <span data-calendar-toggle-label>Lihat kalender kegiatan</span>
+                        <i data-lucide="chevron-down" data-calendar-toggle-icon class="h-4 w-4 transition-transform"></i>
+                    </button>
+                </div>
+
+                <div id="internship-calendar-detail" data-internship-calendar-detail hidden class="border-t border-white/10 bg-white p-5 text-navy sm:p-6">
+                    <div class="grid gap-6 xl:grid-cols-[0.38fr_0.62fr]">
+                        <div class="rounded-2xl bg-light p-5">
+                            <p class="text-[10px] font-extrabold uppercase tracking-[0.18em] text-teal">Periode pelaksanaan</p>
+                            <h3 class="mt-2 text-xl font-extrabold">Agenda magang Anda</h3>
+                            <div class="mt-5 space-y-3">
+                                <div class="flex items-start gap-3 rounded-xl bg-white p-3"><span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-ocean/10 text-ocean"><i data-lucide="play" class="h-4 w-4"></i></span><div><p class="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Hari pertama</p><p class="mt-1 text-sm font-extrabold">{{ $officialStarted->translatedFormat('l, d F Y') }}</p></div></div>
+                                <div class="flex items-start gap-3 rounded-xl bg-white p-3"><span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-teal/10 text-teal"><i data-lucide="flag" class="h-4 w-4"></i></span><div><p class="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Hari terakhir</p><p class="mt-1 text-sm font-extrabold">{{ $officialEnded->translatedFormat('l, d F Y') }}</p></div></div>
+                            </div>
+                            <p class="mt-4 text-xs leading-relaxed text-muted-foreground">Tanggal pelaksanaan ditetapkan oleh admin. Hubungi petugas apabila terdapat perubahan jadwal resmi.</p>
+                        </div>
+
+                        <div class="rounded-2xl border border-border bg-white p-4 shadow-sm sm:p-5">
+                            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <div><p class="text-xs font-semibold text-muted-foreground">Kalender pelaksanaan</p><h3 class="mt-1 text-lg font-extrabold">{{ $calendarMonth->translatedFormat('F Y') }}</h3></div>
+                                <div class="flex flex-wrap gap-3 text-[10px] font-bold text-muted-foreground"><span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-ocean"></span>Periode magang</span><span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-teal ring-2 ring-teal/20"></span>Hari ini</span></div>
+                            </div>
+                            <div class="mt-5 grid grid-cols-7 gap-1 text-center">
+                                @foreach (['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'] as $dayName)
+                                    <span class="py-2 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">{{ $dayName }}</span>
+                                @endforeach
+                                @foreach ($calendarDays as $calendarDay)
+                                    @php
+                                        $day = \Carbon\Carbon::instance($calendarDay)->startOfDay();
+                                        $inCurrentMonth = $day->month === $calendarMonth->month;
+                                        $inInternship = $day->betweenIncluded($officialStarted->copy()->startOfDay(), $officialEnded->copy()->startOfDay());
+                                        $isToday = $day->isSameDay($today);
+                                        $isStart = $day->isSameDay($officialStarted);
+                                        $isEnd = $day->isSameDay($officialEnded);
+                                    @endphp
+                                    <div class="relative flex aspect-square min-h-9 items-center justify-center rounded-xl text-xs font-bold transition {{ ! $inCurrentMonth ? 'text-slate-300' : ($inInternship ? 'bg-ocean/10 text-ocean' : 'text-navy') }} {{ $isToday ? 'ring-2 ring-teal ring-offset-1' : '' }} {{ ($isStart || $isEnd) ? 'bg-ocean text-white' : '' }}" title="{{ $day->translatedFormat('l, d F Y') }}{{ $isStart ? ' — Hari pertama' : ($isEnd ? ' — Hari terakhir' : '') }}">
+                                        {{ $day->day }}
+                                        @if ($isToday)<span class="absolute bottom-1 h-1 w-1 rounded-full bg-teal"></span>@endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @else
+            <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Menunggu admin menetapkan tanggal mulai dan selesai resmi.</p>
+        @endif
     </article>
 </section>

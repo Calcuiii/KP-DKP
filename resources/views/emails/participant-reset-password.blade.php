@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Atur ulang kata sandi SI-MELAYUR</title></head>
+<body style="margin:0;background:#f3f7fb;font-family:Arial,sans-serif;color:#0b2748">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:32px 16px"><tr><td align="center">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;overflow:hidden;border-radius:22px;background:#fff;box-shadow:0 12px 35px rgba(11,39,72,.09)">
+<tr><td style="padding:28px 34px;background:linear-gradient(135deg,#0b2748,#1766b0);color:#fff"><div style="font-size:21px;font-weight:800">SI-MELAYUR</div><div style="margin-top:5px;font-size:12px;color:#bfe7ff">Portal Pendampingan Peserta DKP Jawa Timur</div></td></tr>
+<tr><td style="padding:34px"><h1 style="margin:0 0 16px;font-size:23px">Atur ulang kata sandi</h1><p style="margin:0 0 14px;line-height:1.7;color:#587393">Halo {{ $participant->name }}, kami menerima permintaan untuk membuat kata sandi baru pada akun Anda.</p><p style="margin:0 0 24px;line-height:1.7;color:#587393">Tautan ini berlaku selama {{ $expiresInMinutes }} menit dan hanya dapat digunakan satu kali.</p><a href="{{ $resetUrl }}" style="display:inline-block;border-radius:999px;background:#0f9f91;padding:14px 24px;color:#fff;font-size:14px;font-weight:700;text-decoration:none">Buat Kata Sandi Baru</a><p style="margin:26px 0 0;line-height:1.6;color:#7b8fa7;font-size:12px">Jika Anda tidak meminta perubahan kata sandi, abaikan email ini. Kata sandi Anda tetap aman.</p></td></tr>
+<tr><td style="border-top:1px solid #e6edf5;padding:20px 34px;color:#8aa0b8;font-size:11px">Dinas Kelautan dan Perikanan Provinsi Jawa Timur</td></tr>
+</table></td></tr></table></body></html>
