@@ -54,6 +54,22 @@
             'ethics_under_review' => 'Ethics Approval Sedang Diperiksa',
             default => $activeProgressLabel,
         };
+        $isInternshipExecution = $application
+            && $application->service_type === \App\Models\ParticipantApplication::SERVICE_MAGANG_PKL
+            && ($application->official_started_at !== null || in_array(mb_strtolower((string) $application->decision), ['accepted', 'approved', 'diterima'], true));
+        $portalNavigation = $isInternshipExecution
+            ? [
+                ['href' => '#ringkasan', 'icon' => 'home', 'label' => 'Dashboard Pelaksanaan', 'enabled' => true],
+                ['href' => '#kalender-kegiatan', 'icon' => 'calendar-range', 'label' => 'Kalender Kegiatan', 'enabled' => true],
+                ['href' => '#progress', 'icon' => 'list-checks', 'label' => 'Riwayat Tahapan', 'enabled' => true],
+                ['href' => '#kenali-si-molek', 'icon' => 'info', 'label' => 'Informasi Portal', 'enabled' => true],
+            ]
+            : [
+                ['href' => '#kenali-si-molek', 'icon' => 'info', 'label' => 'Informasi Portal', 'enabled' => true],
+                ['href' => '#ringkasan', 'icon' => 'home', 'label' => 'Dashboard Saya', 'enabled' => true],
+                ['href' => '#persiapan', 'icon' => 'file-check', 'label' => 'Persiapan Dokumen', 'enabled' => true],
+                ['href' => '#progress', 'icon' => 'trending-up', 'label' => 'Status Pengajuan', 'enabled' => (bool) $application],
+            ];
     @endphp
 
     <main class="participant-workspace min-h-screen bg-background font-sans text-navy">
@@ -70,6 +86,10 @@
                 </a>
 
                 <div class="flex items-center gap-3">
+                    <span class="hidden text-right sm:block">
+                        <span class="block text-sm font-bold">{{ $participant->name }}</span>
+                        <span class="block text-xs text-muted-foreground">Peserta terverifikasi</span>
+                    </span>
                     <div class="relative" data-notification-center>
                         <button type="button" data-notification-toggle aria-expanded="false" aria-controls="participant-notification-panel" aria-label="Buka notifikasi" class="relative flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white text-muted-foreground shadow-sm transition hover:border-ocean/30 hover:text-ocean">
                             <i data-lucide="bell" class="h-4.5 w-4.5" aria-hidden="true"></i>
@@ -131,10 +151,6 @@
                             @endif
                         </div>
                     </div>
-                    <span class="hidden text-right sm:block">
-                        <span class="block text-sm font-bold">{{ $participant->name }}</span>
-                        <span class="block text-xs text-muted-foreground">Peserta terverifikasi</span>
-                    </span>
                     <form method="POST" action="{{ route('peserta.logout') }}">
                         @csrf
                         <button type="submit" class="inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-2 text-xs font-bold text-muted-foreground transition hover:border-destructive/30 hover:text-destructive">
@@ -148,15 +164,16 @@
 
         <nav class="border-b border-border bg-white px-5 py-3 lg:hidden" aria-label="Navigasi portal peserta">
             <div class="flex gap-2 overflow-x-auto pb-1">
-                @foreach ([
-                    ['#kenali-si-molek', 'info', 'Informasi Portal'],
-                    ['#ringkasan', 'home', 'Dashboard'],
-                    [$application ? '#progress' : '#ringkasan', 'trending-up', 'Progress'],
-                    ['#persiapan', 'file-check', 'Dokumen'],
-                ] as [$href, $icon, $label])
-                    <a href="{{ $href }}" data-participant-nav class="participant-mobile-nav inline-flex shrink-0 items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-xs font-bold text-muted-foreground">
-                        <i data-lucide="{{ $icon }}" class="h-3.5 w-3.5"></i>{{ $label }}
-                    </a>
+                @foreach ($portalNavigation as $navItem)
+                    @if ($navItem['enabled'])
+                        <a href="{{ $navItem['href'] }}" data-participant-nav class="participant-mobile-nav inline-flex shrink-0 items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-xs font-bold text-muted-foreground">
+                            <i data-lucide="{{ $navItem['icon'] }}" class="h-3.5 w-3.5"></i>{{ $navItem['label'] }}
+                        </a>
+                    @else
+                        <span aria-disabled="true" class="inline-flex shrink-0 cursor-not-allowed items-center gap-2 rounded-full border border-border/70 bg-light/70 px-4 py-2 text-xs font-bold text-muted-foreground/55">
+                            <i data-lucide="lock" class="h-3.5 w-3.5"></i>Status belum tersedia
+                        </span>
+                    @endif
                 @endforeach
             </div>
         </nav>
@@ -168,20 +185,22 @@
                         <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200">Menu Portal</span>
                         <p class="mt-1 text-sm font-bold">Informasi dan ruang kerja</p>
                     </div>
-                    @foreach ([
-                        ['#kenali-si-molek', 'info', 'Informasi Portal'],
-                        ['#ringkasan', 'home', 'Dashboard Saya'],
-                        [$application ? '#progress' : '#ringkasan', 'trending-up', 'Status Pengajuan'],
-                        ['#persiapan', 'file-check', 'Persiapan Dokumen'],
-                    ] as [$href, $icon, $label])
-                        <a href="{{ $href }}" data-participant-nav class="participant-sidebar-link flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-blue-100 transition">
-                            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/10"><i data-lucide="{{ $icon }}" class="h-4 w-4"></i></span>
-                            <span class="min-w-0 flex-1">{{ $label }}</span>
-                        </a>
+                    @foreach ($portalNavigation as $navItem)
+                        @if ($navItem['enabled'])
+                            <a href="{{ $navItem['href'] }}" data-participant-nav class="participant-sidebar-link flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-blue-100 transition">
+                                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/10"><i data-lucide="{{ $navItem['icon'] }}" class="h-4 w-4"></i></span>
+                                <span class="min-w-0 flex-1">{{ $navItem['label'] }}</span>
+                            </a>
+                        @else
+                            <div aria-disabled="true" class="flex cursor-not-allowed items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-blue-300/55">
+                                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/5 bg-white/[0.04]"><i data-lucide="lock" class="h-4 w-4"></i></span>
+                                <span class="min-w-0 flex-1">Status belum tersedia</span>
+                            </div>
+                        @endif
                     @endforeach
 
                     <div class="mx-3 my-4 border-t border-white/10"></div>
-                    <div class="mx-2 rounded-2xl bg-white/[0.07] p-4">
+                    <div class="mx-2 rounded-2xl border border-white/10 bg-white/[0.07] p-4">
                         <div class="flex items-center justify-between gap-2">
                             <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-blue-200">Progress Anda</span>
                             <span class="rounded-full bg-white/10 px-2 py-1 text-[9px] font-bold text-blue-100">{{ collect($sidebarProgress)->where('state', 'done')->count() }}/{{ count($sidebarProgress) }}</span>
@@ -203,6 +222,9 @@
                                 </li>
                             @endforeach
                         </ol>
+                        @if (! $application)
+                            <p class="mt-4 border-t border-white/10 pt-3 text-[10px] leading-relaxed text-blue-200">Pilih satu layanan untuk membuka alur dan status pengajuan Anda.</p>
+                        @endif
                     </div>
                     <a href="{{ route('landing') }}" class="mx-2 mb-1 mt-2 flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-blue-200 transition hover:bg-white/10 hover:text-white"><i data-lucide="arrow-left" class="h-3.5 w-3.5"></i> Beranda SI-MELAYUR</a>
                 </nav>
@@ -216,6 +238,7 @@
                     </div>
                 @endif
 
+                @unless ($isInternshipExecution)
                 <section id="kenali-si-molek" class="relative isolate overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#176ac7] via-[#258ddd] to-[#74c8ec] px-6 py-8 text-white shadow-xl shadow-ocean/15 sm:px-10 sm:py-10">
                     <div class="pointer-events-none absolute left-8 top-10 h-6 w-20 rounded-full bg-white/30 blur-sm"></div>
                     <div class="pointer-events-none absolute right-12 top-16 h-8 w-28 rounded-full bg-white/20 blur-sm"></div>
@@ -270,8 +293,15 @@
                         </div>
                     </div>
                 </section>
+                @endunless
 
-                @if (! $application)
+                @if ($isInternshipExecution)
+                    @include('components.peserta.execution-dashboard', [
+                        'application' => $application,
+                        'participant' => $participant,
+                        'sidebarProgress' => $sidebarProgress,
+                    ])
+                @elseif (! $application)
                     <section id="ringkasan" class="overflow-hidden rounded-[2rem] bg-gradient-to-br from-navy via-[#123d72] to-ocean p-7 text-white shadow-xl shadow-navy/10 sm:p-10">
                         <div class="max-w-2xl">
                             <p class="text-xs font-bold uppercase tracking-[0.22em] text-teal-200">Portal Peserta SI-MELAYUR</p>

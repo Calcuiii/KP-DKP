@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Notifications\ParticipantVerifyEmail;
+use App\Notifications\ParticipantResetPassword;
 use Database\Factories\ParticipantFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -52,7 +54,7 @@ class Participant extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(ParticipantApplication::class);
     }
 
-        /**
+    /**
      * Surat balasan peserta
      */
     public function replyLetter(): HasOne
@@ -61,5 +63,15 @@ class Participant extends Authenticatable implements MustVerifyEmail
             ReplyLetter::class,
             'participant_id'
         );
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new ParticipantVerifyEmail);
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ParticipantResetPassword($token));
     }
 }

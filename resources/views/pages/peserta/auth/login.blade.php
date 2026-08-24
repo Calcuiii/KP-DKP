@@ -52,7 +52,7 @@
             </div>
 
             <div class="flex justify-end">
-                <span class="cursor-not-allowed text-xs font-semibold text-teal" title="Fitur pemulihan kata sandi akan segera tersedia">Lupa Kata Sandi? Segera hadir</span>
+                <a href="{{ route('peserta.password.request') }}" class="text-xs font-semibold text-teal transition hover:text-ocean hover:underline">Lupa Kata Sandi?</a>
             </div>
 
             <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-ocean to-teal px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-ocean/20 transition hover:brightness-110 disabled:cursor-wait disabled:opacity-70" data-participant-submit>

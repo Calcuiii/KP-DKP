@@ -73,6 +73,7 @@ import {
     Badge,
     CalendarRange,
     GraduationCap,
+    Microscope,
     Building2,
     School,
     Contact,
@@ -81,6 +82,15 @@ import {
     UserCheck,
     Stamp,
     CheckCircle2,
+    Play,
+    Flag,
+    BriefcaseBusiness,
+    MessagesSquare,
+    MapPinned,
+    MessageSquareText,
+    ChartNoAxesCombined,
+    History,
+    UsersRound,
 } from 'lucide';
 
 createIcons({
@@ -94,10 +104,11 @@ createIcons({
         Download, Edit2, Home, HelpCircle, Compass, ArrowDown, ClipboardList, Images,
         Map, FileCheck2, LayoutGrid, ClipboardCheck, Target, Waves, CircleCheck,
         CircleHelp, ArrowUpRight, ScanSearch, ExternalLink, Circle,
-        ListChecks, UserRound, Badge, CalendarRange, GraduationCap, Building2,
+        ListChecks, UserRound, Badge, CalendarRange, GraduationCap, Microscope, Building2,
         School, Contact, CalendarClock,
         ShieldCheck, UserCheck, Stamp,
-        CheckCircle2,
+        CheckCircle2, Play, Flag, BriefcaseBusiness, MessagesSquare, MapPinned,
+        MessageSquareText, ChartNoAxesCombined, History, UsersRound,
     },
 });
 
@@ -176,6 +187,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (targetId) {
                     setActiveNavigation(targetId);
                 }
+            });
+        });
+
+        document.querySelectorAll('[data-internship-calendar-toggle]').forEach((toggle) => {
+            const detail = document.getElementById(toggle.getAttribute('aria-controls'));
+            const label = toggle.querySelector('[data-calendar-toggle-label]');
+            const icon = toggle.querySelector('[data-calendar-toggle-icon]');
+
+            if (! detail) return;
+
+            toggle.addEventListener('click', () => {
+                const willOpen = detail.hidden;
+                detail.hidden = ! willOpen;
+                toggle.setAttribute('aria-expanded', String(willOpen));
+                if (label) label.textContent = willOpen ? 'Tutup kalender' : 'Lihat kalender kegiatan';
+                icon?.classList.toggle('rotate-180', willOpen);
             });
         });
 
@@ -508,8 +535,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.querySelector('[data-admin-sidebar]');
 
     sidebarToggle?.addEventListener('click', () => {
-        sidebar?.classList.toggle('w-60');
-        sidebar?.classList.toggle('w-0');
+        if (! sidebar) return;
+
+        const willOpen = sidebar.classList.contains('w-0');
+        sidebar.classList.toggle('w-0', !willOpen);
+        sidebar.classList.toggle('w-64', willOpen);
+        sidebarToggle.setAttribute('aria-expanded', String(willOpen));
+        sidebarToggle.setAttribute('aria-label', willOpen ? 'Sembunyikan menu admin' : 'Tampilkan menu admin');
     });
 
     // ── Admin login: toggle show/hide password ────────────────────────
