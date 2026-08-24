@@ -18,6 +18,7 @@ use App\Http\Controllers\Peserta\ParticipantNotificationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\InternshipLocationController;
 use App\Http\Controllers\Admin\DocumentReviewController;
+use App\Http\Controllers\Admin\ReplyLetterController;
 
 Route::view('/', 'pages.landing')->name('landing');
 
@@ -142,6 +143,18 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/pemeriksaan-dokumen/{document}/unduh', [DocumentReviewController::class, 'download'])
         ->name('admin.pemeriksaan-dokumen.download');
+
+    Route::middleware(['auth'])->prefix('admin')->group(function () {
+        Route::get('/surat-balasan',[ReplyLetterController::class, 'index'])
+        ->name('admin.surat-balasan');
+
+        Route::post('/surat-balasan/{participant}',[ReplyLetterController::class, 'upload'])
+        ->name('admin.surat-balasan.upload');
+
+        Route::get('/surat-balasan/{replyLetter}/download',[ReplyLetterController::class, 'download'])
+        ->name('admin.surat-balasan.download');
+
+    });
 
     Route::middleware('superadmin')->group(function (): void {
         Route::get('/knowledge-base', [KnowledgeBaseController::class, 'index'])->name('admin.knowledge-base');

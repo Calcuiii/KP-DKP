@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\ReplyLetter;
 
 class Participant extends Authenticatable implements MustVerifyEmail
 {
@@ -48,5 +50,16 @@ class Participant extends Authenticatable implements MustVerifyEmail
     public function applications(): HasMany
     {
         return $this->hasMany(ParticipantApplication::class);
+    }
+
+        /**
+     * Surat balasan peserta
+     */
+    public function replyLetter(): HasOne
+    {
+        return $this->hasOne(
+            ReplyLetter::class,
+            'participant_id'
+        );
     }
 }
