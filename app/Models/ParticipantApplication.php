@@ -118,6 +118,11 @@ class ParticipantApplication extends Model
         };
     }
 
+    public function getApplicationCodeAttribute(): string
+    {
+        return 'KP-' . now()->format('Y') . '-' . str_pad((string) $this->id, 5, '0', STR_PAD_LEFT);
+    }
+
     /**
      * @return list<array{label: string, description: string}>
      */
@@ -138,4 +143,5 @@ class ParticipantApplication extends Model
             ],
         };
     }
+
 }

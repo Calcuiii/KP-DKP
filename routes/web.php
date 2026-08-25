@@ -149,7 +149,7 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
     Route::get('/pemeriksaan-dokumen/{document}/unduh', [DocumentReviewController::class, 'download'])
         ->name('admin.pemeriksaan-dokumen.download');
 
-    Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::middleware(['auth'])->group(function () {
         Route::get('/surat-balasan',[ReplyLetterController::class, 'index'])
         ->name('admin.surat-balasan');
 
@@ -158,6 +158,11 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
 
         Route::get('/surat-balasan/{replyLetter}/download',[ReplyLetterController::class, 'download'])
         ->name('admin.surat-balasan.download');
+
+        Route::get('/surat-balasan/bukti/{replyLetter}/preview', [ReplyLetterController::class, 'preview'])
+    ->name('admin.surat-balasan.proof.preview');
+
+        
 
     });
 

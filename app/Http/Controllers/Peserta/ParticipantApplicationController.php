@@ -226,13 +226,17 @@ final class ParticipantApplicationController extends Controller
 
     public function downloadResponseLetter(Request $request): StreamedResponse
     {
-        $application = $this->magangApplication($request);
-        abort_unless(filled($application->response_letter_path), 404);
-        abort_unless(Storage::disk('local')->exists($application->response_letter_path), 404);
+        /** @var Participant $participant */
+        $participant = $request->user('peserta');
 
-        return Storage::disk('local')->download(
-            $application->response_letter_path,
-            basename($application->response_letter_path)
+        $replyLetter = $participant->replyLetter;
+
+        abort_unless($replyLetter && filled($replyLetter->file_path), 404);
+        abort_unless(Storage::disk('public')->exists($replyLetter->file_path), 404);
+
+        return Storage::disk('public')->download(
+            $replyLetter->file_path,
+            $replyLetter->original_name ?? basename($replyLetter->file_path)
         );
     }
 

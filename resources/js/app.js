@@ -91,6 +91,7 @@ import {
     ChartNoAxesCombined,
     History,
     UsersRound,
+    FileOutput,
 } from 'lucide';
 
 createIcons({
@@ -108,7 +109,7 @@ createIcons({
         School, Contact, CalendarClock,
         ShieldCheck, UserCheck, Stamp,
         CheckCircle2, Play, Flag, BriefcaseBusiness, MessagesSquare, MapPinned,
-        MessageSquareText, ChartNoAxesCombined, History, UsersRound,
+        MessageSquareText, ChartNoAxesCombined, History, UsersRound, FileOutput
     },
 });
 

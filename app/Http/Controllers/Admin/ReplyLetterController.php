@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Participant;
 use App\Models\ReplyLetter;
+use App\Models\ParticipantApplicationDocument;
+use App\Notifications\ReplyLetterSent;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -12,10 +14,23 @@ use Illuminate\View\View;
 
 final class ReplyLetterController extends Controller
 {
+    /**
+     * Daftar peserta yang sudah mengirim bukti pengisian
+     * Google Form Magang/PKL.
+     */
     public function index(): View
     {
         $participants = Participant::query()
-            ->with('replyLetter')
+            ->with([
+                'replyLetter',
+                'applications.documents',
+            ])
+            ->whereHas('applications.documents', function ($query) {
+                $query->where(
+                    'type',
+                    ParticipantApplicationDocument::TYPE_INTERNSHIP_FORM_PROOF
+                );
+            })
             ->orderBy('name')
             ->paginate(10);
 
@@ -25,12 +40,14 @@ final class ReplyLetterController extends Controller
         );
     }
 
-
+    /**
+     * Admin mengunggah dan mengirim surat balasan
+     * kepada peserta.
+     */
     public function upload(
         Request $request,
         Participant $participant
     ): RedirectResponse {
-
         $request->validate([
             'reply_letter' => [
                 'required',
@@ -49,29 +66,26 @@ final class ReplyLetterController extends Controller
                 'Ukuran surat maksimal 10 MB.',
         ]);
 
-
         /*
-        |--------------------------------------------------------------------------
-        | Hapus surat lama jika ada
-        |--------------------------------------------------------------------------
-        */
-
+         * Cari surat balasan lama milik peserta.
+         */
         $existing = ReplyLetter::query()
             ->where('participant_id', $participant->id)
             ->first();
 
+        /*
+         * Jika sudah ada surat lama,
+         * hapus file lama dari storage.
+         */
         if ($existing && $existing->file_path) {
-            Storage::disk('public')
-                ->delete($existing->file_path);
+            Storage::disk('public')->delete(
+                $existing->file_path
+            );
         }
 
-
         /*
-        |--------------------------------------------------------------------------
-        | Upload file baru
-        |--------------------------------------------------------------------------
-        */
-
+         * Simpan file baru.
+         */
         $file = $request->file('reply_letter');
 
         $path = $file->store(
@@ -79,14 +93,10 @@ final class ReplyLetterController extends Controller
             'public'
         );
 
-
         /*
-        |--------------------------------------------------------------------------
-        | Simpan ke database
-        |--------------------------------------------------------------------------
-        */
-
-        ReplyLetter::updateOrCreate(
+         * Simpan data surat balasan.
+         */
+        $replyLetter = ReplyLetter::updateOrCreate(
             [
                 'participant_id' => $participant->id,
             ],
@@ -97,28 +107,37 @@ final class ReplyLetterController extends Controller
             ]
         );
 
-
         /*
-        |--------------------------------------------------------------------------
-        | TODO:
-        | Buat notifikasi peserta di sini.
-        |--------------------------------------------------------------------------
-        */
-
-
-        return back()->with(
-            'success',
-            'Surat balasan berhasil diunggah dan dikirim kepada peserta.'
+         * Kirim notifikasi database
+         * kepada peserta.
+         */
+        $participant->notify(
+            new ReplyLetterSent($replyLetter)
         );
+
+        return redirect()
+    ->route('admin.surat-balasan')
+    ->with(
+        'success',
+        'Surat balasan berhasil diunggah dan dikirim kepada peserta.'
+    );
     }
 
-
+    /**
+     * Download surat balasan.
+     */
     public function download(
         ReplyLetter $replyLetter
     ) {
+        abort_unless(
+            filled($replyLetter->file_path),
+            404
+        );
 
         abort_unless(
-            $replyLetter->file_path,
+            Storage::disk('public')->exists(
+                $replyLetter->file_path
+            ),
             404
         );
 
@@ -126,5 +145,39 @@ final class ReplyLetterController extends Controller
             $replyLetter->file_path,
             $replyLetter->original_name
         );
+    }
+
+    /**
+     * Preview surat balasan di browser.
+     */
+    public function preview(
+        ReplyLetter $replyLetter
+    ) {
+        abort_unless(
+            filled($replyLetter->file_path),
+            404
+        );
+
+        abort_unless(
+            Storage::disk('public')->exists(
+                $replyLetter->file_path
+            ),
+            404
+        );
+
+        $path = Storage::disk('public')->path(
+            $replyLetter->file_path
+        );
+
+        return response()->file($path, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' =>
+                'inline; filename="' .
+                addslashes(
+                    $replyLetter->original_name
+                    ?? basename($replyLetter->file_path)
+                ) .
+                '"',
+        ]);
     }
 }
