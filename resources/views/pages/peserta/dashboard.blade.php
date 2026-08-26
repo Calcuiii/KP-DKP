@@ -124,27 +124,10 @@
                                     <form method="POST" action="{{ route('peserta.notifications.read', $notification->id) }}" class="border-b border-border last:border-b-0">
                                         @csrf
                                         <button type="submit" class="group flex w-full items-start gap-3 px-5 py-4 text-left transition hover:bg-light/70 {{ $notification->read_at ? 'bg-white' : 'bg-ocean/[0.035]' }}">
-                                            <span class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl {{ $isApprovedNotification ? 'bg-teal/10 text-teal' : 'bg-amber-100 text-amber-600' }}">
-                                                <i data-lucide="{{ $isApprovedNotification ? 'circle-check' : 'alert-circle' }}" class="h-4 w-4" aria-hidden="true"></i>
+                                            <span class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl {{ $isReplyLetterNotification ? 'bg-ocean/10 text-ocean' : ($isApprovedNotification ? 'bg-teal/10 text-teal' : 'bg-amber-100 text-amber-600') }}">
+                                                <i data-lucide="{{ $isReplyLetterNotification ? 'mail' : ($isApprovedNotification ? 'circle-check' : 'alert-circle') }}" class="h-4 w-4" aria-hidden="true"></i>
                                             </span>
                                             <span class="min-w-0 flex-1">
-                                                <span class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl {{ 
-    $isReplyLetterNotification 
-        ? 'bg-ocean/10 text-ocean' 
-        : ($isApprovedNotification 
-            ? 'bg-teal/10 text-teal' 
-            : 'bg-amber-100 text-amber-600') 
-}}">
-    <i 
-        data-lucide="{{ 
-            $isReplyLetterNotification 
-                ? 'mail' 
-                : ($isApprovedNotification ? 'circle-check' : 'alert-circle') 
-        }}" 
-        class="h-4 w-4" 
-        aria-hidden="true">
-    </i>
-</span>
                                                 <span class="mt-1 block text-[11px] leading-relaxed text-muted-foreground">{{ $notificationData['message'] ?? '' }}</span>
                                                 @if (filled($notificationData['review_notes'] ?? null))
                                                     <span class="mt-2 block rounded-xl bg-light px-3 py-2 text-[11px] font-medium leading-relaxed text-navy"><strong>Catatan admin:</strong> {{ $notificationData['review_notes'] }}</span>

@@ -159,7 +159,7 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
         Route::get('/surat-balasan/{replyLetter}/download',[ReplyLetterController::class, 'download'])
         ->name('admin.surat-balasan.download');
 
-        Route::get('/surat-balasan/bukti/{replyLetter}/preview', [ReplyLetterController::class, 'preview'])
+        Route::get('/surat-balasan/bukti/{document}/preview', [ReplyLetterController::class, 'previewProof'])
     ->name('admin.surat-balasan.proof.preview');
 
         

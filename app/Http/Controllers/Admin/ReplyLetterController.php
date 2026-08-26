@@ -180,4 +180,43 @@ final class ReplyLetterController extends Controller
                 '"',
         ]);
     }
+
+    /**
+     * Preview bukti pengisian Google Form di browser.
+     */
+    public function previewProof(
+        ParticipantApplicationDocument $document
+    ) {
+        abort_unless(
+            $document->type === ParticipantApplicationDocument::TYPE_INTERNSHIP_FORM_PROOF,
+            404
+        );
+
+        abort_unless(
+            filled($document->file_path),
+            404
+        );
+
+        abort_unless(
+            Storage::disk('local')->exists(
+                $document->file_path
+            ),
+            404
+        );
+
+        $path = Storage::disk('local')->path(
+            $document->file_path
+        );
+
+        return response()->file($path, [
+            'Content-Type' => $document->mime_type ?? 'application/pdf',
+            'Content-Disposition' =>
+                'inline; filename="' .
+                addslashes(
+                    $document->original_name
+                    ?? basename($document->file_path)
+                ) .
+                '"',
+        ]);
+    }
 }

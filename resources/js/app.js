@@ -92,6 +92,7 @@ import {
     History,
     UsersRound,
     FileOutput,
+    Mail,
 } from 'lucide';
 
 createIcons({
@@ -109,7 +110,7 @@ createIcons({
         School, Contact, CalendarClock,
         ShieldCheck, UserCheck, Stamp,
         CheckCircle2, Play, Flag, BriefcaseBusiness, MessagesSquare, MapPinned,
-        MessageSquareText, ChartNoAxesCombined, History, UsersRound, FileOutput
+        MessageSquareText, ChartNoAxesCombined, History, UsersRound, FileOutput, Mail
     },
 });
 
