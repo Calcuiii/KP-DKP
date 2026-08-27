@@ -22,7 +22,7 @@ class InfographicsPageTest extends TestCase
 
         $previousPosition = -1;
 
-        foreach (Infographic::query()->ordered()->get() as $infographic) {
+        foreach (Infographic::query()->where('type', '!=', Infographic::TYPE_WOPPS)->ordered()->get() as $infographic) {
             $position = strpos($content, $infographic->caption);
 
             self::assertNotFalse($position);
@@ -31,9 +31,10 @@ class InfographicsPageTest extends TestCase
             $previousPosition = $position;
         }
 
-        self::assertSame(8, substr_count($content, 'data-infographic-lightbox-trigger'));
+        self::assertSame(7, substr_count($content, 'data-infographic-lightbox-trigger'));
         self::assertStringContainsString('Pusat Informasi Visual', $content);
         self::assertStringContainsString('Akses Cepat', $content);
+        self::assertStringNotContainsString('WOPPS · Seri 07/07', $content);
     }
 
     public function test_the_landing_page_includes_the_infographics_preview(): void
@@ -44,11 +45,42 @@ class InfographicsPageTest extends TestCase
         $response
             ->assertOk()
             ->assertSee(route('infographics'), false)
-            ->assertSee('Seri Infografis 1/07')
+            ->assertSee('Magang / KP / PKL · Seri 01/07')
+            ->assertSee('WOPPS · Seri 07/07')
             ->assertSee('Surat Edaran Resmi');
 
         self::assertSame(1, substr_count($content, 'loading="eager"'));
         self::assertSame(7, substr_count($content, 'loading="lazy"'));
+    }
+
+    public function test_infographics_are_categorized_by_service(): void
+    {
+        $magangResponse = $this->get(route('infographics'));
+        $woppsResponse = $this->get(route('infographics', ['layanan' => 'wopps']));
+
+        $magangResponse
+            ->assertOk()
+            ->assertSee('Magang / KP / PKL · Seri 01/07')
+            ->assertSee('Magang / KP / PKL · Seri 06/07')
+            ->assertDontSee('WOPPS · Seri 07/07');
+
+        $woppsResponse
+            ->assertOk()
+            ->assertSee('WOPPS · Seri 07/07')
+            ->assertDontSee('Magang / KP / PKL · Seri 01/07');
+
+        self::assertSame(1, substr_count($woppsResponse->getContent(), 'data-infographic-lightbox-trigger'));
+        self::assertSame(1, substr_count($woppsResponse->getContent(), 'data-lightbox-minimal="true"'));
+        $woppsResponse
+            ->assertSee('Infografis WOPPS')
+            ->assertSee('Buka Infografis')
+            ->assertSee('Wawancara, Observasi, Penelitian, Permintaan Data, dan Sampling')
+            ->assertDontSee('Peta perjalanan infografis')
+            ->assertDontSee('Menampilkan infografis khusus WOPPS');
+
+        $magangResponse->assertDontSee('Menampilkan infografis Magang');
+
+        self::assertSame('infografis_wopps', Infographic::query()->where('series_number', 7)->value('type'));
     }
 
     public function test_an_admin_can_update_an_infographic_caption_and_image(): void

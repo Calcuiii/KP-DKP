@@ -69,14 +69,9 @@
                     Kembali ke SI-MELAYUR
                 </a>
 
-                <div class="flex items-center gap-3 border-b border-border pb-5">
-                    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary text-ocean">
-                        <i data-lucide="user-round" class="h-5 w-5" aria-hidden="true"></i>
-                    </span>
-                    <div>
-                        <p class="text-xs font-bold uppercase tracking-[0.16em] text-teal">{{ $eyebrow }}</p>
-                        <p class="mt-0.5 text-xs text-muted-foreground">Dinas Kelautan dan Perikanan Jatim</p>
-                    </div>
+                <div class="border-b border-border pb-5">
+                    <p class="text-xs font-bold uppercase tracking-[0.16em] text-teal">{{ $eyebrow }}</p>
+                    <p class="mt-0.5 text-xs text-muted-foreground">Dinas Kelautan dan Perikanan Jatim</p>
                 </div>
 
                 <h1 class="mt-7 text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">{{ $title }}</h1>

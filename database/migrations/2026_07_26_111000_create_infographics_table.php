@@ -111,7 +111,7 @@ return new class extends Migration
             ],
             [
                 'position' => 8,
-                'type' => 'infografis',
+                'type' => 'infografis_wopps',
                 'series_number' => 7,
                 'caption' => 'Seri Infografis 7/07',
                 'alt' => 'Persyaratan Dokumen Pengajuan Penelitian atau Permintaan Data',

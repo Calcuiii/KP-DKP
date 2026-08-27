@@ -454,7 +454,15 @@ document.addEventListener('DOMContentLoaded', () => {
         lightboxImage.alt = item.dataset.imageAlt;
         lightboxImage.width = Number(item.dataset.imageWidth);
         lightboxImage.height = Number(item.dataset.imageHeight);
-        lightboxCaption.textContent = item.dataset.imageCaption;
+        lightboxCaption.textContent = item.dataset.imageService
+            ? `${item.dataset.imageService} — ${item.dataset.imageCaption}`
+            : item.dataset.imageCaption;
+
+        const minimalControls = item.dataset.lightboxMinimal === 'true';
+
+        lightboxCaption.classList.toggle('hidden', minimalControls);
+        lightboxPreviousButton?.classList.toggle('hidden', minimalControls);
+        lightboxNextButton?.classList.toggle('hidden', minimalControls);
     };
 
     const closeLightbox = () => {

@@ -5,11 +5,11 @@
                 <span class="text-sm font-semibold text-teal">Panduan visual</span>
 
                 <h2 class="mt-2 text-3xl font-bold text-navy sm:text-4xl">
-                    Seri Infografis Magang dan PKL
+                    Infografis Layanan DKP
                 </h2>
 
                 <p class="mt-3 leading-relaxed text-muted-foreground">
-                    Lihat ringkasan informasi resmi untuk membantu memahami proses Magang dan PKL.
+                    Kenali panduan Magang, KP, dan PKL serta informasi WOPPS melalui kategori yang jelas.
                 </p>
             </div>
 
@@ -40,12 +40,6 @@
                     style="transform-style: preserve-3d;"
                 >
                     @foreach ($items as $index => $item)
-                        @php
-                            $label = $item->type === 'infografis'
-                                ? sprintf('Seri Infografis %d/07', $item->series_number)
-                                : 'Surat Edaran Resmi';
-                        @endphp
-
                         <button
                             type="button"
                             data-infographic-coverflow-card
@@ -53,6 +47,7 @@
                             data-image-src="{{ $item->image_url }}"
                             data-image-alt="{{ $item->alt }}"
                             data-image-caption="{{ $item->caption }}"
+                            data-image-service="{{ $item->display_label }}"
                             data-image-width="{{ $item->image_width }}"
                             data-image-height="{{ $item->image_height }}"
                             class="absolute left-1/2 top-0 aspect-[3/4] w-[clamp(9.25rem,29vw,14rem)] overflow-hidden rounded-2xl border border-white/70 bg-white text-left shadow-xl outline-none ring-ocean transition-shadow focus-visible:ring-4"
@@ -72,7 +67,7 @@
                             >
 
                             <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy/90 via-navy/55 to-transparent px-3 pb-3 pt-10 text-xs font-semibold text-white">
-                                {{ $label }}
+                                {{ $item->display_label }}
                             </span>
                         </button>
                     @endforeach

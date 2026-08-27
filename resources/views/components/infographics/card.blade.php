@@ -12,6 +12,7 @@
         data-image-src="{{ $item->image_url }}"
         data-image-alt="{{ $item->alt }}"
         data-image-caption="{{ $item->caption }}"
+        data-image-service="{{ $item->display_label }}"
         data-image-width="{{ $item->image_width }}"
         data-image-height="{{ $item->image_height }}"
         class="block w-full text-left focus:outline-none focus:ring-2 focus:ring-ocean focus:ring-offset-2"
@@ -34,7 +35,7 @@
         </p>
 
         <p class="mt-1 text-xs text-muted-foreground">
-            {{ $item->type === 'infografis' ? 'Panduan visual layanan Magang dan PKL' : 'Dokumen resmi Pemerintah Provinsi Jawa Timur' }}
+            {{ $item->service_description }}
         </p>
     </div>
 </article>

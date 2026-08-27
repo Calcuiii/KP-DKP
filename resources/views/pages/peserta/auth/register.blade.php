@@ -15,6 +15,10 @@
 
             <div>
                 <label for="name" class="mb-2 block text-xs font-semibold text-navy">Nama Lengkap</label>
+                <div id="name-guidance" class="mb-3 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-3 text-xs leading-relaxed text-amber-900" role="note">
+                    <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-400 text-[11px] font-extrabold text-white" aria-hidden="true">!</span>
+                    <p><span class="font-bold">Penting:</span> tulis nama lengkap, bukan nama samaran atau nama panggilan. Nama ini akan dicocokkan saat pemeriksaan surat permohonan.</p>
+                </div>
                 <input
                     id="name"
                     name="name"
@@ -23,6 +27,7 @@
                     autocomplete="name"
                     autofocus
                     required
+                    aria-describedby="name-guidance"
                     aria-invalid="@error('name') true @else false @enderror"
                     class="w-full rounded-xl border border-border bg-light px-4 py-3.5 text-sm text-navy outline-none placeholder:text-muted-foreground/70 focus:border-ocean focus:ring-4 focus:ring-ocean/10"
                     placeholder="Masukkan nama lengkap"
