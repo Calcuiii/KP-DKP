@@ -102,6 +102,8 @@ class ParticipantAuthenticationTest extends TestCase
         $this->get(route('peserta.register'))
             ->assertOk()
             ->assertSee('Konfirmasi Kata Sandi')
+            ->assertSee('tulis nama lengkap sesuai Kartu Keluarga (KK)')
+            ->assertSee('Masukkan nama lengkap')
             ->assertSee('Sudah memiliki akun?');
 
         $participant = Participant::factory()->create([

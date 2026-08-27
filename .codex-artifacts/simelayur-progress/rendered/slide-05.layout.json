@@ -1,0 +1,963 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/pii2vh",
+    "id": "pii2vh",
+    "slide": 5,
+    "layoutId": "a9467a1c-4a36-4733-89a2-8231cc3b914a",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "e433697e-8497-4f4a-b3b3-640cb75eed0d",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#F7FAFC",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "+mn-lt"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "a9467a1c-4a36-4733-89a2-8231cc3b914a",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "e433697e-8497-4f4a-b3b3-640cb75eed0d",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "e433697e-8497-4f4a-b3b3-640cb75eed0d",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/kf6dsnud",
+      "id": "1",
+      "bbox": [
+        0,
+        0,
+        18,
+        720
+      ],
+      "geometry": "rect",
+      "fillColor": "#1768AC",
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/zexwjits",
+      "id": "2",
+      "bbox": [
+        72,
+        48,
+        500,
+        24
+      ],
+      "geometry": "rect",
+      "text": "FITUR 1",
+      "textPreview": "FITUR 1",
+      "resolvedFontSize": 13,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 13,
+        "typeface": "+mn-lt",
+        "color": "#118C8B",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "FITUR 1"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "FITUR 1",
+          "resolvedTextStyle": {
+            "fontSize": 13,
+            "color": "#118C8B",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "FITUR 1",
+              "fontSize": 13,
+              "color": "#118C8B",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ydovqdc7",
+      "id": "3",
+      "bbox": [
+        72,
+        82,
+        1110,
+        70
+      ],
+      "geometry": "rect",
+      "text": "Chatbot menjawab berdasarkan sumber resmi",
+      "textPreview": "Chatbot menjawab berdasarkan sumber resmi",
+      "resolvedFontSize": 36,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 36,
+        "typeface": "+mn-lt",
+        "color": "#0B1F3A",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Chatbot menjawab berdasarkan sumber resmi"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Chatbot menjawab berdasarkan sumber resmi",
+          "resolvedTextStyle": {
+            "fontSize": 36,
+            "color": "#0B1F3A",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Chatbot menjawab berdasarkan sumber resmi",
+              "fontSize": 36,
+              "color": "#0B1F3A",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/xcfehsb2",
+      "id": "4",
+      "bbox": [
+        72,
+        150,
+        1090,
+        44
+      ],
+      "geometry": "rect",
+      "text": "Pengunjung memperoleh informasi dan dapat menelusuri sumber jawaban.",
+      "textPreview": "Pengunjung memperoleh informasi dan dapat menelusuri sumber jawaban.",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 18,
+        "typeface": "+mn-lt",
+        "color": "#64748B",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Pengunjung memperoleh informasi dan dapat menelusuri sumber jawaban."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Pengunjung memperoleh informasi dan dapat menelusuri sumber jawaban.",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "color": "#64748B",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Pengunjung memperoleh informasi dan dapat menelusuri sumber jawaban.",
+              "fontSize": 18,
+              "color": "#64748B",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/cb6donuh",
+      "id": "5",
+      "bbox": [
+        72,
+        204,
+        1136,
+        2
+      ],
+      "geometry": "rect",
+      "fillColor": "#D8E5EF",
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/bqxwfitw",
+      "id": "6",
+      "bbox": [
+        72,
+        675,
+        460,
+        20
+      ],
+      "geometry": "rect",
+      "text": "SI-MELAYUR  •  Progress Pengembangan",
+      "textPreview": "SI-MELAYUR  •  Progress Pengembangan",
+      "resolvedFontSize": 11,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 11,
+        "typeface": "+mn-lt",
+        "color": "#64748B",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "SI-MELAYUR  •  Progress Pengembangan"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "SI-MELAYUR  •  Progress Pengembangan",
+          "resolvedTextStyle": {
+            "fontSize": 11,
+            "color": "#64748B",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "SI-MELAYUR  •  Progress Pengembangan",
+              "fontSize": 11,
+              "color": "#64748B",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/apovmdcb",
+      "id": "7",
+      "bbox": [
+        1160,
+        672,
+        48,
+        22
+      ],
+      "geometry": "rect",
+      "text": "05",
+      "textPreview": "05",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "+mn-lt",
+        "color": "#1768AC",
+        "bold": true,
+        "alignment": "right",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "05"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "05",
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "color": "#1768AC",
+            "bold": true,
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "05",
+              "fontSize": 12,
+              "color": "#1768AC",
+              "bold": true,
+              "alignment": "right"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/h8jetcb6",
+      "id": "8",
+      "bbox": [
+        80,
+        258,
+        16,
+        16
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#118C8B",
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/g7qd07ul",
+      "id": "9",
+      "bbox": [
+        114,
+        250,
+        566,
+        62
+      ],
+      "geometry": "rect",
+      "text": "Isi buku tamu sebelum mengakses chatbot",
+      "textPreview": "Isi buku tamu sebelum mengakses chatbot",
+      "resolvedFontSize": 19,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 19,
+        "typeface": "+mn-lt",
+        "color": "#152A46",
+        "alignment": "left",
+        "verticalAlignment": "middle",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Isi buku tamu sebelum mengakses chatbot"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Isi buku tamu sebelum mengakses chatbot",
+          "resolvedTextStyle": {
+            "fontSize": 19,
+            "color": "#152A46",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Isi buku tamu sebelum mengakses chatbot",
+              "fontSize": 19,
+              "color": "#152A46",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/axcrmtw7",
+      "id": "10",
+      "bbox": [
+        80,
+        328,
+        16,
+        16
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#118C8B",
+      "lineWidth": 0
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/bilsfyds",
+      "id": "11",
+      "bbox": [
+        114,
+        320,
+        566,
+        62
+      ],
+      "geometry": "rect",
+      "text": "Ajukan pertanyaan dan lihat sumber jawaban",
+      "textPreview": "Ajukan pertanyaan dan lihat sumber jawaban",
+      "resolvedFontSize": 19,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 19,
+        "typeface": "+mn-lt",
+        "color": "#152A46",
+        "alignment": "left",
+        "verticalAlignment": "middle",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Ajukan pertanyaan dan lihat sumber jawaban"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Ajukan pertanyaan dan lihat sumber jawaban",
+          "resolvedTextStyle": {
+            "fontSize": 19,
+            "color": "#152A46",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Ajukan pertanyaan dan lihat sumber jawaban",
+              "fontSize": 19,
+              "color": "#152A46",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 12,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/cju9o3ex",
+      "id": "12",
+      "bbox": [
+        80,
+        398,
+        16,
+        16
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#118C8B",
+      "lineWidth": 0
+    },
+    {
+      "order": 13,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/xk3ah8vi",
+      "id": "13",
+      "bbox": [
+        114,
+        390,
+        566,
+        62
+      ],
+      "geometry": "rect",
+      "text": "Beri feedback atau teruskan pertanyaan kepada petugas",
+      "textPreview": "Beri feedback atau teruskan pertanyaan kepada petugas",
+      "resolvedFontSize": 19,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 19,
+        "typeface": "+mn-lt",
+        "color": "#152A46",
+        "alignment": "left",
+        "verticalAlignment": "middle",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Beri feedback atau teruskan pertanyaan kepada petugas"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Beri feedback atau teruskan pertanyaan kepada petugas",
+          "resolvedTextStyle": {
+            "fontSize": 19,
+            "color": "#152A46",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Beri feedback atau teruskan pertanyaan kepada petugas",
+              "fontSize": 19,
+              "color": "#152A46",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 14,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/2tsri9wv",
+      "id": "14",
+      "bbox": [
+        750,
+        244,
+        410,
+        330
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#FFFFFF",
+      "lineColor": "#D8E5EF",
+      "lineWidth": 1
+    },
+    {
+      "order": 15,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/nu18bedg",
+      "id": "15",
+      "bbox": [
+        782,
+        278,
+        346,
+        178
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#EAF5FB",
+      "lineWidth": 0
+    },
+    {
+      "order": 16,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ovu9kje1",
+      "id": "16",
+      "bbox": [
+        810,
+        322,
+        290,
+        78
+      ],
+      "geometry": "rect",
+      "text": "Buku Tamu  →  Chatbot",
+      "textPreview": "Buku Tamu  →  Chatbot",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 24,
+        "typeface": "+mn-lt",
+        "color": "#1768AC",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Buku Tamu  →  Chatbot"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Buku Tamu  →  Chatbot",
+          "resolvedTextStyle": {
+            "fontSize": 24,
+            "color": "#1768AC",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Buku Tamu  →  Chatbot",
+              "fontSize": 24,
+              "color": "#1768AC",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 17,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/pw3adovm",
+      "id": "17",
+      "bbox": [
+        860,
+        482,
+        190,
+        34
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#DDF4EF",
+      "lineWidth": 0
+    },
+    {
+      "order": 18,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/6pwrudwf",
+      "id": "18",
+      "bbox": [
+        872,
+        488,
+        166,
+        22
+      ],
+      "geometry": "rect",
+      "text": "SUDAH TERSEDIA",
+      "textPreview": "SUDAH TERSEDIA",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "+mn-lt",
+        "color": "#16856A",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "SUDAH TERSEDIA"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "SUDAH TERSEDIA",
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "color": "#16856A",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "SUDAH TERSEDIA",
+              "fontSize": 12,
+              "color": "#16856A",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 19,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/7q5snid0",
+      "id": "19",
+      "bbox": [
+        782,
+        540,
+        100,
+        20
+      ],
+      "geometry": "rect",
+      "text": "Fokus demo",
+      "textPreview": "Fokus demo",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "+mn-lt",
+        "color": "#64748B",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Fokus demo"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Fokus demo",
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "color": "#64748B",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Fokus demo",
+              "fontSize": 12,
+              "color": "#64748B",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 20,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/3uxofatc",
+      "id": "20",
+      "bbox": [
+        878,
+        534,
+        244,
+        44
+      ],
+      "geometry": "rect",
+      "text": "Isi buku tamu sebelum mengakses chatbot",
+      "textPreview": "Isi buku tamu sebelum mengakses chatbot",
+      "resolvedFontSize": 14,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 14,
+        "typeface": "+mn-lt",
+        "color": "#152A46",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Isi buku tamu sebelum mengakses"
+          },
+          {
+            "index": 2,
+            "text": "chatbot"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Isi buku tamu sebelum mengakses chatbot",
+          "resolvedTextStyle": {
+            "fontSize": 14,
+            "color": "#152A46",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Isi buku tamu sebelum mengakses chatbot",
+              "fontSize": 14,
+              "color": "#152A46",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}
