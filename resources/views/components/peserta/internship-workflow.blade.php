@@ -12,6 +12,10 @@
     $officialEnded = $application->official_ended_at;
     $today = now()->startOfDay();
     $daysRemaining = $officialEnded ? max(0, $today->diffInDays($officialEnded->copy()->startOfDay(), false)) : null;
+    $preparationReminderDate = $officialEnded?->copy()->subDays(10)->startOfDay();
+    $isPreparationWindow = $preparationReminderDate
+        ? $today->betweenIncluded($preparationReminderDate, $officialEnded->copy()->startOfDay())
+        : false;
     $availableCount = $locations->where('quota_status', 'available')->count();
     $internshipFormCompleted = $application->google_form_confirmed_at !== null && $internshipFormProof;
     $stageFiveUnlocked = $internshipFormCompleted;
@@ -211,29 +215,13 @@
                         </div>
 
                         <div class="rounded-2xl border border-border bg-white p-4 shadow-sm sm:p-5">
-                            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                <div><p class="text-xs font-semibold text-muted-foreground">Kalender pelaksanaan</p><h3 class="mt-1 text-lg font-extrabold">{{ $calendarMonth->translatedFormat('F Y') }}</h3></div>
-                                <div class="flex flex-wrap gap-3 text-[10px] font-bold text-muted-foreground"><span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-ocean"></span>Periode magang</span><span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-teal ring-2 ring-teal/20"></span>Hari ini</span></div>
-                            </div>
-                            <div class="mt-5 grid grid-cols-7 gap-1 text-center">
-                                @foreach (['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'] as $dayName)
-                                    <span class="py-2 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">{{ $dayName }}</span>
-                                @endforeach
-                                @foreach ($calendarDays as $calendarDay)
-                                    @php
-                                        $day = \Carbon\Carbon::instance($calendarDay)->startOfDay();
-                                        $inCurrentMonth = $day->month === $calendarMonth->month;
-                                        $inInternship = $day->betweenIncluded($officialStarted->copy()->startOfDay(), $officialEnded->copy()->startOfDay());
-                                        $isToday = $day->isSameDay($today);
-                                        $isStart = $day->isSameDay($officialStarted);
-                                        $isEnd = $day->isSameDay($officialEnded);
-                                    @endphp
-                                    <div class="relative flex aspect-square min-h-9 items-center justify-center rounded-xl text-xs font-bold transition {{ ! $inCurrentMonth ? 'text-slate-300' : ($inInternship ? 'bg-ocean/10 text-ocean' : 'text-navy') }} {{ $isToday ? 'ring-2 ring-teal ring-offset-1' : '' }} {{ ($isStart || $isEnd) ? 'bg-ocean text-white' : '' }}" title="{{ $day->translatedFormat('l, d F Y') }}{{ $isStart ? ' — Hari pertama' : ($isEnd ? ' — Hari terakhir' : '') }}">
-                                        {{ $day->day }}
-                                        @if ($isToday)<span class="absolute bottom-1 h-1 w-1 rounded-full bg-teal"></span>@endif
-                                    </div>
-                                @endforeach
-                            </div>
+                            <x-peserta.internship-calendar
+                                :official-started="$officialStarted"
+                                :official-ended="$officialEnded"
+                                :today="$today"
+                                :preparation-reminder-date="$preparationReminderDate"
+                                :is-preparation-window="$isPreparationWindow"
+                            />
                         </div>
                     </div>
                 </div>

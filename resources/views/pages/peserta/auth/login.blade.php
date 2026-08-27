@@ -8,7 +8,7 @@
     <x-peserta.auth-shell
         eyebrow="Portal Peserta"
         title="Masuk"
-        description="Masuk untuk melanjutkan perjalanan layanan Magang, PKL, dan pendampingan SI-MELAYUR."
+        description="Masuk untuk melanjutkan perjalanan layanan Magang, PKL, dan WOPPS SI-MELAYUR."
     >
         <form method="POST" action="{{ route('peserta.login.store') }}" class="space-y-5" data-participant-auth-form>
             @csrf
