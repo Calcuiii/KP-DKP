@@ -14,6 +14,33 @@ class ParticipantApplicationTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_an_accepted_internship_uses_the_execution_dashboard_instead_of_the_old_stage_cards(): void
+    {
+        $participant = Participant::factory()->create(['email_verified_at' => now()]);
+        $participant->applications()->create([
+            'service_type' => ParticipantApplication::SERVICE_MAGANG_PKL,
+            'status' => 'accepted',
+            'decision' => 'accepted',
+            'official_started_at' => now()->subDays(2),
+            'official_ended_at' => now()->addDays(12),
+        ]);
+
+        $this->actingAs($participant, 'peserta')
+            ->get(route('peserta.dashboard'))
+            ->assertOk()
+            ->assertSee('Selamat menjalankan kegiatan')
+            ->assertSee('Kalender kegiatan magang')
+            ->assertSee('Persiapan laporan &amp; presentasi', false)
+            ->assertSee('Periode persiapan laporan dan presentasi')
+            ->assertSee('H-10 sampai H-1')
+            ->assertSee('data-preparation-window-day', false)
+            ->assertSee('Lihat bulan sebelumnya')
+            ->assertSee('Lihat bulan berikutnya')
+            ->assertSee('data-calendar-month-panel', false)
+            ->assertSee('Tahap persiapan telah selesai')
+            ->assertDontSee('Keputusan dan surat balasan Dinas');
+    }
+
     public function test_a_verified_participant_can_create_a_magang_pkl_preparation_draft(): void
     {
         $participant = Participant::factory()->create(['email_verified_at' => now()]);

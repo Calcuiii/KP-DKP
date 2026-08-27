@@ -8,7 +8,7 @@
     <x-peserta.auth-shell
         eyebrow="Portal Peserta"
         title="Daftar Akun"
-        description="Buat akun untuk menyiapkan akses ke layanan pendampingan Magang dan PKL SI-MELAYUR."
+        description="Buat akun untuk menyiapkan akses ke layanan pendampingan Magang, PKL, dan WOPPS SI-MELAYUR."
     >
         <form method="POST" action="{{ route('peserta.register.store') }}" class="space-y-5" data-participant-auth-form>
             @csrf
