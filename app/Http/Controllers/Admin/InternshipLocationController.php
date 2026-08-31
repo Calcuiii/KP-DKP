@@ -19,6 +19,7 @@ class InternshipLocationController extends Controller
             'available' => $locations->where('quota_status', InternshipLocation::QUOTA_AVAILABLE)->count(),
             'limited' => $locations->where('quota_status', InternshipLocation::QUOTA_LIMITED)->count(),
             'full' => $locations->whereIn('quota_status', [InternshipLocation::QUOTA_FULL, InternshipLocation::QUOTA_UNAVAILABLE])->count(),
+            'total_quota' => $locations->sum('quota_available'),
         ];
 
         return view('pages.admin.internship-locations', compact('locations', 'metrics'));
@@ -28,10 +29,12 @@ class InternshipLocationController extends Controller
     {
         $request->validate([
             'quota_status' => 'required|in:available,limited,full,unavailable,unknown',
+            'quota_available' => 'nullable|integer|min:0',
         ]);
 
         $location->update([
             'quota_status' => $request->quota_status,
+            'quota_available' => $request->quota_available,
             'quota_updated_at' => now(),
         ]);
 

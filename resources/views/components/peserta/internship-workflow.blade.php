@@ -12,10 +12,6 @@
     $officialEnded = $application->official_ended_at;
     $today = now()->startOfDay();
     $daysRemaining = $officialEnded ? max(0, $today->diffInDays($officialEnded->copy()->startOfDay(), false)) : null;
-    $preparationReminderDate = $officialEnded?->copy()->subDays(10)->startOfDay();
-    $isPreparationWindow = $preparationReminderDate
-        ? $today->betweenIncluded($preparationReminderDate, $officialEnded->copy()->startOfDay())
-        : false;
     $availableCount = $locations->where('quota_status', 'available')->count();
     $internshipFormCompleted = $application->google_form_confirmed_at !== null && $internshipFormProof;
     $stageFiveUnlocked = $internshipFormCompleted;
@@ -81,7 +77,7 @@
                 @php
                     $quotaClass = match($location->quota_status) { 'available' => 'bg-emerald-50 text-emerald-700', 'limited' => 'bg-amber-50 text-amber-700', 'full', 'unavailable' => 'bg-red-50 text-red-700', default => 'bg-slate-100 text-slate-600' };
                 @endphp
-                <div class="rounded-2xl border border-border bg-background p-4"><div class="flex gap-3"><span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white text-xs font-extrabold text-ocean shadow-sm">{{ $location->display_order }}</span><div><h3 class="text-sm font-bold leading-snug">{{ $location->name }}</h3><span class="mt-3 inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold {{ $quotaClass }}">{{ $location->quotaLabel() }}</span>@if($location->quota_updated_at)<p class="mt-2 text-[10px] text-muted-foreground">Diperbarui {{ $location->quota_updated_at->diffForHumans() }}</p>@endif</div></div></div>
+                <div class="rounded-2xl border border-border bg-background p-4"><div class="flex gap-3"><span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white text-xs font-extrabold text-ocean shadow-sm">{{ $location->display_order }}</span><div><h3 class="text-sm font-bold leading-snug">{{ $location->name }}</h3><div class="mt-3 flex flex-wrap items-center gap-2"><span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold {{ $quotaClass }}">{{ $location->quotaLabel() }}</span>@if($location->quota_available !== null)<span class="inline-flex items-center gap-1 rounded-full bg-ocean/10 px-2.5 py-1 text-[10px] font-bold text-ocean"><i data-lucide="users" class="h-3 w-3"></i>{{ $location->quota_available }} kuota</span>@endif</div>@if($location->quota_updated_at)<p class="mt-2 text-[10px] text-muted-foreground">Diperbarui {{ $location->quota_updated_at->diffForHumans() }}</p>@endif</div></div></div>
             @endforeach
         </div>
     @endif
@@ -164,17 +160,25 @@
 
         @if (! $stageFiveUnlocked)
             <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5"><p class="text-sm font-extrabold text-navy">Tahap belum tersedia</p><p class="mt-1 text-sm leading-relaxed text-muted-foreground">Unggah bukti pengisian Google Form resmi pada Tahap 4 untuk membuka pemantauan keputusan.</p></div>
-        @elseif($applicationAccepted)
-            <div class="mt-6 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
-                <div class="rounded-[1.75rem] border border-teal/25 bg-teal/[0.06] p-6"><div class="flex items-start gap-4"><span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-teal text-white"><i data-lucide="check" class="h-5 w-5"></i></span><div><p class="text-xs font-bold uppercase tracking-[0.16em] text-teal">Pengajuan diterima</p><h3 class="mt-2 text-xl font-extrabold text-navy">Selamat, Anda dapat melanjutkan ke tahap pelaksanaan.</h3><p class="mt-2 text-sm leading-relaxed text-muted-foreground">Periksa surat balasan dan tunggu admin menetapkan tanggal mulai serta selesai kegiatan.</p></div></div></div>
-                <div id="surat-balasan" class="rounded-[1.75rem] border border-border bg-background p-6"><p class="text-sm font-extrabold text-navy">Surat balasan resmi</p>@if($replyLetter)<p class="mt-2 text-xs leading-relaxed text-muted-foreground">Dokumen balasan dari Dinas sudah tersedia.</p><a href="{{ route('peserta.response-letter.download') }}" class="mt-5 inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white"><i data-lucide="download" class="h-4 w-4"></i>Unduh Surat Balasan</a>@else<p class="mt-2 text-sm leading-relaxed text-muted-foreground">Keputusan telah diperbarui. Dokumen surat balasan masih disiapkan oleh Dinas.</p>@endif</div>
-            </div>
-        @elseif($applicationRejected)
-            <div class="mt-6 rounded-[1.75rem] border border-red-200 bg-red-50 p-6"><div class="flex items-start gap-4"><span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-600 text-white"><i data-lucide="x" class="h-5 w-5"></i></span><div><p class="text-xs font-bold uppercase tracking-[0.16em] text-red-700">Pengajuan belum dapat diterima</p><h3 class="mt-2 text-xl font-extrabold text-navy">Silakan periksa keputusan resmi dari Dinas.</h3><p class="mt-2 text-sm leading-relaxed text-red-800">Baca surat balasan untuk mengetahui informasi lebih lanjut atau arahan yang perlu dilakukan.</p>@if($replyLetter)<a href="{{ route('peserta.response-letter.download') }}" class="mt-5 inline-flex items-center gap-2 rounded-xl bg-red-700 px-5 py-3 text-sm font-bold text-white"><i data-lucide="download" class="h-4 w-4"></i>Unduh Surat Balasan</a>@endif</div></div></div>
         @else
-            <div class="mt-6 grid gap-5 lg:grid-cols-[0.75fr_1.25fr]">
-                <div class="rounded-[1.75rem] bg-gradient-to-br from-navy to-ocean p-6 text-white"><span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15"><i data-lucide="clock" class="h-5 w-5"></i></span><p class="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-blue-200">Status saat ini</p><h3 class="mt-2 text-xl font-extrabold">Menunggu keputusan Dinas</h3></div>
-                <div class="rounded-[1.75rem] border border-border bg-background p-6"><h3 class="text-sm font-extrabold text-navy">Apa yang perlu Anda lakukan?</h3><div class="mt-4 space-y-3 text-sm text-muted-foreground"><p class="flex items-start gap-3"><span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ocean/10 text-xs font-bold text-ocean">1</span>Pastikan email dan nomor kontak peserta tetap aktif.</p><p class="flex items-start gap-3"><span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ocean/10 text-xs font-bold text-ocean">2</span>Pantau notifikasi portal untuk keputusan atau surat balasan.</p><p class="flex items-start gap-3"><span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ocean/10 text-xs font-bold text-ocean">3</span>Tahap pelaksanaan akan terbuka setelah pengajuan dinyatakan diterima.</p></div></div>
+            <div class="mt-6 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+                @if($applicationAccepted)
+                    <div class="rounded-[1.75rem] border border-teal/25 bg-teal/[0.06] p-6"><div class="flex items-start gap-4"><span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-teal text-white"><i data-lucide="check" class="h-5 w-5"></i></span><div><p class="text-xs font-bold uppercase tracking-[0.16em] text-teal">Pengajuan diterima</p><h3 class="mt-2 text-xl font-extrabold text-navy">Selamat, Anda dapat melanjutkan ke tahap pelaksanaan.</h3><p class="mt-2 text-sm leading-relaxed text-muted-foreground">Periksa surat balasan dan tunggu admin menetapkan tanggal mulai serta selesai kegiatan.</p></div></div></div>
+                @elseif($applicationRejected)
+                    <div class="rounded-[1.75rem] border border-red-200 bg-red-50 p-6"><div class="flex items-start gap-4"><span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-600 text-white"><i data-lucide="x" class="h-5 w-5"></i></span><div><p class="text-xs font-bold uppercase tracking-[0.16em] text-red-700">Pengajuan belum dapat diterima</p><h3 class="mt-2 text-xl font-extrabold text-navy">Silakan periksa keputusan resmi dari Dinas.</h3><p class="mt-2 text-sm leading-relaxed text-red-800">Baca surat balasan untuk mengetahui informasi lebih lanjut atau arahan yang perlu dilakukan.</p></div></div></div>
+                @else
+                    <div class="rounded-[1.75rem] bg-gradient-to-br from-navy to-ocean p-6 text-white"><span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15"><i data-lucide="clock" class="h-5 w-5"></i></span><p class="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-blue-200">Status saat ini</p><h3 class="mt-2 text-xl font-extrabold">{{ $replyLetter ? 'Surat balasan telah dikirim' : 'Menunggu keputusan Dinas' }}</h3><p class="mt-2 text-sm leading-relaxed text-blue-100">{{ $replyLetter ? 'Silakan periksa dan unduh surat balasan resmi dari Dinas di samping.' : 'Pantau notifikasi portal untuk keputusan atau surat balasan dari Dinas.' }}</p></div>
+                @endif
+
+                <div id="surat-balasan" class="rounded-[1.75rem] border border-border bg-background p-6">
+                    <p class="text-sm font-extrabold text-navy">Surat balasan resmi</p>
+                    @if($replyLetter)
+                        <p class="mt-2 text-xs leading-relaxed text-muted-foreground">Dokumen balasan dari Dinas sudah tersedia.</p>
+                        <a href="{{ route('peserta.response-letter.download') }}" class="mt-5 inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white"><i data-lucide="download" class="h-4 w-4"></i>Unduh Surat Balasan</a>
+                    @else
+                        <p class="mt-2 text-sm leading-relaxed text-muted-foreground">Surat balasan masih disiapkan oleh Dinas. Dokumen akan tersedia untuk diunduh di sini begitu admin mengunggahnya.</p>
+                    @endif
+                </div>
             </div>
         @endif
     </article>
@@ -215,13 +219,29 @@
                         </div>
 
                         <div class="rounded-2xl border border-border bg-white p-4 shadow-sm sm:p-5">
-                            <x-peserta.internship-calendar
-                                :official-started="$officialStarted"
-                                :official-ended="$officialEnded"
-                                :today="$today"
-                                :preparation-reminder-date="$preparationReminderDate"
-                                :is-preparation-window="$isPreparationWindow"
-                            />
+                            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <div><p class="text-xs font-semibold text-muted-foreground">Kalender pelaksanaan</p><h3 class="mt-1 text-lg font-extrabold">{{ $calendarMonth->translatedFormat('F Y') }}</h3></div>
+                                <div class="flex flex-wrap gap-3 text-[10px] font-bold text-muted-foreground"><span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-ocean"></span>Periode magang</span><span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-teal ring-2 ring-teal/20"></span>Hari ini</span></div>
+                            </div>
+                            <div class="mt-5 grid grid-cols-7 gap-1 text-center">
+                                @foreach (['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'] as $dayName)
+                                    <span class="py-2 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">{{ $dayName }}</span>
+                                @endforeach
+                                @foreach ($calendarDays as $calendarDay)
+                                    @php
+                                        $day = \Carbon\Carbon::instance($calendarDay)->startOfDay();
+                                        $inCurrentMonth = $day->month === $calendarMonth->month;
+                                        $inInternship = $day->betweenIncluded($officialStarted->copy()->startOfDay(), $officialEnded->copy()->startOfDay());
+                                        $isToday = $day->isSameDay($today);
+                                        $isStart = $day->isSameDay($officialStarted);
+                                        $isEnd = $day->isSameDay($officialEnded);
+                                    @endphp
+                                    <div class="relative flex aspect-square min-h-9 items-center justify-center rounded-xl text-xs font-bold transition {{ ! $inCurrentMonth ? 'text-slate-300' : ($inInternship ? 'bg-ocean/10 text-ocean' : 'text-navy') }} {{ $isToday ? 'ring-2 ring-teal ring-offset-1' : '' }} {{ ($isStart || $isEnd) ? 'bg-ocean text-white' : '' }}" title="{{ $day->translatedFormat('l, d F Y') }}{{ $isStart ? ' — Hari pertama' : ($isEnd ? ' — Hari terakhir' : '') }}">
+                                        {{ $day->day }}
+                                        @if ($isToday)<span class="absolute bottom-1 h-1 w-1 rounded-full bg-teal"></span>@endif
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>

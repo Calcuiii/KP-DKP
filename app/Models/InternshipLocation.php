@@ -12,7 +12,7 @@ final class InternshipLocation extends Model
     public const QUOTA_UNAVAILABLE = 'unavailable';
     public const QUOTA_UNKNOWN = 'unknown';
 
-    protected $fillable = ['name', 'quota_status', 'display_order', 'quota_updated_at'];
+    protected $fillable = ['name', 'quota_status', 'quota_available', 'display_order', 'quota_updated_at'];
 
     protected function casts(): array
     {

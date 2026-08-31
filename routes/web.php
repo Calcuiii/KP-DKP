@@ -134,20 +134,6 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
     Route::get('/lokasi-kp', [InternshipLocationController::class, 'index'])->name('admin.internship-locations');
     Route::patch('/lokasi-kp/{location}', [InternshipLocationController::class, 'update'])->name('admin.internship-locations.update');
 
-        Route::get('/pemeriksaan-dokumen', [DocumentReviewController::class, 'index'])
-        ->name('admin.pemeriksaan-dokumen');
-
-    Route::get('/pemeriksaan-dokumen/{document}', [DocumentReviewController::class, 'show'])
-        ->name('admin.pemeriksaan-dokumen.show');
-
-    Route::patch('/pemeriksaan-dokumen/{document}/approve', [DocumentReviewController::class, 'approve'])
-        ->name('admin.pemeriksaan-dokumen.approve');
-
-    Route::patch('/pemeriksaan-dokumen/{document}/revision', [DocumentReviewController::class, 'revision'])
-        ->name('admin.pemeriksaan-dokumen.revision');
-
-    Route::get('/pemeriksaan-dokumen/{document}/unduh', [DocumentReviewController::class, 'download'])
-        ->name('admin.pemeriksaan-dokumen.download');
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/surat-balasan',[ReplyLetterController::class, 'index'])
@@ -160,7 +146,7 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
         ->name('admin.surat-balasan.download');
 
         Route::get('/surat-balasan/bukti/{document}/preview', [ReplyLetterController::class, 'previewProof'])
-    ->name('admin.surat-balasan.proof.preview');
+        ->name('admin.surat-balasan.proof.preview');
 
         
 
@@ -184,6 +170,11 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
         Route::put('/manajemen-admin/{user}', [AdminUserController::class, 'update'])->name('admin.manajemen-admin.update');
         Route::post('/manajemen-admin/{user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('admin.manajemen-admin.toggle-status');
         Route::delete('/manajemen-admin/{user}', [AdminUserController::class, 'destroy'])->name('admin.manajemen-admin.destroy');
+        Route::get('/pemeriksaan-dokumen', [DocumentReviewController::class, 'index'])->name('admin.pemeriksaan-dokumen');
+        Route::get('/pemeriksaan-dokumen/{document}', [DocumentReviewController::class, 'show'])->name('admin.pemeriksaan-dokumen.show');
+        Route::patch('/pemeriksaan-dokumen/{document}/approve', [DocumentReviewController::class, 'approve'])->name('admin.pemeriksaan-dokumen.approve');
+        Route::patch('/pemeriksaan-dokumen/{document}/revision', [DocumentReviewController::class, 'revision'])->name('admin.pemeriksaan-dokumen.revision');
+        Route::get('/pemeriksaan-dokumen/{document}/unduh', [DocumentReviewController::class, 'download'])->name('admin.pemeriksaan-dokumen.download');
     });
 
     Route::post('/logout', [AdminLoginController::class, 'destroy'])->name('admin.logout');
