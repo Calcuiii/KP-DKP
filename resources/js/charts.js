@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: { legend: { labels: { font: { size: 11 } } } },
                     scales: {
                         x: { ticks: { font: { size: 10 } } },
@@ -55,6 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }],
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     cutout: '65%',
                 },

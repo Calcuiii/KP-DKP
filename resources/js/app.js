@@ -94,6 +94,8 @@ import {
     FileOutput,
     Mail,
     Pencil,
+    FileClock,
+    MapPin,
 } from 'lucide';
 
 createIcons({
@@ -111,7 +113,7 @@ createIcons({
         School, Contact, CalendarClock,
         ShieldCheck, UserCheck, Stamp,
         CheckCircle2, Play, Flag, BriefcaseBusiness, MessagesSquare, MapPinned,
-        MessageSquareText, ChartNoAxesCombined, History, UsersRound, FileOutput, Mail, Pencil
+        MessageSquareText, ChartNoAxesCombined, History, UsersRound, FileOutput, Mail, Pencil, FileClock, MapPin
     },
 });
 
@@ -207,32 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (label) label.textContent = willOpen ? 'Tutup kalender' : 'Lihat kalender kegiatan';
                 icon?.classList.toggle('rotate-180', willOpen);
             });
-        });
-
-        document.querySelectorAll('[data-internship-calendar-slider]').forEach((calendar) => {
-            const panels = Array.from(calendar.querySelectorAll('[data-calendar-month-panel]'));
-            const previous = calendar.querySelector('[data-calendar-previous]');
-            const next = calendar.querySelector('[data-calendar-next]');
-            const label = calendar.querySelector('[data-calendar-current-label]');
-            let activeIndex = Math.max(0, panels.findIndex((panel) => ! panel.hidden));
-
-            const renderMonth = () => {
-                panels.forEach((panel, index) => { panel.hidden = index !== activeIndex; });
-                if (label) label.textContent = panels[activeIndex]?.dataset.calendarMonthName ?? '';
-                if (previous) previous.disabled = activeIndex === 0;
-                if (next) next.disabled = activeIndex === panels.length - 1;
-            };
-
-            previous?.addEventListener('click', () => {
-                activeIndex = Math.max(0, activeIndex - 1);
-                renderMonth();
-            });
-            next?.addEventListener('click', () => {
-                activeIndex = Math.min(panels.length - 1, activeIndex + 1);
-                renderMonth();
-            });
-
-            renderMonth();
         });
 
         document.querySelectorAll('[data-request-letter-form]').forEach((form) => {
@@ -481,15 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lightboxImage.alt = item.dataset.imageAlt;
         lightboxImage.width = Number(item.dataset.imageWidth);
         lightboxImage.height = Number(item.dataset.imageHeight);
-        lightboxCaption.textContent = item.dataset.imageService
-            ? `${item.dataset.imageService} — ${item.dataset.imageCaption}`
-            : item.dataset.imageCaption;
-
-        const minimalControls = item.dataset.lightboxMinimal === 'true';
-
-        lightboxCaption.classList.toggle('hidden', minimalControls);
-        lightboxPreviousButton?.classList.toggle('hidden', minimalControls);
-        lightboxNextButton?.classList.toggle('hidden', minimalControls);
+        lightboxCaption.textContent = item.dataset.imageCaption;
     };
 
     const closeLightbox = () => {
