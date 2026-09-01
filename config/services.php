@@ -2,6 +2,17 @@
 
 return [
 
+    'google_guestbook' => [
+        'credentials_path' => env('GOOGLE_SERVICE_ACCOUNT_PATH'),
+        'spreadsheet_id' => env('GOOGLE_SHEETS_SPREADSHEET_ID'),
+        'range' => env('GOOGLE_SHEETS_RESPONSE_RANGE', "'Form Responses 1'!A:Z"),
+        'phone_column' => env('GOOGLE_SHEETS_PHONE_COLUMN', 'Nomor Telepon'),
+        'timestamp_column' => env('GOOGLE_SHEETS_TIMESTAMP_COLUMN', 'Timestamp'),
+        'timezone' => env('GOOGLE_SHEETS_TIMEZONE', 'Asia/Jakarta'),
+        'timestamp_format' => env('GOOGLE_SHEETS_TIMESTAMP_FORMAT', 'd/m/Y H:i:s'),
+        'form_url' => env('GOOGLE_GUESTBOOK_FORM_URL'),
+    ],
+
     'dkp' => [
         'internship_guestbook_url' => env('DKP_INTERNSHIP_GUESTBOOK_URL', 'https://bit.ly/DaftarMagangPKL_DKP_JATIM'),
         'contact_whatsapp_url' => env('DKP_CONTACT_WHATSAPP_URL'),
