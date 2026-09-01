@@ -17,7 +17,7 @@ class ChatbotPageTest extends TestCase
     public function test_the_chatbot_page_renders_successfully(): void
     {
         $response = $this
-            ->withCookie('dkp_guestbook_completed', '1')
+            ->withSession(['guestbook_verified_until' => now()->addDay()->timestamp])
             ->get(route('chatbot'));
 
         $response
@@ -33,7 +33,7 @@ class ChatbotPageTest extends TestCase
     public function test_the_chat_message_endpoint_uses_its_form_request(): void
     {
         $response = $this
-            ->withCookie('dkp_guestbook_completed', '1')
+            ->withSession(['guestbook_verified_until' => now()->addDay()->timestamp])
             ->withCredentials()
             ->postJson(route('chatbot.api.messages.send'));
 
@@ -48,7 +48,7 @@ class ChatbotPageTest extends TestCase
     public function test_the_chat_message_endpoint_returns_the_approved_answer_for_a_magang_quick_question(): void
     {
         $response = $this
-            ->withCookie('dkp_guestbook_completed', '1')
+            ->withSession(['guestbook_verified_until' => now()->addDay()->timestamp])
             ->withCredentials()
             ->postJson(route('chatbot.api.messages.send'), [
                 'session_key' => (string) Str::uuid(),
@@ -79,7 +79,7 @@ class ChatbotPageTest extends TestCase
             'Apa saja syarat mendaftar PKL?',
         ] as $question) {
             $response = $this
-                ->withCookie('dkp_guestbook_completed', '1')
+                ->withSession(['guestbook_verified_until' => now()->addDay()->timestamp])
                 ->withCredentials()
                 ->postJson(route('chatbot.api.messages.send'), [
                     'session_key' => (string) Str::uuid(),
@@ -111,7 +111,7 @@ class ChatbotPageTest extends TestCase
     public function test_the_chat_message_endpoint_returns_the_approved_answer_for_a_wopps_quick_question(): void
     {
         $response = $this
-            ->withCookie('dkp_guestbook_completed', '1')
+            ->withSession(['guestbook_verified_until' => now()->addDay()->timestamp])
             ->withCredentials()
             ->postJson(route('chatbot.api.messages.send'), [
                 'session_key' => (string) Str::uuid(),
@@ -151,7 +151,7 @@ class ChatbotPageTest extends TestCase
         ]);
 
         $response = $this
-            ->withCookie('dkp_guestbook_completed', '1')
+            ->withSession(['guestbook_verified_until' => now()->addDay()->timestamp])
             ->withCredentials()
             ->postJson(route('chatbot.api.messages.send'), [
                 'session_key' => $sessionKey,
@@ -193,12 +193,12 @@ class ChatbotPageTest extends TestCase
         $route = route('chatbot.api.messages.escalate', $assistantMessage);
         $payload = ['session_key' => $sessionKey];
 
-        $this->withCookie('dkp_guestbook_completed', '1')->withCredentials()->postJson($route, $payload)
+        $this->withSession(['guestbook_verified_until' => now()->addDay()->timestamp])->withCredentials()->postJson($route, $payload)
             ->assertCreated()
             ->assertJsonPath('data.status', 'new')
             ->assertJsonPath('data.whatsapp_status', 'skipped');
 
-        $this->withCookie('dkp_guestbook_completed', '1')->withCredentials()->postJson($route, $payload)
+        $this->withSession(['guestbook_verified_until' => now()->addDay()->timestamp])->withCredentials()->postJson($route, $payload)
             ->assertOk();
 
         $this->assertDatabaseCount('unanswered_escalations', 1);
@@ -253,7 +253,7 @@ class ChatbotPageTest extends TestCase
             'content' => $answer,
         ]);
 
-        $this->withCookie('dkp_guestbook_completed', '1')->withCredentials()
+        $this->withSession(['guestbook_verified_until' => now()->addDay()->timestamp])->withCredentials()
             ->getJson(route('chatbot.api.conversation', [
                 'conversation' => $conversation,
                 'session_key' => $sessionKey,

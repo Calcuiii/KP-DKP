@@ -27,8 +27,10 @@ Route::view('/infografis', 'pages.infographics')->name('infographics');
 
 Route::get('/buku-tamu', [GuestbookCheckinController::class, 'show'])
     ->name('guestbook.checkin');
+Route::post('/buku-tamu/mulai', [GuestbookCheckinController::class, 'start'])
+    ->middleware('throttle:5,1')->name('guestbook.start');
 Route::post('/buku-tamu/selesai', [GuestbookCheckinController::class, 'complete'])
-    ->name('guestbook.complete');
+    ->middleware('throttle:5,1')->name('guestbook.complete');
 
 Route::get('/chatbot', [ChatbotController::class, 'index'])
     ->middleware('guestbook')

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Http\Controllers\GuestbookCheckinController;
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -15,7 +14,7 @@ final class EnsureGuestbookCheckin
 {
     public function handle(Request $request, Closure $next): Response|JsonResponse|RedirectResponse
     {
-        if ($request->cookie(GuestbookCheckinController::COOKIE_NAME) === '1') {
+        if ((int) $request->session()->get('guestbook_verified_until', 0) > now()->timestamp) {
             return $next($request);
         }
 
