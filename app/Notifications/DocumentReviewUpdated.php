@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\ParticipantApplication;
 use App\Models\ParticipantApplicationDocument;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -37,7 +38,31 @@ final class DocumentReviewUpdated extends Notification
             'status' => $isApproved ? 'approved' : 'revision_required',
             'document_type' => $this->document->type,
             'application_id' => $this->document->participant_application_id,
-            'action_url' => route('peserta.dashboard').'#persiapan',
+            'action_url' => route('peserta.dashboard').'#'.$this->targetAnchor(),
         ];
+    }
+
+    /**
+     * Anchor tujuan berbeda tergantung jenis dokumen DAN jenis layanan peserta,
+     * karena struktur halaman dashboard Magang/PKL dan WOPPS berbeda.
+     */
+    private function targetAnchor(): string
+    {
+        $this->document->loadMissing('application');
+
+        $serviceType = $this->document->application?->service_type;
+
+        // Ethics Approval hanya ada di alur WOPPS.
+        if ($this->document->type === ParticipantApplicationDocument::TYPE_ETHICS_APPROVAL) {
+            return 'ethics-approval';
+        }
+
+        // Surat permohonan: WOPPS menaruhnya di section "persiapan",
+        // sedangkan Magang/PKL punya section terpisah "surat-permohonan".
+        if ($serviceType === ParticipantApplication::SERVICE_WOPPS) {
+            return 'persiapan';
+        }
+
+        return 'surat-permohonan';
     }
 }

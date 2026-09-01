@@ -377,7 +377,7 @@
         ================================================== --}}
         <aside>
 
-            <div class="sticky top-6 rounded-2xl border border-border bg-white p-6 shadow-sm">
+            <div class="sticky top-6 rounded-2xl border border-border bg-white p-5 shadow-sm">
 
                 {{-- Header --}}
                 <div>
@@ -385,11 +385,11 @@
                         Keputusan Admin
                     </p>
 
-                    <h2 class="mt-1 text-xl font-extrabold text-navy">
+                    <h2 class="mt-1 text-lg font-extrabold text-navy">
                         Tentukan keputusan
                     </h2>
 
-                    <p class="mt-2 text-sm text-muted-foreground">
+                    <p class="mt-1 text-xs text-muted-foreground">
                         Pastikan dokumen asli sudah diperiksa.
                     </p>
                 </div>
@@ -465,96 +465,100 @@
                 ================================================== --}}
                 @else
 
-                    {{-- SETUJUI --}}
-                    <div class="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+                    <div class="mt-4 grid gap-3 sm:grid-cols-2">
 
-                        <p class="font-bold text-emerald-800">
-                            Dokumen sudah benar?
-                        </p>
+                        {{-- SETUJUI --}}
+                        <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-3.5">
 
-                        <p class="mt-1 text-xs text-emerald-700">
-                            Jika lengkap dan sesuai, setujui dokumen.
-                        </p>
+                            <p class="text-sm font-bold text-emerald-800">
+                                Dokumen sudah benar?
+                            </p>
 
-
-                        <form
-                            method="POST"
-                            action="{{ route('admin.pemeriksaan-dokumen.approve', $document) }}"
-                            class="mt-4"
-                        >
-
-                            @csrf
-                            @method('PATCH')
-
-                            <textarea
-                                name="review_notes"
-                                rows="2"
-                                class="w-full rounded-xl border border-emerald-200 bg-white p-3 text-sm outline-none focus:border-emerald-400"
-                                placeholder="Catatan persetujuan (opsional)"
-                            >{{ old('review_notes') }}</textarea>
+                            <p class="mt-0.5 text-xs text-emerald-700">
+                                Setujui jika lengkap dan sesuai.
+                            </p>
 
 
-                            <button
-                                type="submit"
-                                class="mt-3 w-full rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white hover:bg-emerald-700"
-                                onclick="return confirm('Apakah dokumen ini sudah benar dan ingin disetujui?')"
+                            <form
+                                method="POST"
+                                action="{{ route('admin.pemeriksaan-dokumen.approve', $document) }}"
+                                class="mt-2.5"
                             >
-                                ✓ Setujui Surat
-                            </button>
 
-                        </form>
+                                @csrf
+                                @method('PATCH')
 
-                    </div>
-
-
-                    {{-- MINTA PERBAIKAN --}}
-                    <div class="mt-4 rounded-xl border border-red-200 bg-red-50 p-4">
-
-                        <p class="font-bold text-red-800">
-                            Masih ada kekurangan?
-                        </p>
-
-                        <p class="mt-1 text-xs text-red-700">
-                            Jelaskan bagian yang perlu diperbaiki peserta.
-                        </p>
+                                <textarea
+                                    name="review_notes"
+                                    rows="1"
+                                    class="w-full rounded-lg border border-emerald-200 bg-white p-2 text-xs outline-none focus:border-emerald-400"
+                                    placeholder="Catatan (opsional)"
+                                >{{ old('review_notes') }}</textarea>
 
 
-                        <form
-                            method="POST"
-                            action="{{ route('admin.pemeriksaan-dokumen.revision', $document) }}"
-                            class="mt-4"
-                        >
+                                <button
+                                    type="submit"
+                                    class="mt-2 w-full rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700"
+                                    onclick="return confirm('Apakah dokumen ini sudah benar dan ingin disetujui?')"
+                                >
+                                    ✓ Setujui Surat
+                                </button>
 
-                            @csrf
-                            @method('PATCH')
+                            </form>
 
-                            <textarea
-                                name="review_notes"
-                                rows="3"
-                                required
-                                class="w-full rounded-xl border border-red-200 bg-white p-3 text-sm outline-none focus:border-red-400"
-                                placeholder="Contoh: Lokasi kegiatan belum lengkap..."
-                            >{{ old('review_notes') }}</textarea>
+                        </div>
 
 
-                            @error('review_notes')
+                        {{-- MINTA PERBAIKAN --}}
+                        <div class="rounded-xl border border-red-200 bg-red-50 p-3.5">
 
-                                <p class="mt-2 text-xs font-semibold text-red-600">
-                                    {{ $message }}
-                                </p>
+                            <p class="text-sm font-bold text-red-800">
+                                Masih ada kekurangan?
+                            </p>
 
-                            @enderror
+                            <p class="mt-0.5 text-xs text-red-700">
+                                Jelaskan bagian yang perlu diperbaiki.
+                            </p>
 
 
-                            <button
-                                type="submit"
-                                class="mt-3 w-full rounded-xl bg-red-600 px-5 py-3 text-sm font-bold text-white hover:bg-red-700"
-                                onclick="return confirm('Kirim permintaan perbaikan kepada peserta?')"
+                            <form
+                                method="POST"
+                                action="{{ route('admin.pemeriksaan-dokumen.revision', $document) }}"
+                                class="mt-2.5"
                             >
-                                ↻ Minta Perbaikan
-                            </button>
 
-                        </form>
+                                @csrf
+                                @method('PATCH')
+
+                                <textarea
+                                    name="review_notes"
+                                    rows="1"
+                                    required
+                                    class="w-full rounded-lg border border-red-200 bg-white p-2 text-xs outline-none focus:border-red-400"
+                                    placeholder="Contoh: Lokasi belum lengkap..."
+                                >{{ old('review_notes') }}</textarea>
+
+
+                                @error('review_notes')
+
+                                    <p class="mt-1.5 text-xs font-semibold text-red-600">
+                                        {{ $message }}
+                                    </p>
+
+                                @enderror
+
+
+                                <button
+                                    type="submit"
+                                    class="mt-2 w-full rounded-lg bg-red-600 px-4 py-2 text-xs font-bold text-white hover:bg-red-700"
+                                    onclick="return confirm('Kirim permintaan perbaikan kepada peserta?')"
+                                >
+                                    ↻ Minta Perbaikan
+                                </button>
+
+                            </form>
+
+                        </div>
 
                     </div>
 

@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\ReplyLetter;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 final class ReplyLetterSent extends Notification
@@ -19,7 +20,7 @@ final class ReplyLetterSent extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', 'mail'];
     }
 
     /**
@@ -40,5 +41,15 @@ final class ReplyLetterSent extends Notification
 
             'action_url' => route('peserta.dashboard') . '#surat-balasan',
         ];
+    }
+
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)
+            ->subject('Surat balasan tersedia - SI-MELAYUR')
+            ->view('emails.reply-letter-sent', [
+                'participant' => $notifiable,
+                'dashboardUrl' => route('peserta.dashboard') . '#surat-balasan',
+            ], 'emails.reply-letter-sent-text');
     }
 }

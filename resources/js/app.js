@@ -96,6 +96,7 @@ import {
     Pencil,
     FileClock,
     MapPin,
+    PieChart,
 } from 'lucide';
 
 createIcons({
@@ -113,7 +114,7 @@ createIcons({
         School, Contact, CalendarClock,
         ShieldCheck, UserCheck, Stamp,
         CheckCircle2, Play, Flag, BriefcaseBusiness, MessagesSquare, MapPinned,
-        MessageSquareText, ChartNoAxesCombined, History, UsersRound, FileOutput, Mail, Pencil, FileClock, MapPin
+        MessageSquareText, ChartNoAxesCombined, History, UsersRound, FileOutput, Mail, Pencil, FileClock, MapPin, PieChart
     },
 });
 
@@ -562,6 +563,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         createIcons({ icons: { Eye, EyeOff } });
     });
+
+    // ── Admin: notifikasi lonceng (buka/tutup panel) ───────────────────
+    const adminNotifCenter = document.querySelector('[data-admin-notification-center]');
+    const adminNotifToggle = document.querySelector('[data-admin-notification-toggle]');
+    const adminNotifPanel = document.querySelector('[data-admin-notification-panel]');
+
+    if (adminNotifCenter && adminNotifToggle && adminNotifPanel) {
+        const closeAdminNotifications = () => {
+            adminNotifPanel.classList.add('hidden');
+            adminNotifToggle.setAttribute('aria-expanded', 'false');
+        };
+
+        adminNotifToggle.addEventListener('click', () => {
+            const willOpen = adminNotifPanel.classList.contains('hidden');
+            adminNotifPanel.classList.toggle('hidden', !willOpen);
+            adminNotifToggle.setAttribute('aria-expanded', String(willOpen));
+        });
+
+        document.addEventListener('click', (event) => {
+            if (! adminNotifCenter.contains(event.target)) closeAdminNotifications();
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeAdminNotifications();
+        });
+    }
 
     // ── Admin: modal Knowledge Base (buka/tutup) ──────────────────────
     document.querySelectorAll('[data-open-modal]').forEach((btn) => {

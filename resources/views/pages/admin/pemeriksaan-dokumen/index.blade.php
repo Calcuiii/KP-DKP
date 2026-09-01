@@ -222,6 +222,25 @@
                                     'Siap diperiksa admin',
                             };
 
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | APAKAH SIAP DIPERIKSA ADMIN? (untuk kolom Aksi)
+                            |--------------------------------------------------------------------------
+                            |
+                            | Sengaja TIDAK mengecek review_status === REVIEW_SUBMITTED secara kaku,
+                            | karena nilai review_status pada data lama/impor bisa saja null atau
+                            | berbeda. Yang penting: sudah lolos otomatis DAN belum ada keputusan
+                            | admin (belum approved, belum revision_required).
+                            |
+                            */
+
+                            $awaitingAdminReview = $automatedStatus === 'passed'
+                                && ! in_array($document->review_status, [
+                                    ParticipantApplicationDocument::REVIEW_APPROVED,
+                                    ParticipantApplicationDocument::REVIEW_REVISION,
+                                ], true);
+
                         @endphp
 
 
@@ -288,17 +307,14 @@
                             {{-- Aksi --}}
                             <td class="px-5 py-5">
 
-                                {{-- 
+                                {{--
                                 |--------------------------------------------------------------------------
-                                | 1. Lolos otomatis + status submitted
+                                | 1. Lolos otomatis + belum ada keputusan admin
                                 |    → Admin perlu melakukan pemeriksaan manual
                                 |--------------------------------------------------------------------------
                                 --}}
 
-                                @if(
-                                    $automatedStatus === 'passed' &&
-                                    $document->review_status === ParticipantApplicationDocument::REVIEW_SUBMITTED
-                                )
+                                @if($awaitingAdminReview)
 
                                     <a
                                         href="{{ route('admin.pemeriksaan-dokumen.show', $document) }}"
@@ -308,7 +324,7 @@
                                     </a>
 
 
-                                {{-- 
+                                {{--
                                 |--------------------------------------------------------------------------
                                 | 2. Sudah disetujui admin
                                 |    → Tidak perlu diperiksa lagi, hanya dilihat
@@ -327,7 +343,7 @@
                                     </a>
 
 
-                                {{-- 
+                                {{--
                                 |--------------------------------------------------------------------------
                                 | 3. Admin meminta perbaikan
                                 |    → Peserta harus memperbaiki terlebih dahulu
@@ -339,38 +355,22 @@
                                 )
 
                                     <span class="text-xs font-semibold text-muted-foreground">
-                                        Menunggu peserta
+                                        --
                                     </span>
 
 
-                                {{-- 
+                                {{--
                                 |--------------------------------------------------------------------------
                                 | 4. Pemeriksaan otomatis belum lolos
                                 |    → Bukan pekerjaan admin
                                 |--------------------------------------------------------------------------
                                 --}}
 
-                                @elseif($automatedStatus !== 'passed')
-
-                                    <span class="text-xs font-semibold text-muted-foreground">
-                                        Menunggu peserta
-                                    </span>
-
-
-                                {{-- 
-                                |--------------------------------------------------------------------------
-                                | 5. Kondisi lainnya
-                                |--------------------------------------------------------------------------
-                                --}}
-
                                 @else
 
-                                    <a
-                                        href="{{ route('admin.pemeriksaan-dokumen.show', $document) }}"
-                                        class="inline-flex items-center rounded-xl border border-border px-4 py-2.5 text-xs font-bold text-navy"
-                                    >
-                                        Lihat
-                                    </a>
+                                    <span class="text-xs font-semibold text-muted-foreground">
+                                        --
+                                    </span>
 
                                 @endif
 

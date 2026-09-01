@@ -12,6 +12,8 @@ use App\Http\Requests\Peserta\UploadWoppsFormProofRequest;
 use App\Models\Participant;
 use App\Models\ParticipantApplication;
 use App\Models\ParticipantApplicationDocument;
+use App\Models\User;
+use App\Notifications\InternshipFormSubmitted;
 use App\Services\RequestLetterAutomatedChecker;
 use App\Services\EthicsApprovalAutomatedChecker;
 use Illuminate\Http\RedirectResponse;
@@ -139,6 +141,19 @@ final class ParticipantApplicationController extends Controller
 
         $application->update(['google_form_confirmed_at' => now(), 'status' => 'response_pending']);
 
+        /*
+        |--------------------------------------------------------------------------
+        | Beritahu seluruh admin bahwa peserta ini sudah mengisi Google Form,
+        | supaya tim DKP mengecek tabel Surat Balasan dan memeriksa spreadsheet
+        | pengisian dari peserta tersebut.
+        |--------------------------------------------------------------------------
+        */
+        User::query()
+            ->whereIn('role', ['admin', 'superadmin'])
+            ->where('status', 'Aktif')
+            ->get()
+            ->each(fn (User $admin) => $admin->notify(new InternshipFormSubmitted($application)));
+
         return back()->with('status', 'Bukti pengisian Google Form berhasil disimpan. Silakan menunggu surat balasan Dinas.');
     }
 
@@ -222,6 +237,20 @@ final class ParticipantApplicationController extends Controller
         abort_unless(Storage::disk('local')->exists($document->file_path), 404);
 
         return Storage::disk('local')->download($document->file_path, $document->original_name);
+    }
+
+    public function viewDocument(Request $request, ParticipantApplicationDocument $document)
+    {
+        $participant = $request->user('peserta');
+        abort_unless($document->application()->where('participant_id', $participant->id)->exists(), 403);
+        abort_unless(Storage::disk('local')->exists($document->file_path), 404);
+
+        $path = Storage::disk('local')->path($document->file_path);
+
+        return response()->file($path, [
+            'Content-Type' => $document->mime_type ?? 'application/pdf',
+            'Content-Disposition' => 'inline; filename="'.addslashes($document->original_name ?? basename($document->file_path)).'"',
+        ]);
     }
 
     public function downloadResponseLetter(Request $request): StreamedResponse
