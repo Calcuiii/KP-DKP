@@ -2,10 +2,12 @@
 
 namespace App\Notifications;
 
+use App\Models\ParticipantApplication;
 use App\Models\ReplyLetter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Storage;
 
 final class ReplyLetterSent extends Notification
 {
@@ -13,6 +15,7 @@ final class ReplyLetterSent extends Notification
 
     public function __construct(
         private readonly ReplyLetter $replyLetter,
+        private readonly ParticipantApplication $application,
     ) {}
 
     /**
@@ -28,28 +31,64 @@ final class ReplyLetterSent extends Notification
      */
     public function toArray(object $notifiable): array
     {
+        $accepted = $this->application->decision === 'accepted';
+
         return [
             'type' => 'reply_letter',
 
-            'title' => 'Surat balasan tersedia',
+            'title' => $accepted ? 'Pengajuan diterima' : 'Pengajuan belum dapat diterima',
 
-            'message' => 'Admin telah mengirimkan surat balasan untuk pengajuan Anda. Silakan buka surat balasan pada dashboard.',
+            'message' => $accepted
+                ? 'Pengajuan Anda diterima untuk periode '.$this->periodLabel().'. Surat balasan tersedia pada dashboard.'
+                : 'Pengajuan Anda belum dapat diterima. Silakan periksa surat balasan resmi pada dashboard.',
 
-            'status' => 'reply_letter_sent',
+            'status' => $accepted ? 'accepted' : 'rejected',
 
             'reply_letter_id' => $this->replyLetter->id,
 
-            'action_url' => route('peserta.dashboard') . '#surat-balasan',
+            'action_url' => route('peserta.dashboard').'#surat-balasan',
         ];
     }
 
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
-            ->subject('Surat balasan tersedia - SI-MELAYUR')
-            ->view('emails.reply-letter-sent', [
-                'participant' => $notifiable,
-                'dashboardUrl' => route('peserta.dashboard') . '#surat-balasan',
-            ], 'emails.reply-letter-sent-text');
+        $viewData = [
+            'participant' => $notifiable,
+            'application' => $this->application,
+            'accepted' => $this->application->decision === 'accepted',
+            'periodLabel' => $this->periodLabel(),
+            'dashboardUrl' => route('peserta.dashboard').'#surat-balasan',
+        ];
+
+        $message = (new MailMessage)
+            ->subject(($this->application->decision === 'accepted' ? 'Pengajuan diterima' : 'Keputusan pengajuan').' - SI-MELAYUR')
+            ->view('emails.reply-letter-sent', $viewData)
+            ->text('emails.reply-letter-sent-text', $viewData);
+
+        if (
+            filled($this->replyLetter->file_path)
+            && Storage::disk('public')->exists($this->replyLetter->file_path)
+        ) {
+            $message->attach(
+                Storage::disk('public')->path($this->replyLetter->file_path),
+                [
+                    'as' => $this->replyLetter->original_name ?? 'surat-balasan.pdf',
+                    'mime' => 'application/pdf',
+                ],
+            );
+        }
+
+        return $message;
+    }
+
+    private function periodLabel(): string
+    {
+        if (! $this->application->official_started_at || ! $this->application->official_ended_at) {
+            return '-';
+        }
+
+        return $this->application->official_started_at->translatedFormat('d F Y')
+            .' sampai '
+            .$this->application->official_ended_at->translatedFormat('d F Y');
     }
 }

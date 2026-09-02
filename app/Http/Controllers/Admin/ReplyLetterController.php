@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Participant;
-use App\Models\ReplyLetter;
+use App\Models\ParticipantApplication;
 use App\Models\ParticipantApplicationDocument;
+use App\Models\ReplyLetter;
 use App\Notifications\ReplyLetterSent;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 final class ReplyLetterController extends Controller
@@ -49,6 +51,18 @@ final class ReplyLetterController extends Controller
         Participant $participant
     ): RedirectResponse {
         $request->validate([
+            'decision' => ['required', Rule::in(['accepted', 'rejected'])],
+            'official_started_at' => [
+                'nullable',
+                'required_if:decision,accepted',
+                'date',
+            ],
+            'official_ended_at' => [
+                'nullable',
+                'required_if:decision,accepted',
+                'date',
+                'after_or_equal:official_started_at',
+            ],
             'reply_letter' => [
                 'required',
                 'file',
@@ -56,15 +70,27 @@ final class ReplyLetterController extends Controller
                 'max:10240',
             ],
         ], [
-            'reply_letter.required' =>
-                'Surat balasan wajib diunggah.',
+            'decision.required' => 'Keputusan pengajuan wajib dipilih.',
+            'official_started_at.required_if' => 'Tanggal mulai wajib diisi untuk peserta yang diterima.',
+            'official_ended_at.required_if' => 'Tanggal selesai wajib diisi untuk peserta yang diterima.',
+            'official_ended_at.after_or_equal' => 'Tanggal selesai tidak boleh sebelum tanggal mulai.',
+            'reply_letter.required' => 'Surat balasan wajib diunggah.',
 
-            'reply_letter.mimes' =>
-                'Surat balasan harus berupa file PDF.',
+            'reply_letter.mimes' => 'Surat balasan harus berupa file PDF.',
 
-            'reply_letter.max' =>
-                'Ukuran surat maksimal 10 MB.',
+            'reply_letter.max' => 'Ukuran surat maksimal 10 MB.',
         ]);
+
+        $application = $participant->applications()
+            ->where('service_type', ParticipantApplication::SERVICE_MAGANG_PKL)
+            ->whereHas('documents', function ($query) {
+                $query->where(
+                    'type',
+                    ParticipantApplicationDocument::TYPE_INTERNSHIP_FORM_PROOF
+                );
+            })
+            ->latest()
+            ->firstOrFail();
 
         /*
          * Cari surat balasan lama milik peserta.
@@ -107,20 +133,30 @@ final class ReplyLetterController extends Controller
             ]
         );
 
+        $accepted = $request->string('decision')->toString() === 'accepted';
+
+        $application->update([
+            'decision' => $accepted ? 'accepted' : 'rejected',
+            'status' => $accepted ? 'accepted' : 'rejected',
+            'official_started_at' => $accepted ? $request->date('official_started_at') : null,
+            'official_ended_at' => $accepted ? $request->date('official_ended_at') : null,
+            'response_letter_path' => $path,
+        ]);
+
         /*
-         * Kirim notifikasi database
-         * kepada peserta.
+         * Kirim notifikasi portal dan email
+         * beserta lampiran surat kepada peserta.
          */
         $participant->notify(
-            new ReplyLetterSent($replyLetter)
+            new ReplyLetterSent($replyLetter, $application->fresh())
         );
 
         return redirect()
-    ->route('admin.surat-balasan')
-    ->with(
-        'success',
-        'Surat balasan berhasil diunggah dan dikirim kepada peserta.'
-    );
+            ->route('admin.surat-balasan')
+            ->with(
+                'success',
+                'Keputusan, periode pelaksanaan, dan surat balasan berhasil dikirim kepada peserta.'
+            );
     }
 
     /**
@@ -171,12 +207,11 @@ final class ReplyLetterController extends Controller
 
         return response()->file($path, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' =>
-                'inline; filename="' .
+            'Content-Disposition' => 'inline; filename="'.
                 addslashes(
                     $replyLetter->original_name
                     ?? basename($replyLetter->file_path)
-                ) .
+                ).
                 '"',
         ]);
     }
@@ -210,12 +245,11 @@ final class ReplyLetterController extends Controller
 
         return response()->file($path, [
             'Content-Type' => $document->mime_type ?? 'application/pdf',
-            'Content-Disposition' =>
-                'inline; filename="' .
+            'Content-Disposition' => 'inline; filename="'.
                 addslashes(
                     $document->original_name
                     ?? basename($document->file_path)
-                ) .
+                ).
                 '"',
         ]);
     }

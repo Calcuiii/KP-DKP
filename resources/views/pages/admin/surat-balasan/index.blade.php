@@ -27,6 +27,15 @@
         </div>
     @endif
 
+    @if($errors->any())
+        <div class="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            <p class="font-extrabold">Keputusan belum dapat dikirim:</p>
+            <ul class="mt-2 list-disc space-y-1 pl-5">
+                @foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach
+            </ul>
+        </div>
+    @endif
+
 
     {{-- Table --}}
     <div class="overflow-hidden rounded-[2rem] border border-border bg-white shadow-sm">
@@ -65,7 +74,7 @@
                         </th>
 
                         <th class="px-5 py-4 font-bold text-navy">
-                            Surat Balasan
+                            Keputusan &amp; Periode
                         </th>
 
                         <th class="px-5 py-4 font-bold text-navy">
@@ -140,43 +149,50 @@
                                 @endif
                             </td>
 
-                            {{-- Surat Balasan --}}
+                            {{-- Keputusan dan periode --}}
                             <td class="px-5 py-5">
-                                @if($replyLetter)
-                                    <span class="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
-                                        Sudah dikirim
-                                    </span>
+                                @if($application?->decision === 'accepted')
+                                    <span class="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">Diterima</span>
+                                    <p class="mt-2 whitespace-nowrap text-xs font-semibold text-navy">
+                                        {{ $application->official_started_at?->translatedFormat('d M Y') }} – {{ $application->official_ended_at?->translatedFormat('d M Y') }}
+                                    </p>
+                                @elseif($application?->decision === 'rejected')
+                                    <span class="inline-flex rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-700">Ditolak</span>
                                 @else
-                                    <span class="inline-flex rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
-                                        Belum dikirim
-                                    </span>
+                                    <span class="inline-flex rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">Belum diputuskan</span>
                                 @endif
+                                <p class="mt-2 text-[11px] text-muted-foreground">{{ $replyLetter ? 'Surat sudah dikirim' : 'Surat belum dikirim' }}</p>
                             </td>
 
                             {{-- Aksi --}}
                             <td class="px-5 py-5">
                                 @if($application)
-                                    <div class="flex flex-wrap gap-2">
-                                        {{-- Upload Surat --}}
-                                        <button
-                                            type="button"
-                                            @if($replyLetter)
-                                                disabled
-                                                title="Surat balasan sudah dikirim"
-                                            @else
-                                                onclick="document.getElementById('upload-{{ $application->id }}').click()"
-                                            @endif
-                                            class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold
-                                                {{ $replyLetter
-                                                    ? 'cursor-not-allowed bg-navy/40 text-white/70 opacity-60'
-                                                    : 'bg-navy text-white hover:opacity-90'
-                                                }}"
-                                        >
-                                            <i data-lucide="upload" class="h-4 w-4"></i>
-                                            {{ $replyLetter ? 'Sudah Diunggah' : 'Upload Surat' }}
-                                        </button>
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <details class="group">
+                                            <summary class="inline-flex cursor-pointer list-none items-center gap-2 rounded-xl bg-navy px-4 py-2.5 text-xs font-bold text-white hover:opacity-90">
+                                                <i data-lucide="send" class="h-4 w-4"></i>
+                                                {{ $replyLetter ? 'Perbarui Keputusan' : 'Tetapkan Keputusan' }}
+                                            </summary>
+                                            <form method="POST" action="{{ route('admin.surat-balasan.upload', $participant) }}" enctype="multipart/form-data" class="mt-3 w-[19rem] space-y-3 rounded-2xl border border-border bg-white p-4 shadow-xl">
+                                                @csrf
+                                                <div>
+                                                    <label for="decision-{{ $application->id }}" class="text-xs font-extrabold text-navy">Keputusan resmi</label>
+                                                    <select id="decision-{{ $application->id }}" name="decision" required class="mt-1 block w-full rounded-xl border border-border bg-white px-3 py-2.5 text-xs">
+                                                        <option value="">Pilih keputusan</option>
+                                                        <option value="accepted" @selected($application->decision === 'accepted')>Diterima</option>
+                                                        <option value="rejected" @selected($application->decision === 'rejected')>Ditolak</option>
+                                                    </select>
+                                                </div>
+                                                <div class="grid grid-cols-2 gap-2">
+                                                    <div><label class="text-[11px] font-bold text-navy">Mulai <span class="text-red-600">*</span></label><input type="date" name="official_started_at" value="{{ $application->official_started_at?->format('Y-m-d') }}" class="mt-1 block w-full rounded-xl border border-border px-2 py-2 text-xs"></div>
+                                                    <div><label class="text-[11px] font-bold text-navy">Selesai <span class="text-red-600">*</span></label><input type="date" name="official_ended_at" value="{{ $application->official_ended_at?->format('Y-m-d') }}" class="mt-1 block w-full rounded-xl border border-border px-2 py-2 text-xs"></div>
+                                                </div>
+                                                <p class="text-[10px] leading-relaxed text-muted-foreground">Tanggal wajib diisi jika diterima dan akan langsung muncul pada kalender peserta.</p>
+                                                <div><label class="text-xs font-extrabold text-navy">Surat balasan PDF</label><input type="file" name="reply_letter" accept="application/pdf,.pdf" required class="mt-1 block w-full rounded-xl border border-border p-2 text-xs"></div>
+                                                <button class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-teal px-4 py-2.5 text-xs font-extrabold text-white"><i data-lucide="send" class="h-4 w-4"></i>Kirim Keputusan &amp; Surat</button>
+                                            </form>
+                                        </details>
 
-                                        {{-- Lihat Surat --}}
                                         @if($replyLetter)
                                             <a
                                                 href="{{ route('admin.surat-balasan.download', $replyLetter) }}"
@@ -188,26 +204,6 @@
                                             </a>
                                         @endif
                                     </div>
-
-                                    {{-- Hidden Upload Form --}}
-                                    @unless($replyLetter)
-                                        <form
-                                            id="form-{{ $application->id }}"
-                                            method="POST"
-                                            action="{{ route('admin.surat-balasan.upload', $participant) }}"
-                                            enctype="multipart/form-data"
-                                            class="hidden"
-                                        >
-                                            @csrf
-                                            <input
-                                                id="upload-{{ $application->id }}"
-                                                type="file"
-                                                name="reply_letter"
-                                                accept="application/pdf"
-                                                onchange="document.getElementById('form-{{ $application->id }}').submit()"
-                                            >
-                                        </form>
-                                    @endunless
                                 @else
                                     <span class="text-xs text-muted-foreground">
                                         Tidak ada aplikasi
