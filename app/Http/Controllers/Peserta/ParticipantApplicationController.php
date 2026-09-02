@@ -13,6 +13,7 @@ use App\Models\Participant;
 use App\Models\ParticipantApplication;
 use App\Models\ParticipantApplicationDocument;
 use App\Models\User;
+use App\Notifications\DocumentAutomatedCheckPassed;
 use App\Notifications\InternshipFormSubmitted;
 use App\Services\RequestLetterAutomatedChecker;
 use App\Services\EthicsApprovalAutomatedChecker;
@@ -110,6 +111,14 @@ final class ParticipantApplicationController extends Controller
             'status' => $needsCorrection ? 'letter_revision_required' : 'letter_under_review',
         ]);
 
+        if (! $needsCorrection) {
+            User::query()
+                ->whereIn('role', ['admin', 'superadmin'])
+                ->where('status', 'Aktif')
+                ->get()
+                ->each(fn (User $admin) => $admin->notify(new DocumentAutomatedCheckPassed($document)));
+        }
+
         return back()->with('status', $needsCorrection
             ? 'Pemeriksaan awal selesai. Surat masih memerlukan perbaikan.'
             : 'Pemeriksaan awal selesai. Surat diteruskan untuk verifikasi admin.');
@@ -195,6 +204,14 @@ final class ParticipantApplicationController extends Controller
 
         $needsCorrection = in_array($result['status'], ['needs_revision', 'unreadable'], true);
         $application->update(['status' => $needsCorrection ? 'ethics_revision_required' : 'ethics_under_review']);
+
+        if (! $needsCorrection) {
+            User::query()
+                ->whereIn('role', ['admin', 'superadmin'])
+                ->where('status', 'Aktif')
+                ->get()
+                ->each(fn (User $admin) => $admin->notify(new DocumentAutomatedCheckPassed($document)));
+        }
 
         return back()->with('status', $needsCorrection
             ? 'Pemeriksaan Ethics Approval selesai. Dokumen masih memerlukan perbaikan.'

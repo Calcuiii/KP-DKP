@@ -88,7 +88,17 @@
                 <button data-request-letter-submit class="mt-4 inline-flex items-center gap-2 rounded-xl bg-ocean px-5 py-2.5 text-sm font-bold text-white transition disabled:pointer-events-none"><i data-lucide="scan-search" class="h-4 w-4"></i>{{ ($letterNeedsRevision || $automatedNeedsRevision) ? 'Unggah & Periksa Ulang' : 'Unggah & Periksa Surat' }}</button>
             </form>
         @else
-            <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-800">Surat sedang diperiksa admin. Unggah ulang akan tersedia jika admin meminta revisi.</div>
+            @if ($letterApproved)
+                <div class="mt-5 flex items-start gap-3 rounded-2xl border border-teal/25 bg-teal/[0.06] p-4">
+                    <span class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-teal text-white"><i data-lucide="check" class="h-4 w-4"></i></span>
+                    <div>
+                        <p class="text-sm font-bold text-teal">Surat permohonan telah disetujui admin</p>
+                        <p class="mt-1 text-sm leading-relaxed text-muted-foreground">Silakan lanjutkan ke tahap berikutnya di bawah ini.</p>
+                    </div>
+                </div>
+            @else
+                <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-800">Surat sedang diperiksa admin. Unggah ulang akan tersedia jika admin meminta revisi.</div>
+            @endif
         @endif
     </article>
 </section>
@@ -212,7 +222,17 @@
                     <button data-request-letter-submit class="mt-4 inline-flex items-center gap-2 rounded-xl bg-teal px-5 py-2.5 text-sm font-bold text-white"><i data-lucide="scan-search" class="h-4 w-4"></i>{{ ($ethicsNeedsRevision || $ethicsAutomatedNeedsRevision) ? 'Unggah & Periksa Ulang' : 'Unggah & Periksa Dokumen' }}</button>
                 </form>
             @else
-                <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-800">Dokumen sedang diperiksa admin. Unggah ulang tersedia jika admin meminta revisi.</div>
+                @if ($ethicsApproved)
+                    <div class="mt-5 flex items-start gap-3 rounded-2xl border border-teal/25 bg-teal/[0.06] p-4">
+                        <span class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-teal text-white"><i data-lucide="check" class="h-4 w-4"></i></span>
+                        <div>
+                            <p class="text-sm font-bold text-teal">Ethics Approval Statement Letter telah disetujui admin</p>
+                            <p class="mt-1 text-sm leading-relaxed text-muted-foreground">Silakan lanjutkan ke tahap berikutnya di bawah ini.</p>
+                        </div>
+                    </div>
+                @else
+                    <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-800">Dokumen sedang diperiksa admin. Unggah ulang tersedia jika admin meminta revisi.</div>
+                @endif
             @endif
         @endif
     </article>

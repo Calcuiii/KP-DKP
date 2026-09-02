@@ -61,8 +61,12 @@ $initials = collect(explode(' ', auth()->user()->name))
                         <form method="POST" action="{{ route('admin.notifications.read', $notif->id) }}" class="border-b border-border last:border-b-0">
                             @csrf
                             <button type="submit" class="flex w-full items-start gap-3 px-5 py-4 text-left transition hover:bg-light/70 {{ $notif->read_at ? 'bg-white' : 'bg-ocean/[0.035]' }}">
-                                <span class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-ocean/10 text-ocean">
-                                    <i data-lucide="{{ $notif->data['type'] === 'internship_form_submitted' ? 'clipboard-check' : 'bell' }}" class="h-4 w-4" aria-hidden="true"></i>
+                                <span class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl {{ $notif->data['type'] === 'document_automated_check_passed' ? 'bg-emerald-50 text-emerald-600' : 'bg-ocean/10 text-ocean' }}">
+                                    <i data-lucide="{{ match($notif->data['type'] ?? null) {
+                                        'internship_form_submitted' => 'clipboard-check',
+                                        'document_automated_check_passed' => 'file-check',
+                                        default => 'bell',
+                                    } }}" class="h-4 w-4" aria-hidden="true"></i>
                                 </span>
                                 <span class="min-w-0 flex-1">
                                     <span class="block text-xs font-bold text-navy">{{ $notif->data['title'] ?? 'Notifikasi' }}</span>
