@@ -6,8 +6,11 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\ConversationLogController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DocumentReviewController;
 use App\Http\Controllers\Admin\InfographicController;
+use App\Http\Controllers\Admin\InternshipLocationController;
 use App\Http\Controllers\Admin\KnowledgeBaseController;
+use App\Http\Controllers\Admin\ReplyLetterController;
 use App\Http\Controllers\Admin\UnansweredQuestionController;
 use App\Http\Controllers\Admin\WoppsFollowUpController;
 use App\Http\Controllers\Auth\AdminLoginController;
@@ -19,9 +22,6 @@ use App\Http\Controllers\GuestbookCheckinController;
 use App\Http\Controllers\Peserta\ParticipantApplicationController;
 use App\Http\Controllers\Peserta\ParticipantNotificationController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\InternshipLocationController;
-use App\Http\Controllers\Admin\DocumentReviewController;
-use App\Http\Controllers\Admin\ReplyLetterController;
 
 Route::view('/', 'pages.landing')->name('landing');
 
@@ -29,8 +29,10 @@ Route::view('/infografis', 'pages.infographics')->name('infographics');
 
 Route::get('/buku-tamu', [GuestbookCheckinController::class, 'show'])
     ->name('guestbook.checkin');
+Route::post('/buku-tamu/mulai', [GuestbookCheckinController::class, 'start'])
+    ->middleware('throttle:5,1')->name('guestbook.start');
 Route::post('/buku-tamu/selesai', [GuestbookCheckinController::class, 'complete'])
-    ->name('guestbook.complete');
+    ->middleware('throttle:5,1')->name('guestbook.complete');
 
 Route::get('/chatbot', [ChatbotController::class, 'index'])
     ->middleware('guestbook')

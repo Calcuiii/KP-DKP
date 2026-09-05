@@ -24,7 +24,7 @@ final class ReplyLetterDeliveryTest extends TestCase
         Notification::fake();
 
         $admin = User::factory()->create([
-            'role' => 'admin',
+            'role' => 'superadmin',
             'status' => 'Aktif',
         ]);
         $participant = Participant::factory()->create([
@@ -119,7 +119,7 @@ final class ReplyLetterDeliveryTest extends TestCase
         Storage::fake('public');
         Notification::fake();
 
-        $admin = User::factory()->create(['role' => 'admin', 'status' => 'Aktif']);
+        $admin = User::factory()->create(['role' => 'superadmin', 'status' => 'Aktif']);
         $participant = Participant::factory()->create(['email_verified_at' => now()]);
         $application = $participant->applications()->create([
             'service_type' => ParticipantApplication::SERVICE_MAGANG_PKL,
