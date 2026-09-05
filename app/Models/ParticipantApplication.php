@@ -24,6 +24,7 @@ class ParticipantApplication extends Model
         'guestbook_confirmed_at',
         'letter_submitted_at',
         'google_form_confirmed_at',
+        'pic_contacted_at',
         'official_started_at',
         'official_ended_at',
         'decision',
@@ -37,6 +38,7 @@ class ParticipantApplication extends Model
     {
         return [
             'google_form_confirmed_at' => 'datetime',
+            'pic_contacted_at' => 'datetime',
             'guestbook_confirmed_at' => 'datetime',
             'letter_submitted_at' => 'datetime',
             'official_started_at' => 'datetime',

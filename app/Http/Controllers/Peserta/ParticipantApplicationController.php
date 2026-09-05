@@ -15,6 +15,7 @@ use App\Models\ParticipantApplicationDocument;
 use App\Models\User;
 use App\Notifications\DocumentAutomatedCheckPassed;
 use App\Notifications\InternshipFormSubmitted;
+use App\Notifications\WoppsFormSubmitted;
 use App\Services\RequestLetterAutomatedChecker;
 use App\Services\EthicsApprovalAutomatedChecker;
 use Illuminate\Http\RedirectResponse;
@@ -113,7 +114,7 @@ final class ParticipantApplicationController extends Controller
 
         if (! $needsCorrection) {
             User::query()
-                ->whereIn('role', ['admin', 'superadmin'])
+                ->where('role', 'superadmin')
                 ->where('status', 'Aktif')
                 ->get()
                 ->each(fn (User $admin) => $admin->notify(new DocumentAutomatedCheckPassed($document)));
@@ -158,7 +159,7 @@ final class ParticipantApplicationController extends Controller
         |--------------------------------------------------------------------------
         */
         User::query()
-            ->whereIn('role', ['admin', 'superadmin'])
+            ->where('role', 'superadmin')
             ->where('status', 'Aktif')
             ->get()
             ->each(fn (User $admin) => $admin->notify(new InternshipFormSubmitted($application)));
@@ -207,7 +208,7 @@ final class ParticipantApplicationController extends Controller
 
         if (! $needsCorrection) {
             User::query()
-                ->whereIn('role', ['admin', 'superadmin'])
+                ->where('role', 'superadmin')
                 ->where('status', 'Aktif')
                 ->get()
                 ->each(fn (User $admin) => $admin->notify(new DocumentAutomatedCheckPassed($document)));
@@ -243,6 +244,12 @@ final class ParticipantApplicationController extends Controller
             'google_form_confirmed_at' => now(),
             'status' => 'wopps_form_submitted',
         ]);
+
+        User::query()
+            ->where('role', 'superadmin')
+            ->where('status', 'Aktif')
+            ->get()
+            ->each(fn (User $admin) => $admin->notify(new WoppsFormSubmitted($application)));
 
         return back()->with('status', 'Bukti pengisian Form WOPPS berhasil disimpan. Silakan menunggu tindak lanjut Dinas.');
     }

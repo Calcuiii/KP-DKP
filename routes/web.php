@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\InfographicController;
 use App\Http\Controllers\Admin\KnowledgeBaseController;
 use App\Http\Controllers\Admin\UnansweredQuestionController;
+use App\Http\Controllers\Admin\WoppsFollowUpController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\ParticipantAuthController;
 use App\Http\Controllers\Auth\ParticipantEmailVerificationController;
@@ -28,10 +29,8 @@ Route::view('/infografis', 'pages.infographics')->name('infographics');
 
 Route::get('/buku-tamu', [GuestbookCheckinController::class, 'show'])
     ->name('guestbook.checkin');
-Route::post('/buku-tamu/mulai', [GuestbookCheckinController::class, 'start'])
-    ->middleware('throttle:5,1')->name('guestbook.start');
 Route::post('/buku-tamu/selesai', [GuestbookCheckinController::class, 'complete'])
-    ->middleware('throttle:5,1')->name('guestbook.complete');
+    ->name('guestbook.complete');
 
 Route::get('/chatbot', [ChatbotController::class, 'index'])
     ->middleware('guestbook')
@@ -139,39 +138,38 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
     Route::get('/lokasi-kp', [InternshipLocationController::class, 'index'])->name('admin.internship-locations');
     Route::patch('/lokasi-kp/{location}', [InternshipLocationController::class, 'update'])->name('admin.internship-locations.update');
 
+    Route::middleware('superadmin')->group(function (): void {
         Route::get('/pemeriksaan-dokumen', [DocumentReviewController::class, 'index'])
-        ->name('admin.pemeriksaan-dokumen');
+            ->name('admin.pemeriksaan-dokumen');
 
-    Route::get('/pemeriksaan-dokumen/{document}', [DocumentReviewController::class, 'show'])
-        ->name('admin.pemeriksaan-dokumen.show');
+        Route::get('/pemeriksaan-dokumen/{document}', [DocumentReviewController::class, 'show'])
+            ->name('admin.pemeriksaan-dokumen.show');
 
-    Route::patch('/pemeriksaan-dokumen/{document}/approve', [DocumentReviewController::class, 'approve'])
-        ->name('admin.pemeriksaan-dokumen.approve');
+        Route::patch('/pemeriksaan-dokumen/{document}/approve', [DocumentReviewController::class, 'approve'])
+            ->name('admin.pemeriksaan-dokumen.approve');
 
-    Route::patch('/pemeriksaan-dokumen/{document}/revision', [DocumentReviewController::class, 'revision'])
-        ->name('admin.pemeriksaan-dokumen.revision');
+        Route::patch('/pemeriksaan-dokumen/{document}/revision', [DocumentReviewController::class, 'revision'])
+            ->name('admin.pemeriksaan-dokumen.revision');
 
-    Route::get('/pemeriksaan-dokumen/{document}/unduh', [DocumentReviewController::class, 'download'])
-        ->name('admin.pemeriksaan-dokumen.download');
+        Route::get('/pemeriksaan-dokumen/{document}/unduh', [DocumentReviewController::class, 'download'])
+            ->name('admin.pemeriksaan-dokumen.download');
 
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/surat-balasan',[ReplyLetterController::class, 'index'])
-        ->name('admin.surat-balasan');
+        Route::get('/surat-balasan', [ReplyLetterController::class, 'index'])
+            ->name('admin.surat-balasan');
 
-        Route::post('/surat-balasan/{participant}',[ReplyLetterController::class, 'upload'])
-        ->name('admin.surat-balasan.upload');
+        Route::post('/surat-balasan/{participant}', [ReplyLetterController::class, 'upload'])
+            ->name('admin.surat-balasan.upload');
 
-        Route::get('/surat-balasan/{replyLetter}/download',[ReplyLetterController::class, 'download'])
-        ->name('admin.surat-balasan.download');
+        Route::get('/surat-balasan/{replyLetter}/download', [ReplyLetterController::class, 'download'])
+            ->name('admin.surat-balasan.download');
 
         Route::get('/surat-balasan/bukti/{document}/preview', [ReplyLetterController::class, 'previewProof'])
-    ->name('admin.surat-balasan.proof.preview');
+            ->name('admin.surat-balasan.proof.preview');
 
-        
+        Route::get('/wopps-follow-up', [WoppsFollowUpController::class, 'index'])->name('admin.wopps-follow-up');
+        Route::get('/wopps-follow-up/bukti/{document}/unduh', [WoppsFollowUpController::class, 'download'])->name('admin.wopps-follow-up.download');
+        Route::post('/wopps-follow-up/{application}/tandai', [WoppsFollowUpController::class, 'markContacted'])->name('admin.wopps-follow-up.mark-contacted');
 
-    });
-
-    Route::middleware('superadmin')->group(function (): void {
         Route::get('/knowledge-base', [KnowledgeBaseController::class, 'index'])->name('admin.knowledge-base');
         Route::post('/knowledge-base', [KnowledgeBaseController::class, 'store'])->name('admin.knowledge-base.store');
         Route::get('/knowledge-base/{document}', [KnowledgeBaseController::class, 'show'])->name('admin.knowledge-base.show');
