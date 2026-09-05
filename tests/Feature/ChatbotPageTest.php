@@ -6,7 +6,9 @@ use App\Models\ChatConversation;
 use App\Models\ChatMessage;
 use App\Models\UnansweredEscalation;
 use App\Models\User;
+use App\Notifications\UnansweredQuestionEscalated;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -170,6 +172,11 @@ class ChatbotPageTest extends TestCase
     public function test_an_unanswered_question_can_be_forwarded_to_an_admin_once(): void
     {
         config(['services.whatsapp.enabled' => false]);
+        Notification::fake();
+
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'Aktif']);
+        $superadmin = User::factory()->create(['role' => 'superadmin', 'status' => 'Aktif']);
+        $inactiveAdmin = User::factory()->create(['role' => 'admin', 'status' => 'Nonaktif']);
 
         $sessionKey = (string) Str::uuid();
         $conversation = ChatConversation::create([
@@ -207,6 +214,19 @@ class ChatbotPageTest extends TestCase
             'user_message_id' => $userMessage->id,
             'status' => 'new',
         ]);
+
+        Notification::assertSentToTimes($admin, UnansweredQuestionEscalated::class, 1);
+        Notification::assertSentToTimes($superadmin, UnansweredQuestionEscalated::class, 1);
+        Notification::assertNotSentTo($inactiveAdmin, UnansweredQuestionEscalated::class);
+
+        Notification::assertSentTo($admin, UnansweredQuestionEscalated::class, function (UnansweredQuestionEscalated $notification) use ($admin): bool {
+            $data = $notification->toArray($admin);
+
+            return $data['type'] === 'unanswered_question_escalated'
+                && $data['ticket_code'] !== ''
+                && str_contains($data['message'], 'Apakah peserta mendapat fasilitas khusus?')
+                && str_contains($data['action_url'], '/admin/unanswered-questions/');
+        });
     }
 
     public function test_an_admin_can_answer_a_forwarded_question_in_the_users_chat_history(): void

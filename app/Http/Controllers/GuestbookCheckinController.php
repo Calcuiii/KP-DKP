@@ -36,7 +36,6 @@ final class GuestbookCheckinController extends Controller
         $request->session()->put('guestbook_pending', [
             'phone_hash' => GuestbookPhone::fingerprint($phone),
             'phone_suffix' => substr($phone, -4),
-            'requested_at' => now()->timestamp,
             'expires_at' => now()->addMinutes(30)->timestamp,
         ]);
 
@@ -52,7 +51,7 @@ final class GuestbookCheckinController extends Controller
             return to_route('guestbook.checkin')->withErrors(['verification' => 'Sesi verifikasi belum dimulai atau sudah kedaluwarsa. Masukkan nomor telepon kembali.']);
         }
         try {
-            $found = $reader->hasRecentResponse($pending['phone_hash'], $pending['requested_at']);
+            $found = $reader->hasResponse($pending['phone_hash']);
         } catch (\Throwable $exception) {
             // HTTP exception messages can include response data. Log the type only.
             Log::warning('Guestbook verification unavailable.', ['exception_type' => get_class($exception)]);
@@ -60,7 +59,7 @@ final class GuestbookCheckinController extends Controller
             return to_route('guestbook.checkin')->withErrors(['verification' => 'Pemeriksaan Buku Tamu sedang tidak tersedia. Silakan coba lagi beberapa saat; akses asisten belum dibuka.']);
         }
         if (! $found) {
-            return to_route('guestbook.checkin')->withErrors(['verification' => 'Pengisian baru belum ditemukan. Kirim Google Form dengan nomor yang sama setelah memulai verifikasi, lalu tunggu beberapa detik dan periksa kembali.']);
+            return to_route('guestbook.checkin')->withErrors(['verification' => 'Nomor belum ditemukan pada Buku Tamu. Pastikan nomor yang dimasukkan sama dengan nomor pada Google Form, atau isi formulir jika belum pernah mengisi.']);
         }
         $request->session()->forget('guestbook_pending');
         $request->session()->put('guestbook_verified_until', now()->addDay()->timestamp);

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Support\GuestbookPhone;
-use Carbon\CarbonImmutable;
 use Google\Auth\Credentials\ServiceAccountCredentials;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Cache;
@@ -16,7 +15,7 @@ use RuntimeException;
 
 class GoogleGuestbookReader
 {
-    public function hasRecentResponse(string $phoneHash, int $requestedAt): bool
+    public function hasResponse(string $phoneHash): bool
     {
         if (RateLimiter::tooManyAttempts('google-guestbook-reads', 40)) {
             throw new RuntimeException('Guestbook lookup busy.');
@@ -34,22 +33,14 @@ class GoogleGuestbookReader
             ->get($base.'/values/'.rawurlencode($parts[1].'!A1:'.$parts[2].'1'))
             ->throw()->json('values.0', []);
         $phoneColumn = $this->column($headers, (string) config('services.google_guestbook.phone_column'));
-        $timeColumn = $this->column($headers, (string) config('services.google_guestbook.timestamp_column'));
-        $query = 'ranges='.rawurlencode($parts[1].'!'.$phoneColumn.'2:'.$phoneColumn)
-            .'&ranges='.rawurlencode($parts[1].'!'.$timeColumn.'2:'.$timeColumn)
-            .'&valueRenderOption=UNFORMATTED_VALUE&dateTimeRenderOption=SERIAL_NUMBER';
         $values = Http::withToken($token)->connectTimeout(5)->timeout(15)
-            ->get($base.'/values:batchGet?'.$query)->throw()->json('valueRanges', []);
-        if (count($values) !== 2) {
-            throw new RuntimeException('Invalid guestbook response.');
-        }
-        foreach ($values[0]['values'] ?? [] as $index => $row) {
+            ->get($base.'/values/'.rawurlencode($parts[1].'!'.$phoneColumn.'2:'.$phoneColumn))
+            ->throw()
+            ->json('values', []);
+
+        foreach ($values as $row) {
             $number = GuestbookPhone::normalize((string) ($row[0] ?? ''));
-            if ($number === null || ! hash_equals($phoneHash, GuestbookPhone::fingerprint($number))) {
-                continue;
-            }
-            $timestamp = $this->timestamp($values[1]['values'][$index][0] ?? null);
-            if ($timestamp !== null && $timestamp >= $requestedAt && $timestamp <= now()->timestamp) {
+            if ($number !== null && hash_equals($phoneHash, GuestbookPhone::fingerprint($number))) {
                 return true;
             }
         }
@@ -72,29 +63,6 @@ class GoogleGuestbookReader
         }
 
         return $column;
-    }
-
-    private function timestamp(mixed $value): ?int
-    {
-        $timezone = (string) config('services.google_guestbook.timezone', 'Asia/Jakarta');
-        if (is_numeric($value) && (float) $value > 0 && (float) $value < 100000) {
-            // Sheets serials represent local wall time, not elapsed UTC time since 1899.
-            $wallTime = CarbonImmutable::create(1899, 12, 30, 0, 0, 0, 'UTC')
-                ->addSeconds((int) round((float) $value * 86400))->format('Y-m-d H:i:s');
-
-            return CarbonImmutable::createFromFormat('!Y-m-d H:i:s', $wallTime, $timezone)->timestamp;
-        }
-        if (! is_string($value)) {
-            return null;
-        }
-        try {
-            $format = (string) config('services.google_guestbook.timestamp_format');
-            $date = CarbonImmutable::createFromFormat('!'.$format, $value, $timezone);
-
-            return $date && $date->format($format) === $value ? $date->timestamp : null;
-        } catch (\Throwable) {
-            return null;
-        }
     }
 
     protected function accessToken(): string

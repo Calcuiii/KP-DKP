@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Services\GoogleGuestbookReader;
 use App\Support\GuestbookPhone;
-use Carbon\CarbonImmutable;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -15,11 +14,9 @@ class GoogleGuestbookReaderTest extends TestCase
     {
         parent::setUp();
         Http::preventStrayRequests();
-        $this->travelTo(CarbonImmutable::parse('2026-08-31 12:15:00', 'Asia/Jakarta'));
         config(['services.google_guestbook.spreadsheet_id' => 'test-sheet',
             'services.google_guestbook.range' => "'Form Responses 1'!A:Z",
-            'services.google_guestbook.phone_column' => 'Nomor Telepon',
-            'services.google_guestbook.timestamp_column' => 'Timestamp']);
+            'services.google_guestbook.phone_column' => 'Nomor Telepon']);
     }
 
     private function reader(): GoogleGuestbookReader
@@ -33,11 +30,11 @@ class GoogleGuestbookReaderTest extends TestCase
         };
     }
 
-    private function responses(array $phones, array $times, array $headers = ['Timestamp', 'Other', 'Other 2', 'Nomor Telepon']): void
+    private function responses(array $phones, array $headers = ['Timestamp', 'Other', 'Other 2', 'Nomor Telepon']): void
     {
         Http::fake([
-            '*values:batchGet*' => Http::response(['valueRanges' => [['values' => $phones], ['values' => $times]]]),
-            '*values/*' => Http::response(['values' => [$headers]]),
+            '*values/%27Form%20Responses%201%27%21A1%3AZ1*' => Http::response(['values' => [$headers]]),
+            '*' => Http::response(['values' => $phones]),
         ]);
     }
 
@@ -51,49 +48,40 @@ class GoogleGuestbookReaderTest extends TestCase
         }
     }
 
-    public function test_matches_recent_response_and_only_reads_phone_and_timestamp_columns(): void
+    public function test_matches_an_existing_response_and_only_reads_the_phone_column(): void
     {
-        $epoch = CarbonImmutable::create(1899, 12, 30, 0, 0, 0, 'UTC');
-        $serial = $epoch->diffInSeconds(CarbonImmutable::parse('2026-08-31 12:14:00', 'UTC')) / 86400;
-        $this->responses([['081111111111'], [], ['+62 812-3456-7890']], [[1], [], [$serial]]);
-        $this->assertTrue($this->reader()->hasRecentResponse(GuestbookPhone::fingerprint('6281234567890'), now()->subMinutes(2)->timestamp));
-        Http::assertSent(fn ($r) => $r->method() === 'GET' && str_contains(urldecode($r->url()), "ranges='Form Responses 1'!D2:D&ranges='Form Responses 1'!A2:A"));
+        $this->responses([['081111111111'], [], ['+62 812-3456-7890']]);
+        $this->assertTrue($this->reader()->hasResponse(GuestbookPhone::fingerprint('6281234567890')));
+        Http::assertSent(fn ($r) => $r->method() === 'GET' && str_contains(urldecode($r->url()), "'Form Responses 1'!D2:D"));
         Http::assertSentCount(2);
     }
 
-    public function test_rejects_old_future_invalid_and_other_phone_responses(): void
+    public function test_an_old_response_remains_valid_on_a_later_verification(): void
     {
-        $this->responses([['081234567890'], ['081234567890'], ['081234567890'], ['081111111111']],
-            [['30/08/2026 12:00:00'], ['31/08/2026 12:16:00'], ['invalid'], ['31/08/2026 12:14:00']]);
-        $this->assertFalse($this->reader()->hasRecentResponse(GuestbookPhone::fingerprint('6281234567890'), now()->subMinutes(2)->timestamp));
-    }
-
-    public function test_supports_explicit_text_timestamp_format(): void
-    {
-        $this->responses([['081234567890']], [['31/08/2026 12:14:00']]);
-        $this->assertTrue($this->reader()->hasRecentResponse(GuestbookPhone::fingerprint('6281234567890'), now()->subMinutes(2)->timestamp));
+        $this->responses([['081231987217']]);
+        $this->assertTrue($this->reader()->hasResponse(GuestbookPhone::fingerprint('6281231987217')));
     }
 
     public function test_different_visitors_are_matched_independently(): void
     {
-        $this->responses([['081234567890'], ['081111111111']], [['31/08/2026 12:14:00'], ['31/08/2026 12:14:01']]);
+        $this->responses([['081234567890'], ['081111111111']]);
         foreach (['6281234567890', '6281111111111'] as $phone) {
-            $this->assertTrue($this->reader()->hasRecentResponse(GuestbookPhone::fingerprint($phone), now()->subMinutes(2)->timestamp));
+            $this->assertTrue($this->reader()->hasResponse(GuestbookPhone::fingerprint($phone)));
         }
-        $this->assertFalse($this->reader()->hasRecentResponse(GuestbookPhone::fingerprint('6282222222222'), now()->subMinutes(2)->timestamp));
+        $this->assertFalse($this->reader()->hasResponse(GuestbookPhone::fingerprint('6282222222222')));
     }
 
     public function test_missing_headers_fail_closed(): void
     {
-        $this->responses([], [], ['Timestamp', 'Name']);
+        $this->responses([], ['Timestamp', 'Name']);
         $this->expectException(\RuntimeException::class);
-        $this->reader()->hasRecentResponse('hash', now()->timestamp);
+        $this->reader()->hasResponse('hash');
     }
 
     public function test_google_forbidden_response_is_not_treated_as_verified(): void
     {
         Http::fake(['*' => Http::response([], 403)]);
         $this->expectException(RequestException::class);
-        $this->reader()->hasRecentResponse('hash', now()->timestamp);
+        $this->reader()->hasResponse('hash');
     }
 }

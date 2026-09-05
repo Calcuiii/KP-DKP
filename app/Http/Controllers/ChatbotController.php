@@ -11,12 +11,15 @@ use App\Models\ChatConversation;
 use App\Models\ChatFeedback;
 use App\Models\ChatMessage;
 use App\Models\UnansweredEscalation;
+use App\Models\User;
+use App\Notifications\UnansweredQuestionEscalated;
 use App\Services\GroundedChatbotResponder;
 use App\Services\WhatsAppAdminNotifier;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Throwable;
@@ -219,6 +222,12 @@ final class ChatbotController extends Controller
 
         if ($escalation->wasRecentlyCreated) {
             $escalation->load('userMessage');
+            $admins = User::query()
+                ->whereIn('role', ['admin', 'superadmin'])
+                ->where('status', 'Aktif')
+                ->get();
+
+            Notification::send($admins, new UnansweredQuestionEscalated($escalation));
             $notifier->send($escalation);
         }
 

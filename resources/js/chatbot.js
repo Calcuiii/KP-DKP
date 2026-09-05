@@ -377,16 +377,22 @@ const initializeChatbot = () => {
             escalateButton.className = 'inline-flex items-center gap-1.5 rounded-xl bg-navy px-3 py-2 text-xs font-bold text-white transition hover:bg-ocean disabled:cursor-not-allowed disabled:opacity-60';
             escalateButton.innerHTML = '<i data-lucide="send" class="h-3.5 w-3.5"></i><span>Teruskan ke Petugas</span>';
 
-            const showEscalated = (ticketCode) => {
+            const showEscalated = (ticketCode, status = 'new') => {
+                const answered = status === 'resolved';
+
                 escalateButton.disabled = true;
-                escalateButton.innerHTML = '<i data-lucide="check" class="h-3.5 w-3.5"></i><span>Sudah diteruskan</span>';
-                escalationResult.textContent = `Pertanyaan telah diteruskan. Kode tiket: ${ticketCode}`;
+                escalateButton.innerHTML = answered
+                    ? '<i data-lucide="check" class="h-3.5 w-3.5"></i><span>Sudah dijawab admin</span>'
+                    : '<i data-lucide="clock" class="h-3.5 w-3.5"></i><span>Menunggu jawaban admin</span>';
+                escalationResult.textContent = answered
+                    ? `Jawaban admin sudah tersedia di percakapan ini. Kode tiket: ${ticketCode}`
+                    : `Pertanyaan sedang menunggu jawaban dari admin. Jawaban akan tersedia di percakapan ini setelah admin menjawab. Kode tiket: ${ticketCode}`;
                 escalationResult.classList.remove('hidden');
                 refreshIcons(escalateButton);
             };
 
             if (message.escalation?.ticket_code) {
-                showEscalated(message.escalation.ticket_code);
+                showEscalated(message.escalation.ticket_code, message.escalation.status);
             } else {
                 escalateButton.addEventListener('click', async () => {
                     escalateButton.disabled = true;
@@ -398,7 +404,7 @@ const initializeChatbot = () => {
                             method: 'POST',
                             body: JSON.stringify({ session_key: state.sessionKey }),
                         });
-                        showEscalated(payload.data.ticket_code);
+                        showEscalated(payload.data.ticket_code, payload.data.status);
                     } catch (error) {
                         escalateButton.disabled = false;
                         escalateButton.querySelector('span').textContent = 'Coba kirim lagi';

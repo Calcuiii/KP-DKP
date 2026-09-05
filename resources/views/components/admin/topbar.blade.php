@@ -67,6 +67,7 @@ $initials = collect(explode(' ', auth()->user()->name))
                                             'internship_form_submitted' => 'clipboard-check',
                                             'wopps_form_submitted' => 'phone-call',
                                             'document_automated_check_passed' => 'file-check',
+                                            'unanswered_question_escalated' => 'message-square-text',
                                             default => 'bell',
                                         } }}" class="h-4 w-4" aria-hidden="true"></i>
                                     </span>

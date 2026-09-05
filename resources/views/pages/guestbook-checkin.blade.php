@@ -12,7 +12,7 @@
                 <div class="bg-gradient-to-br from-navy to-ocean px-7 py-9 text-white sm:px-10">
                     <p class="mb-2 text-sm font-semibold text-blue-100">Check-in Pengunjung · Tanpa akun</p>
                     <h1 class="text-3xl font-bold leading-tight sm:text-4xl">Verifikasi Buku Tamu</h1>
-                    <p class="mt-3 text-blue-100">Isi formulir resmi DKP terlebih dahulu untuk membuka asisten informasi.</p>
+                    <p class="mt-3 text-blue-100">Verifikasi nomor yang sudah tercatat pada Buku Tamu untuk membuka asisten informasi.</p>
                 </div>
                 <div class="px-7 py-8 sm:px-10">
                     @if ($errors->any())
@@ -30,10 +30,10 @@
                     @endif
 
                     @if ($pending && $pending['expires_at'] > now()->timestamp)
-                        <h2 class="text-lg font-bold text-navy">Isi formulir, kemudian periksa pengisian</h2>
+                        <h2 class="text-lg font-bold text-navy">Periksa nomor pada Buku Tamu</h2>
                         <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
                             Gunakan nomor WhatsApp aktif yang berakhir dengan <strong class="text-navy">{{ $pending['phone_suffix'] }}</strong>.
-                            Kirim respons baru pada formulir resmi DKP setelah memulai verifikasi ini, lalu kembali ke halaman ini.
+                            Jika nomor tersebut sudah pernah dicatat pada formulir resmi DKP, Anda dapat langsung memeriksanya tanpa mengisi ulang.
                         </p>
                         <div class="mt-5 flex flex-col gap-3 sm:flex-row">
                             @if ($guestbookUrl)
@@ -51,14 +51,14 @@
                         </div>
                         <p class="mt-3 text-xs text-muted-foreground">
                             Verifikasi berlaku sampai {{ \Carbon\Carbon::createFromTimestamp($pending['expires_at'])->timezone(config('app.timezone'))->format('H:i') }} WIB.
-                            Pengisian lama tidak dihitung. Jika belum ditemukan, tunggu beberapa detik sebelum memeriksa lagi.
+                            Pengisian lama tetap berlaku. Jika baru saja mengisi dan belum ditemukan, tunggu beberapa detik sebelum memeriksa lagi.
                         </p>
                         <details class="mt-6 border-t border-border pt-4">
                             <summary class="cursor-pointer text-sm font-semibold text-ocean">Ganti nomor / mulai ulang</summary>
-                            <p class="mt-2 text-xs text-muted-foreground">Memulai ulang berarti Anda perlu mengirim respons baru lagi.</p>
+                            <p class="mt-2 text-xs text-muted-foreground">Gunakan bagian ini apabila nomor yang sebelumnya dimasukkan keliru.</p>
                     @else
                         <p class="text-sm leading-relaxed text-muted-foreground">
-                            Masukkan nomor WhatsApp aktif yang akan Anda tulis pada formulir resmi DKP. Sistem memeriksa nomor dan waktu pengisian; Anda tidak perlu membuat akun SI-MELAYUR.
+                            Masukkan nomor WhatsApp yang pernah atau akan Anda tulis pada formulir resmi DKP. Jika nomor sudah tercatat, Anda tidak perlu mengisi formulir kembali.
                         </p>
                     @endif
 

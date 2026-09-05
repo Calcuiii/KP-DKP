@@ -17,7 +17,7 @@ class GuestbookCheckinTest extends TestCase
     private function pending(string $phone = '6281234567890'): array
     {
         return ['phone_hash' => GuestbookPhone::fingerprint($phone), 'phone_suffix' => substr($phone, -4),
-            'requested_at' => now()->subMinute()->timestamp, 'expires_at' => now()->addMinutes(29)->timestamp];
+            'expires_at' => now()->addMinutes(29)->timestamp];
     }
 
     public function test_new_visitors_and_old_acknowledgement_cookies_cannot_access_chatbot(): void
@@ -55,13 +55,13 @@ class GuestbookCheckinTest extends TestCase
 
     public function test_completion_without_pending_session_does_not_query_google(): void
     {
-        $this->mock(GoogleGuestbookReader::class)->shouldNotReceive('hasRecentResponse');
+        $this->mock(GoogleGuestbookReader::class)->shouldNotReceive('hasResponse');
         $this->post(route('guestbook.complete'))->assertSessionHasErrors('verification')->assertSessionMissing('guestbook_verified_until');
     }
 
     public function test_expired_pending_session_is_rejected(): void
     {
-        $this->mock(GoogleGuestbookReader::class)->shouldNotReceive('hasRecentResponse');
+        $this->mock(GoogleGuestbookReader::class)->shouldNotReceive('hasResponse');
         $pending = $this->pending();
         $pending['expires_at'] = now()->subSecond()->timestamp;
         $this->withSession(['guestbook_pending' => $pending])->post(route('guestbook.complete'))
@@ -71,8 +71,8 @@ class GuestbookCheckinTest extends TestCase
     public function test_only_matched_phone_grants_access_using_the_server_session(): void
     {
         $pending = $this->pending();
-        $this->mock(GoogleGuestbookReader::class)->shouldReceive('hasRecentResponse')->once()
-            ->with($pending['phone_hash'], $pending['requested_at'])->andReturn(true);
+        $this->mock(GoogleGuestbookReader::class)->shouldReceive('hasResponse')->once()
+            ->with($pending['phone_hash'])->andReturn(true);
         $this->withSession(['guestbook_pending' => $pending])->post(route('guestbook.complete'), ['phone' => '081111111111'])
             ->assertRedirect(route('chatbot'))->assertSessionHas('guestbook_verified_until')->assertSessionMissing('guestbook_pending');
         $this->get(route('chatbot'))->assertOk();
@@ -80,7 +80,7 @@ class GuestbookCheckinTest extends TestCase
 
     public function test_unmatched_response_keeps_chatbot_locked(): void
     {
-        $this->mock(GoogleGuestbookReader::class)->shouldReceive('hasRecentResponse')->once()->andReturn(false);
+        $this->mock(GoogleGuestbookReader::class)->shouldReceive('hasResponse')->once()->andReturn(false);
         $this->withSession(['guestbook_pending' => $this->pending()])->post(route('guestbook.complete'))
             ->assertSessionHasErrors('verification')->assertSessionMissing('guestbook_verified_until');
         $this->get(route('chatbot'))->assertRedirect(route('guestbook.checkin'));
@@ -88,7 +88,7 @@ class GuestbookCheckinTest extends TestCase
 
     public function test_google_failure_is_safe_and_does_not_expose_error_details(): void
     {
-        $this->mock(GoogleGuestbookReader::class)->shouldReceive('hasRecentResponse')->once()->andThrow(new \RuntimeException('private-response-secret'));
+        $this->mock(GoogleGuestbookReader::class)->shouldReceive('hasResponse')->once()->andThrow(new \RuntimeException('private-response-secret'));
         $this->withSession(['guestbook_pending' => $this->pending()])->followingRedirects()->post(route('guestbook.complete'))
             ->assertSee('Pemeriksaan Buku Tamu sedang tidak tersedia')
             ->assertDontSee('private-response-secret')
