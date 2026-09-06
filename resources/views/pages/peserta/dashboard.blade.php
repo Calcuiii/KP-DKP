@@ -23,7 +23,7 @@
                 $letterApproved = $application->requestLetterApproved();
                 $internshipFormCompleted = $application->google_form_confirmed_at !== null
                     && $application->latestDocument(\App\Models\ParticipantApplicationDocument::TYPE_INTERNSHIP_FORM_PROOF);
-                $hasResponse = $participant->replyLetter()->exists() || filled($application->decision);
+                $hasResponse = filled($application->response_letter_path) || filled($application->decision);
                 $sidebarProgress = [
                     ['label' => 'Buku Tamu', 'state' => $application->guestbook_confirmed_at ? 'done' : 'current'],
                     ['label' => 'Upload Surat', 'state' => $application->letter_submitted_at ? 'done' : ($application->guestbook_confirmed_at ? 'current' : 'upcoming')],
@@ -36,11 +36,14 @@
                 $letterApproved = $application->requestLetterApproved();
                 $ethicsApproved = $application->ethicsApprovalApproved();
                 $woppsFormCompleted = $application->google_form_confirmed_at !== null;
+                $woppsDecisionMade = filled($application->decision);
+                $woppsFinished = $application->completed_at !== null || $application->decision === 'rejected';
                 $sidebarProgress = [
                     ['label' => 'Pemeriksaan Surat', 'state' => $letterApproved ? 'done' : 'current'],
                     ['label' => 'Ethics Approval', 'state' => $ethicsApproved ? 'done' : ($letterApproved ? 'current' : 'upcoming')],
                     ['label' => 'Form WOPPS', 'state' => $woppsFormCompleted ? 'done' : ($ethicsApproved ? 'current' : 'upcoming')],
-                    ['label' => 'Tindak Lanjut', 'state' => $woppsFormCompleted ? 'current' : 'upcoming'],
+                    ['label' => 'Surat Balasan', 'state' => $woppsDecisionMade ? 'done' : ($woppsFormCompleted ? 'current' : 'upcoming')],
+                    ['label' => 'Tindak Lanjut', 'state' => $woppsFinished ? 'done' : ($woppsDecisionMade ? 'current' : 'upcoming')],
                 ];
             }
         }
@@ -52,6 +55,10 @@
             'letter_revision_required' => 'Revisi Surat Diperlukan',
             'ethics_revision_required' => 'Revisi Ethics Approval Diperlukan',
             'ethics_under_review' => 'Ethics Approval Sedang Diperiksa',
+            'wopps_waiting_contact' => 'Menunggu Dihubungi Dinas',
+            'wopps_contacted' => 'Sudah Dihubungi Dinas',
+            'completed' => 'Layanan Selesai',
+            'rejected' => 'Pengajuan Ditolak',
             default => $activeProgressLabel,
         };
         $isInternshipExecution = $application

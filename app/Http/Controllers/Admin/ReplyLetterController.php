@@ -24,8 +24,8 @@ final class ReplyLetterController extends Controller
     {
         $participants = Participant::query()
             ->with([
-                'replyLetter',
                 'applications.documents',
+                'applications.replyLetter',
             ])
             ->whereHas('applications.documents', function ($query) {
                 $query->where(
@@ -95,9 +95,7 @@ final class ReplyLetterController extends Controller
         /*
          * Cari surat balasan lama milik peserta.
          */
-        $existing = ReplyLetter::query()
-            ->where('participant_id', $participant->id)
-            ->first();
+        $existing = $application->replyLetter;
 
         /*
          * Jika sudah ada surat lama,
@@ -124,9 +122,10 @@ final class ReplyLetterController extends Controller
          */
         $replyLetter = ReplyLetter::updateOrCreate(
             [
-                'participant_id' => $participant->id,
+                'participant_application_id' => $application->id,
             ],
             [
+                'participant_id' => $participant->id,
                 'file_path' => $path,
                 'original_name' => $file->getClientOriginalName(),
                 'sent_at' => now(),

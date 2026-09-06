@@ -18,7 +18,7 @@
     $normalizedDecision = mb_strtolower((string) $application->decision);
     $applicationAccepted = in_array($normalizedDecision, ['accepted', 'approved', 'diterima'], true);
     $applicationRejected = in_array($normalizedDecision, ['rejected', 'declined', 'ditolak'], true);
-    $replyLetter = $application->participant?->replyLetter;
+    $replyLetter = $application->replyLetter;
     $stageSixUnlocked = $officialStarted !== null || $applicationAccepted;
     $calendarMonth = $officialStarted && $officialEnded
         ? ($today->betweenIncluded($officialStarted->copy()->startOfDay(), $officialEnded->copy()->startOfDay()) ? $today->copy() : $officialStarted->copy())->startOfMonth()

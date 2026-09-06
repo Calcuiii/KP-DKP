@@ -16,8 +16,8 @@ use App\Models\User;
 use App\Notifications\DocumentAutomatedCheckPassed;
 use App\Notifications\InternshipFormSubmitted;
 use App\Notifications\WoppsFormSubmitted;
-use App\Services\RequestLetterAutomatedChecker;
 use App\Services\EthicsApprovalAutomatedChecker;
+use App\Services\RequestLetterAutomatedChecker;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -33,8 +33,15 @@ final class ParticipantApplicationController extends Controller
         $application = $participant->applications()->latest()->first();
 
         if ($application instanceof ParticipantApplication) {
-            abort_unless($application->status === 'preparation', 422, 'Jenis layanan tidak dapat diubah setelah proses dimulai.');
-            $application->update($request->validated());
+            if ($application->isClosed()) {
+                $participant->applications()->create([
+                    ...$request->validated(),
+                    'status' => 'preparation',
+                ]);
+            } else {
+                abort_unless($application->status === 'preparation', 422, 'Anda masih memiliki satu pengajuan aktif. Selesaikan pengajuan tersebut sebelum membuat pengajuan baru.');
+                $application->update($request->validated());
+            }
         } else {
             $participant->applications()->create([
                 ...$request->validated(),
@@ -282,7 +289,8 @@ final class ParticipantApplicationController extends Controller
         /** @var Participant $participant */
         $participant = $request->user('peserta');
 
-        $replyLetter = $participant->replyLetter;
+        $application = $participant->applications()->latest()->firstOrFail();
+        $replyLetter = $application->replyLetter;
 
         abort_unless($replyLetter && filled($replyLetter->file_path), 404);
         abort_unless(Storage::disk('public')->exists($replyLetter->file_path), 404);

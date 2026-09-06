@@ -6,7 +6,11 @@ Dinas Kelautan dan Perikanan Provinsi Jawa Timur telah menetapkan keputusan resm
 
 Status: {{ $accepted ? 'DITERIMA' : 'BELUM DAPAT DITERIMA' }}
 @if($accepted)
+@if($isWopps)
+Petugas Dinas akan menghubungi Anda untuk tindak lanjut layanan WOPPS.
+@else
 Periode pelaksanaan: {{ $periodLabel }}
+@endif
 @endif
 
 Surat balasan terlampir pada email ini dan juga tersedia pada dashboard portal peserta untuk diunduh kembali:

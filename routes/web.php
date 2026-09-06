@@ -171,6 +171,8 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
         Route::get('/wopps-follow-up', [WoppsFollowUpController::class, 'index'])->name('admin.wopps-follow-up');
         Route::get('/wopps-follow-up/bukti/{document}/unduh', [WoppsFollowUpController::class, 'download'])->name('admin.wopps-follow-up.download');
         Route::post('/wopps-follow-up/{application}/tandai', [WoppsFollowUpController::class, 'markContacted'])->name('admin.wopps-follow-up.mark-contacted');
+        Route::post('/wopps-follow-up/{application}/keputusan', [WoppsFollowUpController::class, 'sendDecision'])->name('admin.wopps-follow-up.decision');
+        Route::post('/wopps-follow-up/{application}/selesai', [WoppsFollowUpController::class, 'markCompleted'])->name('admin.wopps-follow-up.complete');
 
         Route::get('/knowledge-base', [KnowledgeBaseController::class, 'index'])->name('admin.knowledge-base');
         Route::post('/knowledge-base', [KnowledgeBaseController::class, 'store'])->name('admin.knowledge-base.store');
