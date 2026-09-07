@@ -3,10 +3,6 @@
     $officialEnded = $application->official_ended_at;
     $today = now()->startOfDay();
     $daysRemaining = $officialEnded ? max(0, $today->diffInDays($officialEnded->copy()->startOfDay(), false)) : null;
-    $preparationReminderDate = $officialEnded?->copy()->subDays(10)->startOfDay();
-    $isPreparationWindow = $preparationReminderDate
-        ? $today->betweenIncluded($preparationReminderDate, $officialEnded->copy()->startOfDay())
-        : false;
     $totalDays = $officialStarted && $officialEnded ? max(1, $officialStarted->copy()->startOfDay()->diffInDays($officialEnded->copy()->startOfDay())) : null;
     $elapsedDays = $officialStarted ? max(0, $officialStarted->copy()->startOfDay()->diffInDays($today, false)) : 0;
     $executionProgress = $totalDays ? min(100, max(0, round(($elapsedDays / $totalDays) * 100))) : 0;
@@ -16,6 +12,7 @@
     $calendarDays = $calendarMonth
         ? \Carbon\CarbonPeriod::create($calendarMonth->copy()->startOfWeek(\Carbon\CarbonInterface::MONDAY), $calendarMonth->copy()->endOfMonth()->endOfWeek(\Carbon\CarbonInterface::SUNDAY))
         : collect();
+    $replyLetter = $application->participant?->replyLetter;
 @endphp
 
 <section id="ringkasan" class="relative isolate overflow-hidden rounded-[2rem] bg-gradient-to-br from-navy via-[#123d72] to-ocean p-7 text-white shadow-xl shadow-navy/15 sm:p-10">
@@ -38,6 +35,28 @@
     @endif
 </section>
 
+<section id="surat-balasan" class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8">
+    <div class="flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex items-start gap-4">
+            <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-teal/10 text-teal"><i data-lucide="mail-check" class="h-5 w-5"></i></span>
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-teal">Dokumen resmi</p>
+                <h2 class="mt-1 text-xl font-extrabold">Surat balasan Dinas</h2>
+                <p class="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
+                    @if ($replyLetter)
+                        Dokumen balasan resmi dari Dinas sudah tersedia dan dapat diunduh kapan saja.
+                    @else
+                        Surat balasan resmi belum diunggah oleh Dinas.
+                    @endif
+                </p>
+            </div>
+        </div>
+        @if ($replyLetter)
+            <a href="{{ route('peserta.response-letter.download') }}" class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white"><i data-lucide="download" class="h-4 w-4"></i>Unduh Surat Balasan</a>
+        @endif
+    </div>
+</section>
+
 <section id="kalender-kegiatan" class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div class="flex items-start gap-4"><span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-ocean to-teal text-white"><i data-lucide="calendar-range" class="h-5 w-5"></i></span><div><p class="text-xs font-bold uppercase tracking-[0.18em] text-teal">Ruang pelaksanaan</p><h2 class="mt-1 text-2xl font-extrabold">Kalender kegiatan magang</h2><p class="mt-2 text-sm text-muted-foreground">Pantau hari pertama, hari ini, dan batas akhir kegiatan Anda.</p></div></div>
@@ -52,13 +71,20 @@
                 <p class="mt-4 text-xs leading-relaxed text-muted-foreground">Perubahan periode hanya dapat ditetapkan oleh admin Dinas.</p>
             </div>
             <div class="rounded-2xl border border-border p-4 sm:p-5">
-                <x-peserta.internship-calendar
-                    :official-started="$officialStarted"
-                    :official-ended="$officialEnded"
-                    :today="$today"
-                    :preparation-reminder-date="$preparationReminderDate"
-                    :is-preparation-window="$isPreparationWindow"
-                />
+                <div class="flex items-center justify-between gap-4"><div><p class="text-xs text-muted-foreground">Kalender pelaksanaan</p><h3 class="mt-1 text-lg font-extrabold">{{ $calendarMonth->translatedFormat('F Y') }}</h3></div><div class="hidden gap-3 text-[10px] font-bold text-muted-foreground sm:flex"><span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-ocean"></span>Periode</span><span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-teal"></span>Hari ini</span></div></div>
+                <div class="mt-5 grid grid-cols-7 gap-1 text-center">
+                    @foreach (['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'] as $dayName)<span class="py-2 text-[10px] font-extrabold uppercase text-muted-foreground">{{ $dayName }}</span>@endforeach
+                    @foreach ($calendarDays as $calendarDay)
+                        @php
+                            $day = \Carbon\Carbon::instance($calendarDay)->startOfDay();
+                            $inCurrentMonth = $day->month === $calendarMonth->month;
+                            $inInternship = $day->betweenIncluded($officialStarted->copy()->startOfDay(), $officialEnded->copy()->startOfDay());
+                            $isToday = $day->isSameDay($today);
+                            $isBoundary = $day->isSameDay($officialStarted) || $day->isSameDay($officialEnded);
+                        @endphp
+                        <div class="relative flex aspect-square min-h-9 items-center justify-center rounded-xl text-xs font-bold {{ ! $inCurrentMonth ? 'text-slate-300' : ($inInternship ? 'bg-ocean/10 text-ocean' : 'text-navy') }} {{ $isToday ? 'ring-2 ring-teal ring-offset-1' : '' }} {{ $isBoundary ? 'bg-ocean text-white' : '' }}">{{ $day->day }}@if($isToday)<span class="absolute bottom-1 h-1 w-1 rounded-full bg-teal"></span>@endif</div>
+                    @endforeach
+                </div>
             </div>
         </div>
     @else
