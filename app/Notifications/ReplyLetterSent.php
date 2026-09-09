@@ -32,6 +32,7 @@ final class ReplyLetterSent extends Notification
     public function toArray(object $notifiable): array
     {
         $accepted = $this->application->decision === 'accepted';
+        $isWopps = $this->application->service_type === ParticipantApplication::SERVICE_WOPPS;
 
         return [
             'type' => 'reply_letter',
@@ -39,7 +40,9 @@ final class ReplyLetterSent extends Notification
             'title' => $accepted ? 'Pengajuan diterima' : 'Pengajuan belum dapat diterima',
 
             'message' => $accepted
-                ? 'Pengajuan Anda diterima untuk periode '.$this->periodLabel().'. Surat balasan tersedia pada dashboard.'
+                ? ($isWopps
+                    ? 'Pengajuan WOPPS Anda diterima. Silakan baca surat balasan dan tunggu petugas Dinas menghubungi Anda.'
+                    : 'Pengajuan Anda diterima untuk periode '.$this->periodLabel().'. Surat balasan tersedia pada dashboard.')
                 : 'Pengajuan Anda belum dapat diterima. Silakan periksa surat balasan resmi pada dashboard.',
 
             'status' => $accepted ? 'accepted' : 'rejected',
@@ -56,6 +59,7 @@ final class ReplyLetterSent extends Notification
             'participant' => $notifiable,
             'application' => $this->application,
             'accepted' => $this->application->decision === 'accepted',
+            'isWopps' => $this->application->service_type === ParticipantApplication::SERVICE_WOPPS,
             'periodLabel' => $this->periodLabel(),
             'dashboardUrl' => route('peserta.dashboard').'#surat-balasan',
         ];

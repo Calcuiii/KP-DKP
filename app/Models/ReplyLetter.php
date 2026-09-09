@@ -9,6 +9,7 @@ final class ReplyLetter extends Model
 {
     protected $fillable = [
         'participant_id',
+        'participant_application_id',
         'file_path',
         'original_name',
         'sent_at',
@@ -27,5 +28,10 @@ final class ReplyLetter extends Model
             Participant::class,
             'participant_id'
         );
+    }
+
+    public function application(): BelongsTo
+    {
+        return $this->belongsTo(ParticipantApplication::class, 'participant_application_id');
     }
 }

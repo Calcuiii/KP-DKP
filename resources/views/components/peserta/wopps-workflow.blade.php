@@ -13,6 +13,11 @@
     $canUploadEthics = ! $ethicsDocument || $ethicsNeedsRevision || $ethicsAutomatedNeedsRevision;
     $woppsFormProof = $application->latestDocument(ParticipantApplicationDocument::TYPE_WOPPS_FORM_PROOF);
     $woppsFormCompleted = $application->google_form_confirmed_at !== null && $woppsFormProof;
+    $replyLetter = $application->replyLetter;
+    $accepted = $application->decision === 'accepted';
+    $rejected = $application->decision === 'rejected';
+    $contacted = $application->pic_contacted_at !== null;
+    $completed = $application->completed_at !== null;
     $requirements = [
         ['user-round', 'Nama Mahasiswa'],
         ['badge', 'Nomor Induk Mahasiswa'],
@@ -145,7 +150,7 @@
                                 <a href="{{ route('peserta.document.download', $woppsFormProof) }}" class="mt-3 inline-flex items-center gap-2 text-xs font-bold text-ocean"><i data-lucide="download" class="h-3.5 w-3.5"></i> Lihat bukti</a>
                             </div>
                         </div>
-                        <div class="mt-5 rounded-2xl border border-teal/20 bg-teal/[0.06] p-4 text-xs font-semibold leading-relaxed text-teal">Tahap 3 selesai. Silakan menunggu tindak lanjut dari Dinas melalui portal.</div>
+                        <div class="mt-5 rounded-2xl border border-teal/20 bg-teal/[0.06] p-4 text-xs font-semibold leading-relaxed text-teal">Tahap 3 selesai. Silakan menunggu keputusan dan surat balasan resmi dari Dinas melalui portal.</div>
                     @else
                         <h3 class="text-sm font-extrabold">Upload bukti pengiriman</h3>
                         <p class="mt-1 text-xs leading-relaxed text-muted-foreground">Gunakan screenshot halaman yang menyatakan respons berhasil dikirim. Format JPG, PNG, atau PDF, maksimal 5 MB.</p>
@@ -246,13 +251,13 @@
         <div class="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
             <div class="max-w-3xl">
                 <div class="flex items-center gap-3">
-                    <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-teal to-ocean text-white"><i data-lucide="message-circle" class="h-5 w-5"></i></span>
+                    <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-teal to-ocean text-white"><i data-lucide="mail" class="h-5 w-5"></i></span>
                     <div>
                         <p class="text-xs font-bold uppercase tracking-[0.18em] text-teal">WOPPS · Tahap 4</p>
-                        <h2 class="mt-1 text-2xl font-extrabold tracking-tight">Koordinasi tindak lanjut</h2>
+                        <h2 class="mt-1 text-2xl font-extrabold tracking-tight">Keputusan dan surat balasan Dinas</h2>
                     </div>
                 </div>
-                <p class="mt-4 text-sm leading-relaxed text-muted-foreground">Setelah Form WOPPS dikirim, silakan melakukan koordinasi lebih lanjut dengan pihak Dinas Kelautan dan Perikanan Provinsi Jawa Timur melalui kontak resmi berikut.</p>
+                <p class="mt-4 text-sm leading-relaxed text-muted-foreground">Dinas akan memeriksa pengajuan dan mengirim keputusan beserta surat balasan resmi. Layanan WOPPS tidak menggunakan tanggal mulai dan selesai seperti magang.</p>
             </div>
 
             @if (! $woppsFormCompleted)
@@ -261,20 +266,37 @@
         </div>
 
         @if ($woppsFormCompleted)
-            <div class="relative mt-7 flex flex-col gap-5 rounded-3xl border border-teal/20 bg-gradient-to-br from-teal/[0.07] via-white to-ocean/[0.06] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-                <div class="flex items-start gap-4">
-                    <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-teal text-white shadow-lg shadow-teal/20"><i data-lucide="contact" class="h-5 w-5"></i></span>
-                    <div>
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-teal">Kontak Koordinasi WOPPS</p>
-                        <h3 class="mt-1 text-base font-extrabold text-navy">Bapak Dicky Fadillah</h3>
-                        <p class="mt-1 text-sm font-semibold text-muted-foreground">+62 852-5300-0485</p>
-                    </div>
-                </div>
-                <a href="https://wa.me/6285253000485" target="_blank" rel="noopener noreferrer" class="inline-flex w-fit shrink-0 items-center gap-2 rounded-xl bg-teal px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-teal/15 transition hover:-translate-y-0.5 hover:brightness-105">
-                    <i data-lucide="message-circle" class="h-4 w-4"></i> Hubungi via WhatsApp
-                </a>
-            </div>
-            <p class="relative mt-4 flex items-start gap-2 text-xs leading-relaxed text-muted-foreground"><i data-lucide="info" class="mt-0.5 h-4 w-4 shrink-0 text-ocean"></i>Sampaikan identitas, asal institusi, serta keperluan WOPPS secara ringkas agar koordinasi dapat diproses dengan baik.</p>
+            @if($accepted)
+                <div class="mt-7 rounded-3xl border border-teal/25 bg-teal/[0.06] p-6"><p class="text-xs font-extrabold uppercase tracking-wider text-teal">Pengajuan diterima</p><h3 class="mt-2 text-xl font-extrabold">Layanan WOPPS Anda dapat ditindaklanjuti.</h3><p class="mt-2 text-sm text-muted-foreground">Surat balasan resmi sudah tersedia. Tidak ada periode tanggal untuk layanan WOPPS.</p>@if($replyLetter)<a href="{{ route('peserta.response-letter.download') }}" class="mt-4 inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white"><i data-lucide="download" class="h-4 w-4"></i>Unduh Surat Balasan</a>@endif</div>
+            @elseif($rejected)
+                <div class="mt-7 rounded-3xl border border-red-200 bg-red-50 p-6"><p class="text-xs font-extrabold uppercase tracking-wider text-red-700">Pengajuan ditolak</p><h3 class="mt-2 text-xl font-extrabold">Pengajuan WOPPS ini telah ditutup.</h3><p class="mt-2 text-sm text-red-800">Keputusan ini bersifat final. Dokumen pada pengajuan ini tidak dapat diperbaiki kembali.</p>@if($replyLetter)<a href="{{ route('peserta.response-letter.download') }}" class="mt-4 inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white"><i data-lucide="download" class="h-4 w-4"></i>Unduh Surat Balasan</a>@endif</div>
+            @else
+                <div class="mt-7 rounded-3xl border border-amber-200 bg-amber-50 p-6"><p class="text-sm font-extrabold text-amber-900">Menunggu keputusan Dinas</p><p class="mt-2 text-sm leading-relaxed text-amber-800">Surat balasan akan tersedia di portal dan dikirim melalui email setelah Dinas menetapkan keputusan.</p></div>
+            @endif
+        @endif
+    </article>
+</section>
+
+<section id="penyelesaian-wopps" class="scroll-mt-28">
+    <article class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8 {{ $accepted || $rejected ? '' : 'opacity-60' }}">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-ocean">WOPPS · Tahap 5</p>
+        <h2 class="mt-2 text-2xl font-extrabold">Tindak lanjut dan penyelesaian</h2>
+        @if($accepted)
+            @if($completed)
+                <div class="mt-6 rounded-3xl border border-emerald-200 bg-emerald-50 p-6"><p class="text-sm font-extrabold text-emerald-800">Layanan WOPPS selesai</p><p class="mt-2 text-sm text-emerald-700">Diselesaikan pada {{ $application->completed_at->translatedFormat('d F Y, H:i') }} WIB. Anda dapat mengajukan layanan baru melalui akun yang sama.</p></div>
+            @elseif($contacted)
+                <div class="mt-6 rounded-3xl border border-teal/25 bg-teal/[0.06] p-6"><p class="text-sm font-extrabold text-teal">Anda sudah dihubungi petugas Dinas</p><p class="mt-2 text-sm text-muted-foreground">Silakan mengikuti arahan petugas. Status selesai akan diperbarui oleh Dinas setelah layanan tuntas.</p></div>
+            @else
+                <div class="mt-6 rounded-3xl border border-ocean/20 bg-ocean/[0.05] p-6"><p class="text-sm font-extrabold text-ocean">Menunggu dihubungi pihak Dinas</p><p class="mt-2 text-sm leading-relaxed text-muted-foreground">Anda tidak perlu menghubungi petugas terlebih dahulu. Pastikan nomor telepon pada Form WOPPS aktif; petugas Dinas akan menghubungi Anda.</p></div>
+            @endif
+        @elseif($rejected)
+            <div class="mt-6 rounded-3xl bg-slate-50 p-6"><p class="text-sm font-extrabold">Pengajuan telah ditutup</p><p class="mt-2 text-sm text-muted-foreground">Anda dapat membuat pengajuan baru tanpa mengubah riwayat pengajuan yang ditolak.</p></div>
+        @else
+            <p class="mt-4 text-sm text-muted-foreground">Tahap ini tersedia setelah keputusan Dinas diterbitkan.</p>
+        @endif
+
+        @if($completed || $rejected)
+            <div class="mt-6 rounded-3xl bg-gradient-to-br from-navy to-ocean p-6 text-white"><h3 class="text-lg font-extrabold">Ingin mengajukan layanan lagi?</h3><p class="mt-2 text-sm text-blue-100">Pilih layanan baru. Riwayat pengajuan ini tetap tersimpan dan tidak akan diubah.</p><form method="POST" action="{{ route('peserta.application.store') }}" class="mt-5 flex flex-wrap gap-3">@csrf<button name="service_type" value="magang_pkl" class="rounded-xl bg-white px-4 py-3 text-sm font-bold text-ocean">Magang / PKL / KP</button><button name="service_type" value="wopps" class="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-sm font-bold text-white">WOPPS</button></form></div>
         @endif
     </article>
 </section>

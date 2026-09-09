@@ -311,10 +311,9 @@ class ParticipantApplicationTest extends TestCase
         $this->actingAs($participant, 'peserta')
             ->get(route('peserta.dashboard'))
             ->assertOk()
-            ->assertSee('Koordinasi tindak lanjut')
-            ->assertSee('Bapak Dicky Fadillah')
-            ->assertSee('+62 852-5300-0485')
-            ->assertSee('https://wa.me/6285253000485', false);
+            ->assertSee('Keputusan dan surat balasan Dinas')
+            ->assertSee('Menunggu keputusan Dinas')
+            ->assertDontSee('Hubungi via WhatsApp');
     }
 
     public function test_internship_form_proof_requires_an_approved_letter_and_unlocks_the_response_stage(): void

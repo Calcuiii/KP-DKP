@@ -6,8 +6,7 @@
         ['label' => 'Portal Peserta', 'icon' => 'briefcase-business', 'active' => request()->routeIs('admin.pemeriksaan-dokumen*', 'admin.internship-locations*', 'admin.surat-balasan*', 'admin.wopps-follow-up*'), 'items' => array_values(array_filter([
             $isSuperAdmin ? ['icon' => 'file-check-2', 'label' => 'Pemeriksaan Dokumen', 'route' => 'admin.pemeriksaan-dokumen', 'active' => ['admin.pemeriksaan-dokumen', 'admin.pemeriksaan-dokumen.*']] : null,
             ['icon' => 'map-pinned', 'label' => 'Kuota Lokasi Magang', 'route' => 'admin.internship-locations', 'active' => ['admin.internship-locations', 'admin.internship-locations.*']],
-            $isSuperAdmin ? ['icon' => 'file-output', 'label' => 'Surat Balasan', 'route' => 'admin.surat-balasan', 'active' => ['admin.surat-balasan', 'admin.surat-balasan.*']] : null,
-            $isSuperAdmin ? ['icon' => 'phone-call', 'label' => 'Tindak Lanjut WOPPS', 'route' => 'admin.wopps-follow-up', 'active' => ['admin.wopps-follow-up', 'admin.wopps-follow-up.*']] : null,
+            $isSuperAdmin ? ['icon' => 'file-output', 'label' => 'Surat Balasan', 'route' => 'admin.surat-balasan', 'active' => ['admin.surat-balasan', 'admin.surat-balasan.*', 'admin.wopps-follow-up', 'admin.wopps-follow-up.*']] : null,
         ]))],
         ['label' => 'Asisten SI-MELAYUR', 'icon' => 'messages-square', 'active' => request()->routeIs('admin.knowledge-base*', 'admin.infographics*', 'admin.unanswered-questions*', 'admin.conversation-logs*', 'admin.analytics*'), 'items' => array_values(array_filter([
             $isSuperAdmin ? ['icon' => 'database', 'label' => 'Knowledge Base', 'route' => 'admin.knowledge-base', 'active' => ['admin.knowledge-base', 'admin.knowledge-base.*']] : null,
