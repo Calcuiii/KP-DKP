@@ -16,6 +16,8 @@ final class UploadRequestLetterRequest extends FormRequest
         return [
             'request_letter' => ['required', 'file', 'mimes:pdf', 'max:10240'],
             'letter_declaration' => ['accepted'],
+            'shared_letter' => ['sometimes', 'boolean'],
+            'letter_institution' => ['nullable', 'required_if:shared_letter,1', 'string', 'max:255'],
         ];
     }
 }

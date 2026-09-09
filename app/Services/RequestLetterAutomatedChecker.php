@@ -45,22 +45,22 @@ final class RequestLetterAutomatedChecker
         $checks = $serviceType === ParticipantApplication::SERVICE_WOPPS
             ? $this->woppsChecks($text, $normalized, $expectedParticipantName)
             : [
-            $this->containsCheck('letterhead', 'Kop surat institusi', $normalized, ['kop surat resmi', 'universitas', 'sekolah', 'institut', 'politeknik'], 'Kop atau nama institusi pendidikan belum terdeteksi.'),
-            $this->containsCheck('recipient', 'Tujuan surat', $normalized, ['kepala dinas kelautan dan perikanan provinsi jawa timur'], 'Surat harus ditujukan kepada Kepala Dinas Kelautan dan Perikanan Provinsi Jawa Timur.'),
-            $this->subjectCheck($normalized),
-            $this->participantIdentityCheck($text, $expectedParticipantName),
-            $this->containsCheck('student_number', 'NIM atau NIS', $normalized, ['nim', 'nis', 'nisn'], 'NIM/NIS peserta belum ditemukan.'),
-            $this->containsCheck('study_program', 'Program studi atau jurusan', $normalized, ['program studi', 'jurusan', 'kompetensi keahlian'], 'Program studi atau jurusan belum ditemukan.'),
-            $this->containsCheck('location', 'Lokasi kegiatan', $normalized, ['lokasi kegiatan', 'upt ', 'instalasi ', 'cabang dinas'], 'Lokasi UPT/Instalasi/Cabang Dinas belum dicantumkan.'),
-            $this->periodCheck($text, $normalized),
-            $this->contactCheck($text, $normalized),
-            $this->placeholderCheck($text, $normalized),
-            $this->notesPageCheck($normalized),
-            $this->spellingCheck($normalized),
-            [
-                'key' => 'signature', 'label' => 'Tanda tangan dan stempel', 'status' => 'manual',
-                'message' => 'Keaslian tanda tangan, TTE, dan stempel harus diperiksa admin.',
-            ],
+                $this->containsCheck('letterhead', 'Kop surat institusi', $normalized, ['kop surat resmi', 'universitas', 'sekolah', 'institut', 'politeknik'], 'Kop atau nama institusi pendidikan belum terdeteksi.'),
+                $this->containsCheck('recipient', 'Tujuan surat', $normalized, ['kepala dinas kelautan dan perikanan provinsi jawa timur'], 'Surat harus ditujukan kepada Kepala Dinas Kelautan dan Perikanan Provinsi Jawa Timur.'),
+                $this->subjectCheck($normalized),
+                $this->participantIdentityCheck($text, $expectedParticipantName),
+                $this->containsCheck('student_number', 'NIM atau NIS', $normalized, ['nim', 'nis', 'nisn'], 'NIM/NIS peserta belum ditemukan.'),
+                $this->containsCheck('study_program', 'Program studi atau jurusan', $normalized, ['program studi', 'jurusan', 'kompetensi keahlian'], 'Program studi atau jurusan belum ditemukan.'),
+                $this->containsCheck('location', 'Lokasi kegiatan', $normalized, ['lokasi kegiatan', 'upt ', 'instalasi ', 'cabang dinas'], 'Lokasi UPT/Instalasi/Cabang Dinas belum dicantumkan.'),
+                $this->periodCheck($text, $normalized),
+                $this->contactCheck($text, $normalized),
+                $this->placeholderCheck($text, $normalized),
+                $this->notesPageCheck($normalized),
+                $this->spellingCheck($normalized),
+                [
+                    'key' => 'signature', 'label' => 'Tanda tangan dan stempel', 'status' => 'manual',
+                    'message' => 'Keaslian tanda tangan, TTE, dan stempel harus diperiksa admin.',
+                ],
             ];
 
         $failed = count(array_filter($checks, fn (array $check): bool => $check['status'] === 'failed'));
@@ -214,8 +214,23 @@ final class RequestLetterAutomatedChecker
 
     private function participantIdentityCheck(string $text, ?string $expectedParticipantName): array
     {
+        // Lampiran tabel dan daftar bernomor tidak selalu mengulang label Nama.
+        // Kehadiran nama tetap memerlukan pemeriksaan identitas oleh admin.
+        if (filled($expectedParticipantName)
+            && preg_match('/(?:lampiran|daftar\s+(?:nama|peserta)|nama\s+(?:nim|nis))/iu', $text) === 1
+            && preg_match('/(?<![\p{L}\p{N}])'.preg_quote($this->normalizeName($expectedParticipantName), '/').'(?![\p{L}\p{N}])/u', $this->normalizeName($text)) === 1) {
+            return [
+                'key' => 'participant_identity',
+                'label' => 'Identitas peserta',
+                'status' => 'manual',
+                'message' => 'Nama akun ditemukan dalam surat/lampiran. Admin harus mencocokkan nama dan NIM/NIS pada daftar peserta, bukan nama penandatangan atau narahubung.',
+            ];
+        }
+
         $name = $this->extractLabeledValue($text, ['nama mahasiswa', 'nama siswa', 'nama peserta', 'nama']);
         $names = collect($name === null ? [] : [$name]);
+        preg_match_all('/^\s*(?:\d+[.)]\s*)?(?:nama mahasiswa|nama siswa|nama peserta|nama)\s*:\s*([^\r\n]+)/imu', $text, $labeledNames);
+        $names = $names->merge($labeledNames[1] ?? []);
 
         if ($names->isEmpty()) {
             return [

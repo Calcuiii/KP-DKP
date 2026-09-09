@@ -44,7 +44,16 @@ class DocumentReviewController extends Controller
             'application.participant',
         ]);
 
-        return view('pages.admin.pemeriksaan-dokumen.show', compact('document'));
+        $relatedLetters = ParticipantApplicationDocument::query()
+            ->where('type', ParticipantApplicationDocument::TYPE_REQUEST_LETTER)
+            ->where('letter_group_key', $document->letter_group_key)
+            ->whereNotNull('letter_group_key')
+            ->whereHas('application', fn ($query) => $query->where('service_type', $document->application->service_type))
+            ->whereRaw('version = (select max(latest.version) from participant_application_documents as latest where latest.participant_application_id = participant_application_documents.participant_application_id and latest.type = participant_application_documents.type)')
+            ->with('application.participant')
+            ->get();
+
+        return view('pages.admin.pemeriksaan-dokumen.show', compact('document', 'relatedLetters'));
     }
 
     /**
@@ -61,6 +70,7 @@ class DocumentReviewController extends Controller
 
         $validated = $request->validate([
             'review_notes' => ['nullable', 'string', 'max:2000'],
+            'participant_identity_confirmed' => $document->letter_group_key ? ['accepted'] : ['sometimes', 'accepted'],
         ]);
 
         $document->update([

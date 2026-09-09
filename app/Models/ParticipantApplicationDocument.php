@@ -25,6 +25,13 @@ final class ParticipantApplicationDocument extends Model
 
     protected $fillable = ['type', 'version', 'file_path', 'original_name', 'mime_type', 'file_size', 'review_status', 'review_notes', 'reviewed_at', 'automated_check_status', 'automated_check_results', 'automated_checked_at'];
 
+    public static function letterGroupKey(string $institution, string $fileHash): string
+    {
+        $normalize = fn (string $value): string => mb_strtolower(preg_replace('/\s+/u', ' ', trim($value)));
+
+        return hash('sha256', json_encode(['file-v1', $normalize($institution), $fileHash], JSON_UNESCAPED_UNICODE));
+    }
+
     protected function casts(): array
     {
         return [

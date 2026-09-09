@@ -11,6 +11,20 @@ use Tests\TestCase;
 
 final class RequestLetterAutomatedCheckerTest extends TestCase
 {
+    public function test_names_in_a_shared_letter_appendix_require_manual_identity_review(): void
+    {
+        $text = $this->validLetterText()."\nLampiran daftar peserta\nNo Nama NIM\n1 Andi Pratomo 123\n2 Budi Santoso 456\n3 Citra Dewi 789\n4 Dini Putri 101\n5 Eko Prasetyo 102";
+        foreach (['Andi Pratomo', 'Budi Santoso', 'Citra Dewi', 'Dini Putri', 'Eko Prasetyo'] as $name) {
+            $result = app(RequestLetterAutomatedChecker::class)->checkText($text, $name);
+            $this->assertSame('passed', $result['status']);
+            $this->assertSame('manual', collect($result['checks'])->keyBy('key')['participant_identity']['status']);
+        }
+        foreach (['Budi Santosa', 'Budi San', 'Peserta Tidak Terdaftar'] as $name) {
+            $result = app(RequestLetterAutomatedChecker::class)->checkText($text, $name);
+            $this->assertSame('failed', collect($result['checks'])->keyBy('key')['participant_identity']['status']);
+        }
+    }
+
     #[Test]
     public function it_recognizes_a_plain_name_label_and_waktu_pelaksanaan(): void
     {

@@ -87,7 +87,7 @@
             <form data-request-letter-form method="POST" action="{{ route('peserta.request-letter.store') }}" enctype="multipart/form-data" class="mt-6 rounded-2xl border border-dashed border-ocean/30 bg-background p-5">
                 @csrf
                 <label class="text-sm font-bold">Upload surat permohonan WOPPS</label>
-                <input type="file" name="request_letter" accept=".pdf" required class="mt-3 block w-full rounded-xl border border-border bg-white p-3 text-sm">
+                <x-peserta.shared-letter-fields /><input type="file" name="request_letter" accept=".pdf" required class="mt-3 block w-full rounded-xl border border-border bg-white p-3 text-sm">
                 @error('request_letter')<p class="mt-2 text-xs font-semibold text-destructive">{{ $message }}</p>@enderror
                 <label class="mt-4 flex items-start gap-3 text-xs leading-relaxed text-muted-foreground"><input type="checkbox" name="letter_declaration" value="1" required class="mt-0.5">Saya memastikan sembilan informasi wajib WOPPS sudah tercantum dalam surat.</label>
                 <button data-request-letter-submit class="mt-4 inline-flex items-center gap-2 rounded-xl bg-ocean px-5 py-2.5 text-sm font-bold text-white transition disabled:pointer-events-none"><i data-lucide="scan-search" class="h-4 w-4"></i>{{ ($letterNeedsRevision || $automatedNeedsRevision) ? 'Unggah & Periksa Ulang' : 'Unggah & Periksa Surat' }}</button>

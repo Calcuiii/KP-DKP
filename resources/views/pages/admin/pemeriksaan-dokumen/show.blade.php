@@ -95,6 +95,19 @@
 @section('content')
 
 <div class="space-y-6">
+    @if($relatedLetters->isNotEmpty())
+        <section class="rounded-xl border border-border bg-white p-5">
+            <h2 class="font-bold text-navy">Kelompok surat bersama</h2>
+            <p>{{ $document->letter_institution }} — file surat identik</p>
+            <p class="mt-2 text-sm">{{ $relatedLetters->count() }} pengajuan; {{ $relatedLetters->where('application.decision', 'accepted')->count() }} peserta diterima. Satu peserta diterima dihitung satu tempat. Kuota lokasi tetap dikelola melalui menu kuota.</p>
+            <p class="mt-2 text-sm">Cocokkan nama dan NIM/NIS setiap peserta pada lampiran. Jika tidak tercantum, minta perbaikan. Keputusan hanya berlaku untuk peserta yang sedang diperiksa.</p>
+            <ul class="mt-3 space-y-2">
+                @foreach($relatedLetters as $related)
+                    <li><a class="text-ocean underline" href="{{ route('admin.pemeriksaan-dokumen.show', $related) }}">{{ $related->application->participant->name }} — {{ $related->application->application_code }}</a> · {{ $related->application->status }}</li>
+                @endforeach
+            </ul>
+        </section>
+    @endif
 
     {{-- =========================================================
          HEADER
@@ -487,6 +500,10 @@
 
                                 @csrf
                                 @method('PATCH')
+                                @if($document->letter_group_key)
+                                    <label class="my-3 flex gap-2 text-sm"><input type="checkbox" name="participant_identity_confirmed" value="1" required> Saya sudah mencocokkan nama dan NIM/NIS peserta ini pada surat/lampiran.</label>
+                                    @error('participant_identity_confirmed')<p class="text-destructive">{{ $message }}</p>@enderror
+                                @endif
 
                                 <textarea
                                     name="review_notes"

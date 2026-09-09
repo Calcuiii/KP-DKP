@@ -17,7 +17,7 @@ class AdminDocumentReviewTest extends TestCase
     {
         [$admin, $document] = $this->reviewFixture();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin, 'web')
             ->get(route('admin.pemeriksaan-dokumen.show', $document))
             ->assertOk()
             ->assertSeeInOrder([
@@ -32,7 +32,7 @@ class AdminDocumentReviewTest extends TestCase
     {
         [$admin, $document, $application] = $this->reviewFixture();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin, 'web')
             ->patch(route('admin.pemeriksaan-dokumen.approve', $document), [
                 'review_notes' => 'Surat sudah sesuai.',
             ])
@@ -54,7 +54,7 @@ class AdminDocumentReviewTest extends TestCase
     {
         [$admin, $document, $application] = $this->reviewFixture();
 
-        $this->actingAs($admin)
+        $this->actingAs($admin, 'web')
             ->patch(route('admin.pemeriksaan-dokumen.revision', $document), [
                 'review_notes' => 'Tanggal selesai belum tercantum.',
             ])
@@ -76,12 +76,12 @@ class AdminDocumentReviewTest extends TestCase
     {
         [$admin, $document, $application] = $this->reviewFixture();
 
-        $this->actingAs($admin)->patch(route('admin.pemeriksaan-dokumen.approve', $document));
+        $this->actingAs($admin, 'web')->patch(route('admin.pemeriksaan-dokumen.approve', $document));
         $notification = $application->participant->notifications()->sole();
 
         $this->actingAs($application->participant, 'peserta')
             ->post(route('peserta.notifications.read', $notification->id))
-            ->assertRedirect(route('peserta.dashboard').'#persiapan');
+            ->assertRedirect(route('peserta.dashboard').'#surat-permohonan');
 
         $this->assertNotNull($notification->fresh()->read_at);
     }
@@ -91,7 +91,7 @@ class AdminDocumentReviewTest extends TestCase
      */
     private function reviewFixture(): array
     {
-        $admin = User::factory()->create(['role' => 'admin', 'status' => 'Aktif']);
+        $admin = User::factory()->create(['role' => 'superadmin', 'status' => 'Aktif']);
         $participant = Participant::factory()->create(['email_verified_at' => now()]);
         $application = $participant->applications()->create([
             'service_type' => ParticipantApplication::SERVICE_MAGANG_PKL,

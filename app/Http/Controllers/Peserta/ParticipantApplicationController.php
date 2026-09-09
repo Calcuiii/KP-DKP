@@ -20,7 +20,9 @@ use App\Services\EthicsApprovalAutomatedChecker;
 use App\Services\RequestLetterAutomatedChecker;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 final class ParticipantApplicationController extends Controller
@@ -30,24 +32,28 @@ final class ParticipantApplicationController extends Controller
         /** @var Participant $participant */
         $participant = $request->user('peserta');
 
-        $application = $participant->applications()->latest()->first();
+        DB::transaction(function () use ($participant, $request) {
+            Participant::query()->whereKey($participant->id)->lockForUpdate()->firstOrFail();
+            $application = $participant->applications()->latest()->first();
 
-        if ($application instanceof ParticipantApplication) {
-            if ($application->isClosed()) {
+            if ($application instanceof ParticipantApplication) {
+                if ($application->isClosed()) {
+                    $participant->applications()->create([
+                        ...$request->validated(),
+                        'status' => 'preparation',
+                    ]);
+                } else {
+                    abort_unless($application->status === 'preparation', 422, 'Anda masih memiliki satu pengajuan aktif. Selesaikan pengajuan tersebut sebelum membuat pengajuan baru.');
+                    $application->update($request->validated());
+                }
+            } else {
                 $participant->applications()->create([
                     ...$request->validated(),
                     'status' => 'preparation',
                 ]);
-            } else {
-                abort_unless($application->status === 'preparation', 422, 'Anda masih memiliki satu pengajuan aktif. Selesaikan pengajuan tersebut sebelum membuat pengajuan baru.');
-                $application->update($request->validated());
             }
-        } else {
-            $participant->applications()->create([
-                ...$request->validated(),
-                'status' => 'preparation',
-            ]);
-        }
+
+        });
 
         return redirect()->route('peserta.dashboard')
             ->with('status', 'Persiapan pengajuan Anda telah disimpan.');
@@ -83,6 +89,23 @@ final class ParticipantApplicationController extends Controller
             abort_unless($application->guestbook_confirmed_at !== null, 422, 'Lengkapi bukti Buku Tamu terlebih dahulu.');
         }
         $currentLetter = $application->documents()->where('type', ParticipantApplicationDocument::TYPE_REQUEST_LETTER)->latest('version')->first();
+        if ($request->filled('letter_institution')) {
+            $alreadyApplied = ParticipantApplicationDocument::query()
+                ->where('type', ParticipantApplicationDocument::TYPE_REQUEST_LETTER)
+                ->where('letter_group_key', ParticipantApplicationDocument::letterGroupKey(
+                    $request->validated('letter_institution'), hash_file('sha256', $request->file('request_letter')->getRealPath())
+                ))
+                ->where('participant_application_id', '!=', $application->id)
+                ->whereHas('application', fn ($query) => $query
+                    ->where('participant_id', $application->participant_id)
+                    ->where('service_type', $application->service_type))
+                ->exists();
+            if ($alreadyApplied) {
+                throw ValidationException::withMessages([
+                    'request_letter' => 'Anda sudah memiliki pengajuan dengan surat ini. Gunakan pengajuan sebelumnya atau surat baru untuk kesempatan kegiatan yang berbeda.',
+                ]);
+            }
+        }
         abort_if(
             $currentLetter
                 && $currentLetter->review_status !== ParticipantApplicationDocument::REVIEW_REVISION
@@ -107,6 +130,14 @@ final class ParticipantApplicationController extends Controller
         ]);
 
         $automatedResult = $checker->check($path, $request->user('peserta')?->name, $application->service_type);
+        if ($request->filled('letter_institution')) {
+            $document->forceFill([
+                'letter_institution' => trim($request->validated('letter_institution')),
+                'letter_group_key' => ParticipantApplicationDocument::letterGroupKey(
+                    $request->validated('letter_institution'), hash_file('sha256', $request->file('request_letter')->getRealPath())
+                ),
+            ])->save();
+        }
         $document->update([
             'automated_check_status' => $automatedResult['status'],
             'automated_check_results' => $automatedResult,
