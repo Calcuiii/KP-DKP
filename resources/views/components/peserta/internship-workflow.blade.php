@@ -135,7 +135,7 @@
             @if($internshipFormProof)
                 <div class="rounded-[1.75rem] border border-teal/25 bg-teal/[0.05] p-6">
                     <div class="flex items-start gap-4"><span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-teal/10 text-teal"><i data-lucide="file-check" class="h-5 w-5"></i></span><div><p class="text-sm font-extrabold">Bukti pengisian sudah dikirim</p><p class="mt-1 text-xs text-muted-foreground">{{ $internshipFormProof->original_name }} · {{ $internshipFormProof->created_at->format('d M Y, H:i') }}</p><a href="{{ route('peserta.document.download', $internshipFormProof) }}" class="mt-4 inline-flex items-center gap-2 text-xs font-bold text-ocean"><i data-lucide="download" class="h-4 w-4"></i>Lihat bukti</a></div></div>
-                    <div class="mt-6 rounded-2xl border border-teal/25 bg-teal/[0.08] p-4 text-sm font-semibold leading-relaxed text-teal">Tahap 4 selesai. Silakan menunggu keputusan dan surat balasan dari Dinas melalui portal.</div>
+                    <div class="mt-6 rounded-2xl border border-teal/25 bg-teal/[0.08] p-4 text-sm font-semibold leading-relaxed text-teal">Tahap 4 selesai. Silakan menunggu keputusan yang akan dikirim melalui portal dan surat balasan dapat di download melalui email.</div>
                 </div>
             @else
                 <form method="POST" action="{{ route('peserta.internship-form-proof.store') }}" enctype="multipart/form-data" class="rounded-[1.75rem] border border-dashed border-ocean/30 bg-background p-6">
