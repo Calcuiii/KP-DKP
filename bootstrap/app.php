@@ -7,6 +7,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,6 +16,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Guestbook access must be checked before implicit model binding.
+        // Otherwise an unverified API request can query a bound model first
+        // and leak a 404/500 response instead of consistently returning 403.
+        $middleware->prependToPriorityList(
+            SubstituteBindings::class,
+            EnsureGuestbookCheckin::class,
+        );
+
         $middleware->trustProxies(at: env('TRUSTED_PROXIES', '127.0.0.1'));
 
         $middleware->redirectGuestsTo(function (Request $request): string {
