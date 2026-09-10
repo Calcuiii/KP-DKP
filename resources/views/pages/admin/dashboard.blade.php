@@ -124,24 +124,24 @@
         <section class="rounded-2xl border border-rose-200 bg-rose-50/40 p-4 shadow-sm xl:col-span-5">
             <div class="mb-3 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
-                    <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-rose-100 text-rose-600"><i data-lucide="file-clock" class="h-4 w-4" aria-hidden="true"></i></span>
+                    <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-rose-100 text-rose-600"><i data-lucide="mail" class="h-4 w-4" aria-hidden="true"></i></span>
                     <div>
-                        <h3 class="text-sm font-semibold text-navy">Dokumen Menunggu Terlama</h3>
-                        <p class="mt-0.5 text-xs text-muted-foreground">Perlu segera ditinjau agar tidak menumpuk.</p>
+                        <h3 class="text-sm font-semibold text-navy">Surat Balasan Menunggu Ditindaklanjuti</h3>
+                        <p class="mt-0.5 text-xs text-muted-foreground">Peserta Magang/PKL yang sudah selesai, belum dikirimi surat balasan.</p>
                     </div>
                 </div>
-                <a href="{{ route('admin.pemeriksaan-dokumen') }}" class="text-xs font-semibold text-ocean">Lihat Semua →</a>
+                <a href="{{ route('admin.surat-balasan') }}" class="text-xs font-semibold text-ocean">Lihat Semua →</a>
             </div>
-            @forelse ($pendingDocumentsList as $d)
+            @forelse ($awaitingReplyLetterList as $r)
                 <div class="mb-2 flex items-start gap-2 rounded-xl border border-rose-200/70 bg-white p-3 last:mb-0">
-                    <i data-lucide="file-clock" class="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-rose-500" aria-hidden="true"></i>
+                    <i data-lucide="mail" class="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-rose-500" aria-hidden="true"></i>
                     <div class="min-w-0">
-                        <p class="truncate text-xs font-medium text-navy">{{ $d['name'] }} · {{ $d['type'] }}</p>
-                        <p class="mt-0.5 text-[10px] text-muted-foreground">{{ $d['time'] }}</p>
+                        <p class="truncate text-xs font-medium text-navy">{{ $r['name'] }}</p>
+                        <p class="mt-0.5 text-[10px] text-muted-foreground">Selesai {{ $r['time'] }}</p>
                     </div>
                 </div>
             @empty
-                <p class="rounded-xl border border-dashed border-rose-200 bg-white p-4 text-xs text-muted-foreground">Tidak ada dokumen yang menunggu review.</p>
+                <p class="rounded-xl border border-dashed border-rose-200 bg-white p-4 text-xs text-muted-foreground">Tidak ada surat balasan yang menunggu ditindaklanjuti.</p>
             @endforelse
         </section>
 
