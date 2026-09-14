@@ -263,6 +263,19 @@ class ParticipantApplicationTest extends TestCase
         $this->assertSame('wopps_form_submitted', $application->fresh()->status);
         $this->assertNotNull($application->fresh()->google_form_confirmed_at);
         Storage::disk('local')->assertExists($proof->file_path);
+        $confirmedAt = $application->fresh()->google_form_confirmed_at;
+        $files = Storage::disk('local')->allFiles();
+        $application->update(['status' => 'accepted', 'decision' => 'accepted']);
+        $this->actingAs($participant, 'peserta')
+            ->post(route('peserta.wopps-form-proof.store'), [
+                'wopps_form_proof' => UploadedFile::fake()->image('duplicate.png'),
+                'wopps_form_declaration' => '1',
+            ])->assertRedirect(route('peserta.dashboard'))
+            ->assertSessionHas('status', 'Bukti pengisian Form WOPPS sudah tersimpan. Silakan menunggu tindak lanjut Dinas.');
+        $this->assertSame(1, $application->documents()->where('type', ParticipantApplicationDocument::TYPE_WOPPS_FORM_PROOF)->count());
+        $this->assertSame($files, Storage::disk('local')->allFiles());
+        $this->assertSame('accepted', $application->fresh()->status);
+        $this->assertTrue($confirmedAt->equalTo($application->fresh()->google_form_confirmed_at));
     }
 
     public function test_approved_ethics_document_unlocks_the_wopps_form_stage_on_dashboard(): void
