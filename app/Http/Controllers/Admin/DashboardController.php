@@ -83,13 +83,42 @@ class DashboardController extends Controller
 
         // ── Portal Peserta ─────────────────────────────────────────────
 
-        $pendingDocuments = ParticipantApplicationDocument::where('review_status', ParticipantApplicationDocument::REVIEW_SUBMITTED)->count();
+        /*
+        |--------------------------------------------------------------------------
+        | "Dokumen Menunggu Review" HANYA menghitung dokumen yang:
+        | 1. Jenisnya memang direview admin (surat permohonan / ethics approval),
+        |    BUKAN bukti buku tamu / bukti Google Form / bukti form WOPPS
+        |    (jenis-jenis itu tidak pernah melalui alur approve/revisi admin).
+        | 2. Sudah LOLOS pengecekan otomatis ('passed') — kalau belum lolos,
+        |    itu masih tugas peserta untuk memperbaiki, bukan tugas admin.
+        | 3. Belum ada keputusan final admin (belum approved, belum revision_required).
+        |--------------------------------------------------------------------------
+        */
+        $reviewableTypes = [
+            ParticipantApplicationDocument::TYPE_REQUEST_LETTER,
+            ParticipantApplicationDocument::TYPE_ETHICS_APPROVAL,
+        ];
+
+        $pendingDocumentsQuery = ParticipantApplicationDocument::query()
+            ->whereIn('type', $reviewableTypes)
+            ->where('automated_check_status', 'passed')
+            ->whereNotIn('review_status', [
+                ParticipantApplicationDocument::REVIEW_APPROVED,
+                ParticipantApplicationDocument::REVIEW_REVISION,
+            ]);
+
+        $pendingDocuments = (clone $pendingDocumentsQuery)->count();
 
         $repliesSent = ReplyLetter::count();
 
-        $awaitingReplyLetter = ParticipantApplication::whereNotNull('google_form_confirmed_at')
-            ->whereHas('participant', fn ($q) => $q->whereDoesntHave('replyLetter'))
-            ->count();
+        // Surat balasan HANYA berlaku untuk layanan Magang/PKL — WOPPS tidak
+        // pernah mendapat surat balasan (tindak lanjutnya lewat WhatsApp PIC).
+        $awaitingReplyLetterQuery = ParticipantApplication::query()
+            ->where('service_type', ParticipantApplication::SERVICE_MAGANG_PKL)
+            ->whereNotNull('google_form_confirmed_at')
+            ->whereHas('participant', fn ($q) => $q->whereDoesntHave('replyLetter'));
+
+        $awaitingReplyLetter = (clone $awaitingReplyLetterQuery)->count();
 
         $totalApplications = ParticipantApplication::count();
 
@@ -111,45 +140,61 @@ class DashboardController extends Controller
             ['icon' => 'map-pin', 'label' => 'Lokasi Penuh / Tidak Menerima', 'value' => (string) $locationsNeedingAttention, 'sub' => 'Sisa kuota total: '.$totalQuotaRemaining, 'color' => 'orange'],
         ];
 
-        $recentApplications = ParticipantApplication::with('participant')
+        $recentApplications = ParticipantApplication::with([
+                'participant',
+                'documents' => fn ($q) => $q->whereIn('type', $reviewableTypes)->latest(),
+            ])
             ->latest()
             ->take(5)
             ->get()
             ->map(function ($application) {
+                /*
+                |--------------------------------------------------------------------------
+                | Label "Tahap" mengikuti logika Status Proses di menu Pemeriksaan Dokumen,
+                | berdasarkan dokumen reviewable (surat permohonan/ethics approval) terbaru
+                | milik pengajuan ini. Kalau pengajuan sudah lebih maju dari tahap dokumen
+                | (misal sudah isi Google Form), tampilkan progres yang lebih relevan.
+                |--------------------------------------------------------------------------
+                */
+                $latestDocument = $application->documents->first();
+
+                $stage = match (true) {
+                    $application->google_form_confirmed_at !== null => 'Menunggu keputusan',
+
+                    $latestDocument && $latestDocument->automated_check_status !== 'passed' => 'Menunggu perbaikan peserta',
+
+                    $latestDocument && $latestDocument->review_status === ParticipantApplicationDocument::REVIEW_REVISION => 'Menunggu perbaikan peserta',
+
+                    $latestDocument && $latestDocument->review_status === ParticipantApplicationDocument::REVIEW_APPROVED => 'Disetujui admin',
+
+                    $latestDocument !== null => 'Siap diperiksa admin',
+
+                    $application->guestbook_confirmed_at !== null => 'Persiapan dokumen',
+
+                    default => 'Baru mendaftar',
+                };
+
                 return [
                     'name' => $application->participant?->name ?? '-',
                     'service' => $application->serviceLabel(),
-                    'stage' => match (true) {
-                        $application->google_form_confirmed_at !== null => 'Menunggu keputusan',
-                        $application->letter_submitted_at !== null => 'Surat diproses',
-                        $application->guestbook_confirmed_at !== null => 'Persiapan dokumen',
-                        default => 'Baru mendaftar',
-                    },
+                    'stage' => $stage,
                     'time' => $application->created_at->diffForHumans(),
                 ];
             });
 
-        $pendingDocumentsList = ParticipantApplicationDocument::where('review_status', ParticipantApplicationDocument::REVIEW_SUBMITTED)
-            ->with('application.participant')
-            ->oldest()
+        $awaitingReplyLetterList = (clone $awaitingReplyLetterQuery)
+            ->with('participant')
+            ->oldest('google_form_confirmed_at')
             ->take(3)
             ->get()
-            ->map(fn ($doc) => [
-                'name' => $doc->application?->participant?->name ?? '-',
-                'type' => match ($doc->type) {
-                    ParticipantApplicationDocument::TYPE_REQUEST_LETTER => 'Surat permohonan',
-                    ParticipantApplicationDocument::TYPE_ETHICS_APPROVAL => 'Persetujuan etik',
-                    ParticipantApplicationDocument::TYPE_GUESTBOOK => 'Bukti buku tamu',
-                    ParticipantApplicationDocument::TYPE_WOPPS_FORM_PROOF => 'Bukti form WOPPS',
-                    ParticipantApplicationDocument::TYPE_INTERNSHIP_FORM_PROOF => 'Bukti Google Form',
-                    default => 'Dokumen',
-                },
-                'time' => $doc->created_at->diffForHumans(),
+            ->map(fn ($application) => [
+                'name' => $application->participant?->name ?? '-',
+                'time' => $application->google_form_confirmed_at?->diffForHumans() ?? '-',
             ]);
 
         return view('pages.admin.dashboard', compact(
             'metrics', 'trend', 'statusData', 'unansweredList', 'recentQuestions',
-            'portalMetrics', 'recentApplications', 'pendingDocumentsList'
+            'portalMetrics', 'recentApplications', 'awaitingReplyLetterList'
         ));
     }
 }
