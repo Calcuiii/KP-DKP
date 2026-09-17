@@ -25,14 +25,16 @@
             class="fixed inset-0 z-30 hidden bg-navy/40 lg:hidden"
         ></div>
 
-        <main class="flex min-w-0 flex-1 flex-col">
+        <main class="chatbot-ocean relative isolate flex min-w-0 flex-1 flex-col bg-[#edf8fa]">
+            <img src="{{ asset('images/si-melayur-chatbot-ocean.png') }}" alt="" aria-hidden="true" width="1536" height="1024" fetchpriority="high" class="pointer-events-none absolute inset-0 -z-20 h-full w-full object-cover object-bottom">
+            <div class="chatbot-ocean-wash pointer-events-none absolute inset-0 -z-10"></div>
             @include('components.chatbot.header')
 
             @include('components.chatbot.empty-state')
 
             <section
                 data-chat-messages
-                class="chatbot-pattern-surface hidden min-h-0 flex-1 overflow-y-auto px-4 py-6 sm:px-6"
+                class="hidden min-h-0 flex-1 overflow-y-auto px-4 py-6 sm:px-6"
             >
                 <div data-chat-message-list class="chatbot-pattern-content mx-auto w-full max-w-3xl space-y-5"></div>
             </section>

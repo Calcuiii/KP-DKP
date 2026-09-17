@@ -29,6 +29,8 @@ final class RegisterParticipantRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'institution' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:25', 'regex:/^\+?[0-9][0-9 ()-]{6,23}$/'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:participants,email'],
             'password' => ['required', 'confirmed', Password::min(8)],
         ];

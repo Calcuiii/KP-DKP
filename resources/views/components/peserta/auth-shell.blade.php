@@ -2,10 +2,11 @@
     'eyebrow' => 'Portal Peserta',
     'title',
     'description',
+    'wide' => false,
 ])
 
 <div class="participant-auth-scene min-h-screen px-4 py-6 font-sans sm:px-8 sm:py-10 lg:flex lg:items-center lg:justify-center lg:px-10">
-    <div class="participant-auth-card mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-7xl overflow-hidden rounded-[2rem] border border-white/70 bg-white shadow-[0_28px_80px_rgba(12,35,64,0.16)] lg:min-h-[42rem] lg:grid-cols-[56fr_44fr] lg:rounded-[2.25rem]">
+    <div class="participant-auth-card mx-auto grid w-full max-w-7xl overflow-hidden rounded-[2rem] border border-white/70 bg-white shadow-[0_28px_80px_rgba(12,35,64,0.16)] lg:rounded-[2.25rem] {{ $wide ? 'lg:grid-cols-[38fr_62fr]' : 'min-h-[calc(100vh-3rem)] lg:min-h-[42rem] lg:grid-cols-[56fr_44fr]' }}">
         <aside class="relative hidden overflow-hidden bg-light px-9 py-8 lg:flex lg:flex-col xl:px-12">
             <div class="absolute -right-24 top-[-7rem] h-[28rem] w-[28rem] rounded-full bg-ocean/[0.07]"></div>
             <div class="absolute bottom-[-10rem] left-[-10rem] h-[27rem] w-[27rem] rounded-full bg-teal/[0.08]"></div>
@@ -16,14 +17,14 @@
                     <i data-lucide="fish" class="h-5 w-5" aria-hidden="true"></i>
                 </span>
                 <span>
-                    <span class="block text-base font-extrabold leading-none">SI-MELAYUR</span>
+                    <span class="block text-base font-bold leading-none">SI-MELAYUR</span>
                     <span class="mt-1 block text-[11px] font-medium text-muted-foreground">Portal Peserta DKP Jatim</span>
                 </span>
             </a>
 
             <div class="relative z-10 flex flex-1 flex-col justify-center pb-6 pt-12">
                 <p class="auth-fade-up text-xs font-bold uppercase tracking-[0.2em] text-teal">Layanan pendampingan resmi</p>
-                <h2 class="auth-fade-up auth-delay-1 mt-4 max-w-md text-4xl font-extrabold leading-[1.12] tracking-tight text-navy xl:text-5xl">Perjalanan Magang dan PKL yang lebih terarah.</h2>
+                <h2 class="auth-fade-up auth-delay-1 mt-4 max-w-md text-4xl font-bold leading-[1.12] text-navy xl:text-5xl">Perjalanan Magang dan PKL yang lebih terarah.</h2>
                 <p class="auth-fade-up auth-delay-2 mt-5 max-w-md text-sm leading-relaxed text-muted-foreground">Simpan akses layanan Anda dan temukan informasi resmi DKP Jawa Timur di satu portal.</p>
 
                 <div class="auth-fade-up auth-delay-3 relative mt-8 max-w-xl overflow-hidden rounded-[1.75rem] border border-ocean/10 bg-white/70 p-5 shadow-xl shadow-navy/[0.06] backdrop-blur-sm">
@@ -59,11 +60,13 @@
             <p class="relative z-10 text-xs text-muted-foreground">© {{ now()->year }} Dinas Kelautan dan Perikanan Provinsi Jawa Timur</p>
         </aside>
 
-        <main class="relative flex items-center justify-center overflow-hidden bg-gradient-to-br from-navy via-navy to-ocean px-5 py-10 sm:px-10 lg:px-12">
+        <main class="relative flex items-center justify-center overflow-hidden px-5 sm:px-10 lg:px-12 {{ $wide ? 'bg-white py-7' : 'bg-gradient-to-br from-navy via-navy to-ocean py-10' }}">
+            @unless($wide)
             <div class="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-cyan/20 blur-3xl"></div>
             <div class="absolute -bottom-32 -left-28 h-72 w-72 rounded-full bg-teal/15 blur-3xl"></div>
+            @endunless
 
-            <div class="auth-fade-up relative z-10 w-full max-w-md rounded-[1.75rem] bg-white p-6 shadow-2xl shadow-navy/25 sm:p-8">
+            <div class="auth-fade-up relative z-10 w-full {{ $wide ? 'max-w-2xl' : 'max-w-md rounded-[1.75rem] bg-white p-6 shadow-2xl shadow-navy/25 sm:p-8' }}">
                 <a href="{{ route('landing') }}" class="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition hover:text-ocean lg:hidden">
                     <i data-lucide="arrow-left" class="h-4 w-4" aria-hidden="true"></i>
                     Kembali ke SI-MELAYUR
@@ -74,7 +77,7 @@
                     <p class="mt-0.5 text-xs text-muted-foreground">Dinas Kelautan dan Perikanan Jatim</p>
                 </div>
 
-                <h1 class="mt-7 text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">{{ $title }}</h1>
+                <h1 class="mt-7 text-3xl font-bold text-navy sm:text-4xl">{{ $title }}</h1>
                 <p class="mt-3 text-sm leading-relaxed text-muted-foreground">{{ $description }}</p>
 
                 @if (session('status'))

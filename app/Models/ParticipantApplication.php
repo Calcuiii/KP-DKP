@@ -31,6 +31,15 @@ class ParticipantApplication extends Model
         'official_ended_at',
         'decision',
         'response_letter_path',
+        'completion_checklist',
+        'presentation_date',
+        'presentation_photo_path',
+        'presentation_submitted_at',
+        'completion_form_proof_path',
+        'completion_form_submitted_at',
+        'certificate_path',
+        'certificate_published_at',
+        'certificate_emailed_at',
     ];
 
     /**
@@ -39,6 +48,12 @@ class ParticipantApplication extends Model
     protected function casts(): array
     {
         return [
+            'completion_checklist' => 'array',
+            'presentation_date' => 'date',
+            'presentation_submitted_at' => 'datetime',
+            'completion_form_submitted_at' => 'datetime',
+            'certificate_published_at' => 'datetime',
+            'certificate_emailed_at' => 'datetime',
             'google_form_confirmed_at' => 'datetime',
             'pic_contacted_at' => 'datetime',
             'completed_at' => 'datetime',
@@ -159,7 +174,6 @@ class ParticipantApplication extends Model
                 ['label' => 'Buku Tamu Magang / PKL', 'description' => 'Diisi secara individu sebagai pendataan awal.'],
                 ['label' => 'Koordinasi kuota', 'description' => 'Konfirmasi ketersediaan kuota dan kesesuaian jurusan.'],
                 ['label' => 'Surat permohonan resmi', 'description' => 'Dari sekolah atau perguruan tinggi, dengan informasi lengkap.'],
-                ['label' => 'Kebutuhan sertifikat', 'description' => 'Dicantumkan sejak awal bila diperlukan.'],
             ],
         };
     }

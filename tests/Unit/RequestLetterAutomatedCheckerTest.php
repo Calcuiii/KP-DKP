@@ -11,6 +11,20 @@ use Tests\TestCase;
 
 final class RequestLetterAutomatedCheckerTest extends TestCase
 {
+    public function test_internship_letter_does_not_require_certificate_or_statement_request(): void
+    {
+        $checker = app(RequestLetterAutomatedChecker::class);
+        $withoutRequest = $checker->checkText($this->validLetterText(), 'Andi Pratomo', ParticipantApplication::SERVICE_MAGANG_PKL);
+        $withRequest = $checker->checkText($this->validLetterText()."\nKami juga memohon penerbitan sertifikat dan surat keterangan.", 'Andi Pratomo', ParticipantApplication::SERVICE_MAGANG_PKL);
+
+        $this->assertSame('passed', $withoutRequest['status']);
+        $this->assertSame($withoutRequest, $withRequest);
+        $this->assertStringNotContainsString('sertifikat', json_encode($withoutRequest['checks']));
+        $this->assertStringNotContainsString('surat keterangan', json_encode($withoutRequest['checks']));
+        $application = new ParticipantApplication(['service_type' => ParticipantApplication::SERVICE_MAGANG_PKL]);
+        $this->assertNotContains('Kebutuhan sertifikat', array_column($application->preparationChecklist(), 'label'));
+    }
+
     public function test_names_in_a_shared_letter_appendix_require_manual_identity_review(): void
     {
         $text = $this->validLetterText()."\nLampiran daftar peserta\nNo Nama NIM\n1 Andi Pratomo 123\n2 Budi Santoso 456\n3 Citra Dewi 789\n4 Dini Putri 101\n5 Eko Prasetyo 102";

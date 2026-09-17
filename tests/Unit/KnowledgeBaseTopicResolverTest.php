@@ -10,6 +10,19 @@ use PHPUnit\Framework\TestCase;
 
 final class KnowledgeBaseTopicResolverTest extends TestCase
 {
+    public function test_participant_rules_use_simple_precedence_without_procedure_exceptions(): void
+    {
+        $resolver = new KnowledgeBaseTopicResolver;
+
+        foreach (['TATA TERTIB?', 'aturan magang', 'Bagaimana prosedur penjelasan tata tertib magang?'] as $query) {
+            self::assertSame('ketentuan_umum_peserta', $resolver->resolve($query));
+        }
+        self::assertSame('sertifikat', $resolver->resolve('Sanksi pelanggaran terkait sertifikat?'));
+        self::assertSame('pendaftaran_magang_pkl', $resolver->resolve('Aturan magang dan pendaftaran'));
+        self::assertNull($resolver->resolve('jam kerja layanan'));
+        self::assertSame('prosedur_magang_pkl', $resolver->resolve('alur magang dari awal sampai akhir'));
+    }
+
     public function test_it_resolves_sertifikat_topic(): void
     {
         $resolver = new KnowledgeBaseTopicResolver;

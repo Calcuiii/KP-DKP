@@ -4,6 +4,7 @@
     'today',
     'preparationReminderDate' => null,
     'isPreparationWindow' => false,
+    'compact' => false,
 ])
 
 @php
@@ -19,10 +20,10 @@
 @endphp
 
 <div data-internship-calendar-slider>
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex items-center justify-between gap-3">
         <div>
-            <p class="text-xs font-semibold text-muted-foreground">Kalender pelaksanaan</p>
-            <h3 class="mt-1 text-lg font-extrabold" data-calendar-current-label aria-live="polite">{{ $initialMonth->translatedFormat('F Y') }}</h3>
+            @unless ($compact)<p class="text-xs font-semibold text-muted-foreground">Kalender pelaksanaan</p>@endunless
+            <h3 class="mt-1 text-lg font-bold" data-calendar-current-label aria-live="polite">{{ $initialMonth->translatedFormat('F Y') }}</h3>
         </div>
         <div class="flex items-center gap-2">
             <button type="button" data-calendar-previous class="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-white text-ocean transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-35" aria-label="Lihat bulan sebelumnya"><i data-lucide="chevron-left" class="h-4 w-4"></i></button>
@@ -36,9 +37,9 @@
         <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-cyan-300"></span>Persiapan laporan &amp; presentasi</span>
     </div>
 
-    @if ($preparationReminderDate)
+    @if ($preparationReminderDate && ! $compact)
         <div class="mt-4 flex items-start gap-3 rounded-xl border border-cyan-200 bg-cyan-50 p-3 text-xs leading-relaxed text-ocean">
-            <span class="shrink-0 rounded-md bg-cyan-200 px-2 py-1 font-extrabold text-ocean">H-10</span>
+            <span class="shrink-0 rounded-md bg-cyan-200 px-2 py-1 font-bold text-ocean">H-10</span>
             <p><strong>Periode persiapan laporan dan presentasi:</strong> {{ $preparationReminderDate->translatedFormat('d F Y') }}–{{ $officialEnded->copy()->subDay()->translatedFormat('d F Y') }} (H-10 sampai H-1).@if($isPreparationWindow) Periode persiapan sedang berlangsung.@endif</p>
         </div>
     @endif
@@ -53,7 +54,7 @@
         @endphp
         <div data-calendar-month-panel data-calendar-month-name="{{ $month->translatedFormat('F Y') }}" @if($monthKey !== $initialMonthKey) hidden @endif class="mt-5 grid grid-cols-7 gap-1 text-center">
             @foreach (['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'] as $dayName)
-                <span class="py-2 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">{{ $dayName }}</span>
+                <span class="py-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{{ $dayName }}</span>
             @endforeach
             @foreach ($monthDays as $calendarDay)
                 @php
@@ -76,4 +77,11 @@
             @endforeach
         </div>
     @endforeach
+
+    @if ($compact && $preparationReminderDate)
+        <details class="mt-4 border-t border-border pt-3 text-xs text-muted-foreground">
+            <summary class="cursor-pointer font-semibold text-ocean">Pengingat H-10 sampai H-1</summary>
+            <p class="mt-2 leading-relaxed">Periode persiapan laporan dan presentasi: {{ $preparationReminderDate->translatedFormat('d M Y') }}–{{ $officialEnded->copy()->subDay()->translatedFormat('d M Y') }}. Koordinasikan jadwal presentasi dengan pembimbing.</p>
+        </details>
+    @endif
 </div>

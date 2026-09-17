@@ -1,8 +1,8 @@
-<div class="shrink-0 border-t border-border bg-white/95 px-4 py-3 backdrop-blur-sm sm:px-6">
+<div class="shrink-0 px-4 pb-4 pt-3 sm:px-6 sm:pb-6">
     <form data-chat-form class="mx-auto max-w-3xl">
         @csrf
 
-        <div class="flex items-center gap-2 rounded-2xl border border-border bg-input-background px-4 py-3 transition focus-within:border-ocean/40 focus-within:ring-4 focus-within:ring-ocean/5">
+        <div class="flex items-center gap-2 rounded-2xl border border-white/90 bg-white/95 px-4 py-4 shadow-xl shadow-navy/10 backdrop-blur-sm transition focus-within:border-ocean/40 focus-within:ring-4 focus-within:ring-ocean/10">
             <textarea
                 data-chat-input
                 rows="1"
@@ -29,7 +29,7 @@
 
         <div data-chat-error class="mt-2 hidden rounded-xl border border-destructive/20 bg-red-50 px-3 py-2 text-xs text-destructive" role="alert"></div>
 
-        <p class="mt-2 text-center text-[10px] leading-4 text-muted-foreground">
+        <p class="mx-auto mt-2 w-fit rounded-lg bg-white/95 px-3 py-1 text-center text-[10px] leading-4 text-muted-foreground">
             Asisten SI-MELAYUR dapat menghasilkan jawaban yang kurang tepat. Pastikan kembali informasi penting melalui layanan resmi.
         </p>
     </form>

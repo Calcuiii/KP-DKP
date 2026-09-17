@@ -6,19 +6,16 @@
 
 @section('content')
     <x-peserta.auth-shell
+        :wide="true"
         eyebrow="Portal Peserta"
         title="Daftar Akun"
         description="Buat akun untuk menyiapkan akses ke layanan pendampingan Magang, PKL, dan WOPPS SI-MELAYUR."
     >
-        <form method="POST" action="{{ route('peserta.register.store') }}" class="space-y-5" data-participant-auth-form>
+        <form method="POST" action="{{ route('peserta.register.store') }}" class="grid gap-5 sm:grid-cols-2" data-participant-auth-form>
             @csrf
 
             <div>
                 <label for="name" class="mb-2 block text-xs font-semibold text-navy">Nama Lengkap</label>
-                <div id="name-guidance" class="mb-3 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-3 text-xs leading-relaxed text-amber-900" role="note">
-                    <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-400 text-[11px] font-extrabold text-white" aria-hidden="true">!</span>
-                    <p><span class="font-bold">Penting:</span> tulis nama lengkap, bukan nama samaran atau nama panggilan. Nama ini akan dicocokkan saat pemeriksaan surat permohonan.</p>
-                </div>
                 <input
                     id="name"
                     name="name"
@@ -55,6 +52,16 @@
                 @enderror
             </div>
 
+            <div>
+                <label for="institution" class="mb-2 block text-xs font-semibold text-navy">Universitas / sekolah</label>
+                <input id="institution" name="institution" value="{{ old('institution') }}" required maxlength="255" autocomplete="organization" class="w-full rounded-xl border border-border bg-light px-4 py-3.5 text-sm focus:border-ocean" placeholder="Nama universitas atau sekolah">
+                @error('institution')<p class="mt-2 text-xs text-destructive">{{ $message }}</p>@enderror
+            </div>
+            <div>
+                <label for="phone" class="mb-2 block text-xs font-semibold text-navy">Nomor telepon</label>
+                <input id="phone" name="phone" type="tel" value="{{ old('phone') }}" required maxlength="25" autocomplete="tel" class="w-full rounded-xl border border-border bg-light px-4 py-3.5 text-sm focus:border-ocean" placeholder="08… atau +62…">
+                @error('phone')<p class="mt-2 text-xs text-destructive">{{ $message }}</p>@enderror
+            </div>
             <div>
                 <label for="password" class="mb-2 block text-xs font-semibold text-navy">Kata Sandi</label>
                 <div class="relative">
@@ -96,7 +103,8 @@
                 </div>
             </div>
 
-            <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-ocean to-teal px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-ocean/20 transition hover:brightness-110 disabled:cursor-wait disabled:opacity-70" data-participant-submit>
+            <p id="name-guidance" class="text-xs leading-6 text-muted-foreground sm:col-span-2">Penting: tulis nama lengkap, bukan nama samaran atau nama panggilan. Gunakan nama, email, dan institusi yang sama pada formulir resmi Dinas.</p>
+            <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-ocean to-teal px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-ocean/20 transition hover:brightness-110 disabled:cursor-wait disabled:opacity-70 sm:col-span-2" data-participant-submit>
                 <span data-participant-submit-label>Buat Akun</span>
                 <i data-lucide="arrow-right" class="h-4 w-4" data-participant-submit-icon aria-hidden="true"></i>
                 <span class="hidden h-4 w-4 animate-spin rounded-full border-2 border-white/35 border-t-white" data-participant-submit-spinner aria-hidden="true"></span>

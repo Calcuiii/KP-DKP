@@ -177,6 +177,38 @@ final class KnowledgeBaseRetrievalPipelineTest extends TestCase
         );
     }
 
+    public function test_participant_rules_clarify_procedure_without_removing_its_candidates(): void
+    {
+        $query = 'aturan dan tata tertib';
+        $registry = new KnowledgeBaseRegistry($this->registryPath);
+        $loaded = (new KnowledgeBaseDocumentLoader($this->processedDirectory))->loadAll($registry->all());
+        $chunks = (new KnowledgeBaseChunker)->chunkAll($loaded);
+        $raw = (new LexicalKnowledgeBaseRetriever)->retrieve($query, $chunks, count($chunks));
+        $resolved = $this->pipeline()->retrieveAll($query);
+        $position = static function (array $results, string $id): int {
+            foreach ($results as $index => $result) {
+                if ($result->chunk->documentId === $id) {
+                    return $index;
+                }
+            }
+            self::fail('Expected document candidate was not retrieved.');
+        };
+
+        self::assertLessThan($position($raw, 'KB-001'), $position($raw, 'KB-003'));
+        self::assertLessThan($position($resolved, 'KB-003'), $position($resolved, 'KB-001'));
+        self::assertCount(count($raw), $resolved);
+        $scores = static function (array $results): array {
+            $scores = [];
+            foreach ($results as $result) {
+                $scores[$result->chunk->chunkId] = $result->score;
+            }
+            ksort($scores);
+
+            return $scores;
+        };
+        self::assertSame($scores($raw), $scores($resolved));
+    }
+
     private function pipeline(): KnowledgeBaseRetrievalPipeline
     {
         return new KnowledgeBaseRetrievalPipeline(

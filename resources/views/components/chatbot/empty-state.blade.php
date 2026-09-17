@@ -1,13 +1,13 @@
 <section
     data-chat-empty
-    class="chatbot-pattern-surface flex min-h-0 flex-1 overflow-y-auto px-4 py-8 sm:px-6"
+    class="flex min-h-0 flex-1 overflow-y-auto px-4 py-8 sm:px-6 sm:py-12"
 >
     <div class="chatbot-pattern-content m-auto w-full max-w-2xl text-center">
-        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-ocean text-white shadow-md">
+        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-ocean text-white shadow-md shadow-ocean/15">
             <i data-lucide="fish" class="h-8 w-8"></i>
         </div>
 
-        <h1 class="mt-5 text-2xl font-bold tracking-tight text-navy sm:text-3xl">
+        <h1 class="mt-5 text-2xl font-bold leading-tight text-navy sm:text-4xl">
             Halo, selamat datang di Asisten SI-MELAYUR!
         </h1>
 
@@ -87,7 +87,7 @@
             </div>
         </div>
 
-        <div class="mx-auto mt-7 flex max-w-xl items-start gap-3 rounded-2xl border border-ocean/10 bg-secondary/60 p-4 text-left">
+        <div class="mx-auto mt-7 flex max-w-xl items-start gap-3 rounded-2xl border border-white/80 bg-white/90 p-4 text-left shadow-sm">
             <i data-lucide="info" class="mt-0.5 h-5 w-5 shrink-0 text-ocean"></i>
             <p class="text-xs leading-5 text-muted-foreground sm:text-sm">
                 Jika informasi tidak tersedia di knowledge base resmi, Asisten SI-MELAYUR akan menyampaikan bahwa informasi belum ditemukan dan tidak akan mengarang jawaban.

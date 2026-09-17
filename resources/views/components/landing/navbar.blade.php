@@ -4,23 +4,7 @@
 
             {{-- Logo / Institution --}}
             <a href="{{ route('landing') }}#beranda" class="flex items-center gap-3">
-                <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-ocean">
-                    <i
-                        data-lucide="fish"
-                        class="h-5 w-5 text-white"
-                        aria-hidden="true"
-                    ></i>
-                </div>
-
-                <div>
-                    <div class="text-sm font-bold leading-tight text-navy">
-                        SI-MELAYUR
-                    </div>
-
-                    <div class="text-xs leading-tight text-muted-foreground">
-                        Magang, Penelitian &amp; Data Kelautan
-                    </div>
-                </div>
+                <x-brand />
             </a>
 
             {{-- Desktop Navigation --}}

@@ -29,6 +29,16 @@ class ParticipantApplicationTest extends TestCase
             ->get(route('peserta.dashboard'))
             ->assertOk()
             ->assertSee('Selamat menjalankan kegiatan')
+            ->assertDontSee('data-calendar-month-panel', false)
+            ->assertSee(route('peserta.activities'))
+            ->assertDontSee('Tahap persiapan telah selesai')
+            ->assertSee(route('infographics'))
+            ->assertDontSee('Keputusan dan surat balasan Dinas');
+
+        $this->get(route('peserta.activities'))
+            ->assertOk()
+            ->assertSee('Ketentuan &amp; tata tertib peserta', false)
+            ->assertDontSee('Simpan checklist saya')
             ->assertSee('Kalender kegiatan magang')
             ->assertSee('Persiapan laporan &amp; presentasi', false)
             ->assertSee('Periode persiapan laporan dan presentasi')
@@ -36,9 +46,18 @@ class ParticipantApplicationTest extends TestCase
             ->assertSee('data-preparation-window-day', false)
             ->assertSee('Lihat bulan sebelumnya')
             ->assertSee('Lihat bulan berikutnya')
-            ->assertSee('data-calendar-month-panel', false)
-            ->assertSee('Tahap persiapan telah selesai')
-            ->assertDontSee('Keputusan dan surat balasan Dinas');
+            ->assertSee('data-calendar-month-panel', false);
+    }
+
+    public function test_activity_page_requires_an_accepted_internship_and_handles_missing_dates(): void
+    {
+        $this->get(route('peserta.activities'))->assertRedirect();
+        $participant = Participant::factory()->create(['email_verified_at' => now()]);
+        $this->actingAs($participant, 'peserta')->get(route('peserta.activities'))->assertForbidden();
+        $application = $participant->applications()->create(['service_type' => 'wopps', 'decision' => 'accepted', 'status' => 'accepted']);
+        $this->get(route('peserta.activities'))->assertForbidden();
+        $application->update(['service_type' => 'magang_pkl']);
+        $this->get(route('peserta.activities'))->assertOk()->assertSee('Menunggu admin menetapkan tanggal mulai dan selesai resmi.');
     }
 
     public function test_a_verified_participant_can_create_a_magang_pkl_preparation_draft(): void

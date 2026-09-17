@@ -131,6 +131,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const participantContent = document.querySelector('.participant-dashboard-content');
 
     if (participantContent) {
+        const accountDropdown = document.querySelector('[data-participant-account]');
+        document.addEventListener('click', (event) => {
+            if (accountDropdown && !accountDropdown.contains(event.target)) accountDropdown.open = false;
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && accountDropdown?.open) {
+                accountDropdown.open = false;
+                accountDropdown.querySelector('summary')?.focus();
+            }
+        });
         const notificationCenter = document.querySelector('[data-notification-center]');
         const notificationToggle = document.querySelector('[data-notification-toggle]');
         const notificationPanel = document.querySelector('[data-notification-panel]');
@@ -177,7 +187,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const setActiveNavigation = (id) => {
             navigationLinks.forEach((link) => {
-                link.classList.toggle('is-active', link.getAttribute('href') === `#${id}`);
+                const href = link.getAttribute('href');
+                const isCurrentPage = href && !href.startsWith('#') && new URL(href, window.location.href).pathname === window.location.pathname;
+                link.classList.toggle('is-active', href === `#${id}` || isCurrentPage);
             });
         };
 

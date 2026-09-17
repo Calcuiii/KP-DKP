@@ -4,8 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Participant;
 use App\Models\User;
-use App\Notifications\ParticipantVerifyEmail;
 use App\Notifications\ParticipantResetPassword;
+use App\Notifications\ParticipantVerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
@@ -26,6 +26,7 @@ class ParticipantAuthenticationTest extends TestCase
             'email' => 'peserta@example.test',
             'password' => 'password123',
             'password_confirmation' => 'password123',
+            'institution' => 'Universitas Contoh', 'phone' => '081234567890',
         ]);
 
         $response
@@ -117,7 +118,7 @@ class ParticipantAuthenticationTest extends TestCase
         $this->actingAs($participant, 'peserta')
             ->get(route('peserta.dashboard'))
             ->assertOk()
-            ->assertSee('Halo, Calon Peserta')
+            ->assertSee('Selamat datang di SI-MELAYUR, Calon Peserta!')
             ->assertSee('Pilih layanan yang akan dipersiapkan');
     }
 
@@ -217,6 +218,7 @@ class ParticipantAuthenticationTest extends TestCase
                 'email' => "peserta-{$attempt}@example.test",
                 'password' => 'password123',
                 'password_confirmation' => 'password123',
+                'institution' => 'Universitas Contoh', 'phone' => '081234567890',
             ])->assertSessionHasErrors('name');
         }
 
@@ -225,6 +227,7 @@ class ParticipantAuthenticationTest extends TestCase
             'email' => 'peserta-4@example.test',
             'password' => 'password123',
             'password_confirmation' => 'password123',
+            'institution' => 'Universitas Contoh', 'phone' => '081234567890',
         ])->assertSessionHasErrors('email');
 
         $this->assertDatabaseMissing('participants', ['email' => 'peserta-4@example.test']);

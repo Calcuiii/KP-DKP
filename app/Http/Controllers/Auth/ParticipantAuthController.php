@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ParticipantLoginRequest;
 use App\Http\Requests\Auth\RegisterParticipantRequest;
+use App\Models\InternshipLocation;
 use App\Models\Participant;
 use App\Models\ParticipantApplication;
-use App\Models\InternshipLocation;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -54,6 +54,12 @@ final class ParticipantAuthController extends Controller
         $participant = Auth::guard('peserta')->user();
 
         $application = $participant->applications()->with('documents')->latest()->first();
+
+        if (request()->routeIs('peserta.activities')) {
+            abort_unless($application
+                && $application->service_type === ParticipantApplication::SERVICE_MAGANG_PKL
+                && ($application->official_started_at !== null || in_array(strtolower((string) $application->decision), ['accepted', 'approved', 'diterima'], true)), 403);
+        }
 
         return view('pages.peserta.dashboard', [
             'application' => $application,
