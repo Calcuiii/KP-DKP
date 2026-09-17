@@ -593,66 +593,79 @@ final class ParticipantApplicationController extends Controller
     ): RedirectResponse {
         $application = $this->participantApplication($request);
 
-        abort_unless(
-            $application->service_type
-                === ParticipantApplication::SERVICE_WOPPS,
-            404
-        );
+        return DB::transaction(function () use ($request, $application): RedirectResponse {
+            $application = ParticipantApplication::query()
+                ->whereKey($application->id)
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        abort_unless(
-            $application->ethicsApprovalApproved(),
-            422,
-            'Ethics Approval Statement Letter harus disetujui terlebih dahulu.'
-        );
-
-        abort_if(
-            $application->google_form_confirmed_at !== null,
-            422,
-            'Bukti pengisian Form WOPPS sudah dikirim.'
-        );
-
-        $file = $request->file('wopps_form_proof');
-
-        $path = $file->store(
-            "participant-applications/{$application->id}/wopps-form-proofs"
-        );
-
-        abort_unless(
-            is_string($path),
-            500,
-            'Bukti pengisian Form WOPPS gagal disimpan.'
-        );
-
-        $application->documents()->create([
-            'type' => ParticipantApplicationDocument::TYPE_WOPPS_FORM_PROOF,
-            'version' => 1,
-            'file_path' => $path,
-            'original_name' => $file->getClientOriginalName(),
-            'mime_type' => $file->getMimeType() ?? 'application/octet-stream',
-            'file_size' => $file->getSize(),
-            'review_status' => ParticipantApplicationDocument::REVIEW_SUBMITTED,
-        ]);
-
-        $application->update([
-            'google_form_confirmed_at' => now(),
-            'status' => 'wopps_form_submitted',
-        ]);
-
-        User::query()
-            ->where('role', 'superadmin')
-            ->where('status', 'Aktif')
-            ->get()
-            ->each(
-                fn (User $admin) =>
-                $admin->notify(
-                    new WoppsFormSubmitted($application)
-                )
+            abort_unless(
+                $application->service_type === ParticipantApplication::SERVICE_WOPPS,
+                404
             );
 
-        return back()->with(
-            'status',
-            'Bukti pengisian Form WOPPS berhasil disimpan. Silakan menunggu tindak lanjut Dinas.'
-        );
+            abort_unless(
+                $application->ethicsApprovalApproved(),
+                422,
+                'Ethics Approval Statement Letter harus disetujui terlebih dahulu.'
+            );
+
+            if (
+                $application->google_form_confirmed_at !== null
+                || $application->documents()
+                    ->where('type', ParticipantApplicationDocument::TYPE_WOPPS_FORM_PROOF)
+                    ->exists()
+            ) {
+                return redirect()
+                    ->route('peserta.dashboard')
+                    ->with(
+                        'status',
+                        'Bukti pengisian Form WOPPS sudah tersimpan. Silakan menunggu tindak lanjut Dinas.'
+                    );
+            }
+
+            $file = $request->file('wopps_form_proof');
+
+            $path = $file->store(
+                "participant-applications/{$application->id}/wopps-form-proofs"
+            );
+
+            abort_unless(
+                is_string($path),
+                500,
+                'Bukti pengisian Form WOPPS gagal disimpan.'
+            );
+
+            $application->documents()->create([
+                'type' => ParticipantApplicationDocument::TYPE_WOPPS_FORM_PROOF,
+                'version' => 1,
+                'file_path' => $path,
+                'original_name' => $file->getClientOriginalName(),
+                'mime_type' => $file->getMimeType() ?? 'application/octet-stream',
+                'file_size' => $file->getSize(),
+                'review_status' => ParticipantApplicationDocument::REVIEW_SUBMITTED,
+            ]);
+
+            $application->update([
+                'google_form_confirmed_at' => now(),
+                'status' => 'wopps_form_submitted',
+            ]);
+
+            User::query()
+                ->where('role', 'superadmin')
+                ->where('status', 'Aktif')
+                ->get()
+                ->each(
+                    fn (User $admin) => $admin->notify(new WoppsFormSubmitted($application))
+                );
+
+            return redirect()
+                ->route('peserta.dashboard')
+                ->with(
+                    'status',
+                    'Bukti pengisian Form WOPPS berhasil disimpan. Silakan menunggu tindak lanjut Dinas.'
+                );
+        });
     }
 
     public function downloadDocument(

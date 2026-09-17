@@ -25,7 +25,14 @@
       "status": "active",
       "source_file": "originals/documents/Ketentuan_Umum_Peserta_Magang_DKP_Jatim.pdf",
       "processed_file": "KB-001-ketentuan-umum-peserta.md",
-      "source_sha256": "e875825f6763d9a6509fefb2c2a926a2990c1f2c091d4fb20d705c7074942186"
+      "source_sha256": "e875825f6763d9a6509fefb2c2a926a2990c1f2c091d4fb20d705c7074942186",
+      "policy_relations": [
+        {
+          "relation": "clarifies",
+          "document_id": "KB-003",
+          "topics": ["ketentuan_umum_peserta"]
+        }
+      ]
     },
     {
       "document_id": "KB-002",

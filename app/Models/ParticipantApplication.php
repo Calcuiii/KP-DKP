@@ -39,6 +39,21 @@ class ParticipantApplication extends Model
         */
         'certificate_follow_up_choice',
         'certificate_follow_up_at',
+
+        /*
+        |--------------------------------------------------------------------------
+        | Penyelesaian & Penerbitan Sertifikat
+        |--------------------------------------------------------------------------
+        */
+        'completion_checklist',
+        'presentation_date',
+        'presentation_photo_path',
+        'presentation_submitted_at',
+        'completion_form_proof_path',
+        'completion_form_submitted_at',
+        'certificate_path',
+        'certificate_published_at',
+        'certificate_emailed_at',
     ];
 
     /**
@@ -47,6 +62,12 @@ class ParticipantApplication extends Model
     protected function casts(): array
     {
         return [
+            'completion_checklist' => 'array',
+            'presentation_date' => 'date',
+            'presentation_submitted_at' => 'datetime',
+            'completion_form_submitted_at' => 'datetime',
+            'certificate_published_at' => 'datetime',
+            'certificate_emailed_at' => 'datetime',
             'google_form_confirmed_at' => 'datetime',
             'pic_contacted_at' => 'datetime',
             'completed_at' => 'datetime',

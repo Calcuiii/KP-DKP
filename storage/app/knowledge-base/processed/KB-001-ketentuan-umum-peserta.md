@@ -8,6 +8,7 @@ effective_date: null
 priority: 3
 status: active
 source_file: originals/documents/Ketentuan_Umum_Peserta_Magang_DKP_Jatim.pdf
+policy_relations: [{"relation": "clarifies", "document_id": "KB-003", "topics": ["ketentuan_umum_peserta"]}]
 ---
 
 # Ketentuan Umum Peserta Magang dan PKL

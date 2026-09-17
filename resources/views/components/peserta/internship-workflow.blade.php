@@ -213,7 +213,7 @@
                     Tahap 1
                 </p>
 
-                <h2 class="mt-1 text-xl font-extrabold">
+                <h2 class="mt-1 text-xl font-bold">
                     Isi dan buktikan Buku Tamu
                 </h2>
 
@@ -346,7 +346,7 @@
 
             <div>
 
-                <p class="text-sm font-extrabold">
+                <p class="text-sm font-bold">
                     Mengapa Buku Tamu wajib?
                 </p>
 
@@ -382,7 +382,7 @@
                 Tahap 2 · Informasi
             </p>
 
-            <h2 class="mt-2 text-2xl font-extrabold">
+            <h2 class="mt-2 text-2xl font-bold">
                 Lokasi dan ketersediaan kuota
             </h2>
 
@@ -465,7 +465,7 @@
 
                     <div class="flex gap-3">
 
-                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white text-xs font-extrabold text-ocean shadow-sm">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white text-xs font-bold text-ocean shadow-sm">
                             {{ $location->display_order }}
                         </span>
 
@@ -538,7 +538,7 @@
                     Tahap 3
                 </p>
 
-                <h2 class="mt-2 text-2xl font-extrabold">
+                <h2 class="mt-2 text-2xl font-bold">
                     Siapkan dan upload surat permohonan
                 </h2>
 
@@ -583,159 +583,56 @@
 
         </div>
 
-
-        {{-- STATUS PERBAIKAN --}}
+        <div class="mt-4 rounded-xl bg-light p-4 text-sm leading-relaxed">
+            <p class="font-bold text-navy">Gunakan template surat sejak awal</p>
+            <p class="mt-2 text-muted-foreground">Gunakan template resmi dan lengkapi identitas peserta, lokasi, periode kegiatan, serta kontak yang dapat dihubungi. Permohonan sertifikat atau surat keterangan tidak termasuk pemeriksaan surat magang.</p>
+            <a href="https://bit.ly/Surat_Permohonan_DKP" target="_blank" rel="noopener noreferrer" class="pointer-events-auto mt-3 inline-flex font-bold text-ocean underline underline-offset-4">Buka template surat permohonan resmi ↗</a>
+        </div>
 
         @if ($letterNeedsRevision)
-
             <div class="mt-5 rounded-2xl border border-red-200 bg-red-50 p-4">
-
-                <p class="text-sm font-bold text-red-800">
-                    Surat perlu diperbaiki
-                </p>
-
-                <p class="mt-1 text-sm leading-relaxed text-red-700">
-                    {{ $requestLetter->review_notes ?: 'Silakan periksa kembali kelengkapan surat dan unggah versi terbaru.' }}
-                </p>
-
+                <p class="text-sm font-bold text-red-800">Surat perlu diperbaiki</p>
+                <p class="mt-1 text-sm leading-relaxed text-red-700">{{ $requestLetter->review_notes ?: 'Silakan periksa kembali kelengkapan surat dan unggah versi terbaru.' }}</p>
             </div>
-
         @elseif ($requestLetter)
-
             <div class="mt-5 rounded-2xl border border-border bg-background p-4 text-sm">
-
-                <p class="font-bold">
-                    Versi {{ $requestLetter->version }}
-                    ·
-                    {{ $requestLetter->original_name }}
-                </p>
-
-                <p class="mt-1 text-xs text-muted-foreground">
-                    Dikirim
-                    {{ $requestLetter->created_at->format('d M Y, H:i') }}
-                </p>
-
-                <a
-                    href="{{ route('peserta.document.download', $requestLetter) }}"
-                    class="mt-3 inline-flex text-xs font-bold text-ocean"
-                >
-                    Unduh surat
-                </a>
-
+                <p class="font-bold">Versi {{ $requestLetter->version }} · {{ $requestLetter->original_name }}</p>
+                <p class="mt-1 text-xs text-muted-foreground">Dikirim {{ $requestLetter->created_at->format('d M Y, H:i') }}</p>
+                <a href="{{ route('peserta.document.download', $requestLetter) }}" class="mt-3 inline-flex text-xs font-bold text-ocean">Unduh surat</a>
             </div>
-
         @endif
-
-
-        {{-- HASIL PEMERIKSAAN OTOMATIS --}}
 
         @if ($requestLetter?->automated_check_results)
-
-            @php
-                $automatedResult = $requestLetter->automated_check_results;
-            @endphp
-
-            <div
-                class="mt-5 rounded-2xl border {{
-                    $automatedNeedsRevision
-                        ? 'border-red-200 bg-red-50/60'
-                        : 'border-teal/25 bg-teal/[0.05]'
-                }} p-5"
-            >
-
+            @php $automatedResult = $requestLetter->automated_check_results; @endphp
+            <div class="mt-5 rounded-2xl border {{ $automatedNeedsRevision ? 'border-red-200 bg-red-50/60' : 'border-teal/25 bg-teal/[0.05]' }} p-5">
                 <div class="flex items-start gap-3">
-
-                    <span
-                        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl {{
-                            $automatedNeedsRevision
-                                ? 'bg-red-100 text-red-700'
-                                : 'bg-teal/10 text-teal'
-                        }}"
-                    >
+                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl {{ $automatedNeedsRevision ? 'bg-red-100 text-red-700' : 'bg-teal/10 text-teal' }}">
                         <i data-lucide="scan-search" class="h-4 w-4"></i>
                     </span>
-
                     <div>
-
-                        <p class="text-sm font-extrabold">
-                            Hasil pemeriksaan otomatis
-                        </p>
-
-                        <p class="mt-1 text-xs leading-relaxed text-muted-foreground">
-                            {{ $automatedResult['summary'] ?? 'Pemeriksaan otomatis selesai.' }}
-                        </p>
-
+                        <p class="text-sm font-bold">Hasil pemeriksaan otomatis</p>
+                        <p class="mt-1 text-xs leading-relaxed text-muted-foreground">{{ $automatedResult['summary'] }}</p>
                     </div>
-
                 </div>
-
-
-                @if(!empty($automatedResult['checks']))
-
-                    <div class="mt-4 space-y-2">
-
-                        @foreach ($automatedResult['checks'] as $check)
-
-                            <div class="flex items-start gap-3 rounded-xl bg-white/80 px-3 py-2.5">
-
-                                <span
-                                    class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold {{
-                                        ($check['status'] ?? '') === 'passed'
-                                            ? 'bg-emerald-100 text-emerald-700'
-                                            : (
-                                                ($check['status'] ?? '') === 'manual'
-                                                    ? 'bg-blue-100 text-blue-700'
-                                                    : 'bg-red-100 text-red-700'
-                                            )
-                                    }}"
-                                >
-
-                                    {{
-                                        ($check['status'] ?? '') === 'passed'
-                                            ? '✓'
-                                            : (
-                                                ($check['status'] ?? '') === 'manual'
-                                                    ? 'i'
-                                                    : '!'
-                                            )
-                                    }}
-
-                                </span>
-
-                                <div>
-
-                                    <p class="text-xs font-bold text-navy">
-                                        {{ $check['label'] ?? 'Pemeriksaan' }}
-                                    </p>
-
-                                    <p class="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">
-                                        {{ $check['message'] ?? '' }}
-                                    </p>
-
-                                </div>
-
+                <div class="mt-4 space-y-2">
+                    @foreach ($automatedResult['checks'] as $check)
+                        <div class="flex items-start gap-3 rounded-xl bg-white/80 px-3 py-2.5">
+                            <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold {{ $check['status'] === 'passed' ? 'bg-emerald-100 text-emerald-700' : ($check['status'] === 'manual' ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700') }}">
+                                {{ $check['status'] === 'passed' ? '✓' : ($check['status'] === 'manual' ? 'i' : '!') }}
+                            </span>
+                            <div>
+                                <p class="text-xs font-bold text-navy">{{ $check['label'] }}</p>
+                                <p class="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">{{ $check['message'] }}</p>
                             </div>
-
-                        @endforeach
-
-                    </div>
-
-                @endif
-
-
-                <p class="mt-4 text-[11px] leading-relaxed text-muted-foreground">
-                    Hasil ini adalah pemeriksaan awal berbasis teks.
-                    Kelolosan resmi tetap ditentukan oleh admin.
-                </p>
-
+                        </div>
+                    @endforeach
+                </div>
+                <p class="mt-4 text-[11px] leading-relaxed text-muted-foreground">Hasil ini adalah pemeriksaan awal berbasis teks. Kelolosan resmi tetap ditentukan oleh admin.</p>
             </div>
-
         @endif
 
 
-        {{-- =====================================================
-             PERINGATAN SERTIFIKAT
-        ====================================================== --}}
+        {{-- PERINGATAN SERTIFIKAT --}}
 
         @if ($certificateFollowUpRequired)
 
@@ -744,18 +641,12 @@
                 <div class="flex items-start gap-3">
 
                     <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
-
-                        <i
-                            data-lucide="triangle-alert"
-                            class="h-5 w-5"
-                        ></i>
-
+                        <i data-lucide="triangle-alert" class="h-5 w-5"></i>
                     </span>
-
 
                     <div>
 
-                        <p class="text-sm font-extrabold text-amber-900">
+                        <p class="text-sm font-bold text-amber-900">
                             Konfirmasi Ulang
                         </p>
 
@@ -783,16 +674,13 @@
 
                     @csrf
 
-
                     <fieldset>
 
-                        <legend class="text-sm font-extrabold text-amber-900">
+                        <legend class="text-sm font-bold text-amber-900">
                             Pilih tindakan
                         </legend>
 
-
                         <div class="mt-3 space-y-3">
-
 
                             {{-- PILIHAN UPLOAD ULANG --}}
 
@@ -876,10 +764,7 @@
 
                         Simpan Pilihan
 
-                        <i
-                            data-lucide="arrow-right"
-                            class="h-4 w-4"
-                        ></i>
+                        <i data-lucide="arrow-right" class="h-4 w-4"></i>
 
                     </button>
 
@@ -900,14 +785,11 @@
 
                 <div class="flex items-start gap-3">
 
-                    <i
-                        data-lucide="upload"
-                        class="mt-0.5 h-5 w-5 text-ocean"
-                    ></i>
+                    <i data-lucide="upload" class="mt-0.5 h-5 w-5 text-ocean"></i>
 
                     <div>
 
-                        <p class="text-sm font-extrabold text-navy">
+                        <p class="text-sm font-bold text-navy">
                             Silakan upload ulang surat
                         </p>
 
@@ -936,14 +818,11 @@
 
                 <div class="flex items-start gap-3">
 
-                    <i
-                        data-lucide="check-circle"
-                        class="mt-0.5 h-5 w-5 text-teal"
-                    ></i>
+                    <i data-lucide="check-circle" class="mt-0.5 h-5 w-5 text-teal"></i>
 
                     <div>
 
-                        <p class="text-sm font-extrabold text-teal">
+                        <p class="text-sm font-bold text-teal">
                             Pilihan berhasil disimpan
                         </p>
 
@@ -961,9 +840,7 @@
         @endif
 
 
-        {{-- =====================================================
-             FORM UPLOAD SURAT
-        ====================================================== --}}
+        {{-- FORM UPLOAD SURAT --}}
 
         @if ($canUploadLetter)
 
@@ -978,7 +855,6 @@
                 @csrf
 
                 <x-peserta.shared-letter-fields />
-
 
                 <label class="text-sm font-bold">
                     Upload surat permohonan
@@ -1000,7 +876,6 @@
 
                 @enderror
 
-
                 <label class="mt-4 flex items-start gap-3 text-xs leading-relaxed text-muted-foreground">
 
                     <input
@@ -1015,7 +890,6 @@
                     sudah tercantum dalam surat.
 
                 </label>
-
 
                 <button
                     data-request-letter-submit
@@ -1065,14 +939,8 @@
                         : 'bg-ocean text-white'
                 }}"
             >
-
-                <i
-                    data-lucide="clipboard-check"
-                    class="h-5 w-5"
-                ></i>
-
+                <i data-lucide="clipboard-check" class="h-5 w-5"></i>
             </span>
-
 
             <div>
 
@@ -1080,7 +948,7 @@
                     Magang / PKL / KP · Tahap 4
                 </p>
 
-                <h2 class="mt-2 text-2xl font-extrabold">
+                <h2 class="mt-2 text-2xl font-bold">
                     Isi dan buktikan Google Form resmi
                 </h2>
 
@@ -1092,14 +960,8 @@
         @if($internshipFormCompleted)
 
             <span class="inline-flex w-fit items-center gap-2 rounded-full bg-teal/10 px-4 py-2 text-xs font-bold text-teal">
-
-                <i
-                    data-lucide="check-circle"
-                    class="h-4 w-4"
-                ></i>
-
+                <i data-lucide="check-circle" class="h-4 w-4"></i>
                 Bukti tersimpan
-
             </span>
 
         @elseif(!$formStageUnlocked)
@@ -1114,14 +976,11 @@
 
 
     <p class="mt-5 max-w-4xl text-sm leading-relaxed text-muted-foreground">
-
         Setelah surat permohonan disetujui dan seluruh keputusan
         terkait surat telah diselesaikan, pilih Google Form sesuai
         jenjang pendidikan dan isi hingga selesai.
-
         Kemudian unggah screenshot halaman konfirmasi pengiriman
         sebagai bukti.
-
     </p>
 
 
@@ -1129,31 +988,22 @@
 
         <div class="mt-6 grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
 
-
             {{-- GOOGLE FORM --}}
 
             <div class="rounded-[1.75rem] bg-gradient-to-br from-navy to-ocean p-6 text-white">
 
                 <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15">
-
-                    <i
-                        data-lucide="external-link"
-                        class="h-5 w-5"
-                    ></i>
-
+                    <i data-lucide="external-link" class="h-5 w-5"></i>
                 </span>
 
-
-                <h3 class="mt-5 text-lg font-extrabold">
+                <h3 class="mt-5 text-lg font-bold">
                     Google Form pendaftaran resmi
                 </h3>
-
 
                 <p class="mt-2 text-sm leading-relaxed text-blue-100">
                     Pilih formulir berdasarkan jenjang pendidikan Anda.
                     Form akan dibuka di tab baru.
                 </p>
-
 
                 <div class="mt-5 flex flex-wrap gap-3">
 
@@ -1165,14 +1015,8 @@
                             rel="noopener noreferrer"
                             class="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-bold text-ocean transition hover:bg-blue-50"
                         >
-
                             {{ $label }}
-
-                            <i
-                                data-lucide="arrow-up-right"
-                                class="h-4 w-4"
-                            ></i>
-
+                            <i data-lucide="arrow-up-right" class="h-4 w-4"></i>
                         </a>
 
                     @endforeach
@@ -1191,57 +1035,35 @@
                     <div class="flex items-start gap-4">
 
                         <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-teal/10 text-teal">
-
-                            <i
-                                data-lucide="file-check"
-                                class="h-5 w-5"
-                            ></i>
-
+                            <i data-lucide="file-check" class="h-5 w-5"></i>
                         </span>
-
 
                         <div>
 
-                            <p class="text-sm font-extrabold">
+                            <p class="text-sm font-bold">
                                 Bukti pengisian sudah dikirim
                             </p>
 
                             <p class="mt-1 text-xs text-muted-foreground">
-
                                 {{ $internshipFormProof->original_name }}
-
                                 ·
-
                                 {{ $internshipFormProof->created_at->format('d M Y, H:i') }}
-
                             </p>
-
 
                             <a
                                 href="{{ route('peserta.document.download', $internshipFormProof) }}"
                                 class="mt-4 inline-flex items-center gap-2 text-xs font-bold text-ocean"
                             >
-
-                                <i
-                                    data-lucide="download"
-                                    class="h-4 w-4"
-                                ></i>
-
+                                <i data-lucide="download" class="h-4 w-4"></i>
                                 Lihat bukti
-
                             </a>
 
                         </div>
 
                     </div>
 
-
                     <div class="mt-6 rounded-2xl border border-teal/25 bg-teal/[0.08] p-4 text-sm font-semibold leading-relaxed text-teal">
-
-                        Tahap 4 selesai.
-                        Silakan menunggu keputusan yang akan dikirim
-                        melalui portal.
-
+                        Tahap 4 selesai. Silakan menunggu keputusan yang akan dikirim melalui portal.
                     </div>
 
                 </div>
@@ -1257,19 +1079,14 @@
 
                     @csrf
 
-                    <label class="text-sm font-extrabold">
+                    <label class="text-sm font-bold">
                         Upload screenshot bukti pengisian
                     </label>
 
-
                     <p class="mt-1 text-xs leading-relaxed text-muted-foreground">
-                        Gunakan screenshot halaman yang menyatakan respons
-                        berhasil dikirim.
-
-                        Format JPG, PNG, atau PDF,
-                        maksimal 5 MB.
+                        Gunakan screenshot halaman yang menyatakan respons berhasil dikirim.
+                        Format JPG, PNG, atau PDF, maksimal 5 MB.
                     </p>
-
 
                     <input
                         type="file"
@@ -1279,7 +1096,6 @@
                         class="mt-4 block w-full rounded-xl border border-border bg-white p-3 text-sm"
                     >
 
-
                     @error('internship_form_proof')
 
                         <p class="mt-2 text-xs font-semibold text-destructive">
@@ -1287,7 +1103,6 @@
                         </p>
 
                     @enderror
-
 
                     <label class="mt-4 flex items-start gap-3 text-xs leading-relaxed text-muted-foreground">
 
@@ -1304,19 +1119,12 @@
 
                     </label>
 
-
                     <button
                         type="submit"
                         class="mt-5 inline-flex items-center gap-2 rounded-xl bg-ocean px-5 py-3 text-sm font-bold text-white"
                     >
-
-                        <i
-                            data-lucide="upload"
-                            class="h-4 w-4"
-                        ></i>
-
+                        <i data-lucide="upload" class="h-4 w-4"></i>
                         Simpan Bukti Pengisian
-
                     </button>
 
                 </form>
@@ -1334,29 +1142,21 @@
             <div class="flex items-start gap-3">
 
                 <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-200 text-slate-500">
-
-                    <i
-                        data-lucide="lock"
-                        class="h-5 w-5"
-                    ></i>
-
+                    <i data-lucide="lock" class="h-5 w-5"></i>
                 </span>
-
 
                 <div>
 
-                    <p class="text-sm font-extrabold text-navy">
+                    <p class="text-sm font-bold text-navy">
                         Tahap 4 belum terbuka
                     </p>
 
                     <p class="mt-1 text-sm leading-relaxed text-muted-foreground">
-
                         {{
                             $certificateFollowUpRequired
                                 ? 'Silakan pilih tindakan terkait surat dan penerbitan sertifikat pada Tahap 3 terlebih dahulu.'
                                 : 'Tahap Google Form akan terbuka setelah surat permohonan dinyatakan selesai diperiksa.'
                         }}
-
                     </p>
 
                 </div>
@@ -1401,14 +1201,8 @@
                             )
                     }}"
                 >
-
-                    <i
-                        data-lucide="file-check"
-                        class="h-5 w-5"
-                    ></i>
-
+                    <i data-lucide="file-check" class="h-5 w-5"></i>
                 </span>
-
 
                 <div>
 
@@ -1416,7 +1210,7 @@
                         Tahap 5
                     </p>
 
-                    <h2 class="mt-2 text-2xl font-extrabold">
+                    <h2 class="mt-2 text-2xl font-bold">
                         Keputusan dan surat balasan Dinas
                     </h2>
 
@@ -1430,16 +1224,10 @@
 
             </div>
 
-
             @unless($stageFiveUnlocked)
 
                 <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
-
-                    <i
-                        data-lucide="lock"
-                        class="h-4 w-4"
-                    ></i>
-
+                    <i data-lucide="lock" class="h-4 w-4"></i>
                 </span>
 
             @endunless
@@ -1451,7 +1239,7 @@
 
             <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
 
-                <p class="text-sm font-extrabold text-navy">
+                <p class="text-sm font-bold text-navy">
                     Tahap belum tersedia
                 </p>
 
@@ -1473,14 +1261,8 @@
                         <div class="flex items-start gap-4">
 
                             <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-teal text-white">
-
-                                <i
-                                    data-lucide="check"
-                                    class="h-5 w-5"
-                                ></i>
-
+                                <i data-lucide="check" class="h-5 w-5"></i>
                             </span>
-
 
                             <div>
 
@@ -1488,7 +1270,7 @@
                                     Pengajuan diterima
                                 </p>
 
-                                <h3 class="mt-2 text-xl font-extrabold text-navy">
+                                <h3 class="mt-2 text-xl font-bold text-navy">
                                     Selamat, Anda dapat melanjutkan ke tahap pelaksanaan.
                                 </h3>
 
@@ -1520,14 +1302,8 @@
                         <div class="flex items-start gap-4">
 
                             <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-600 text-white">
-
-                                <i
-                                    data-lucide="x"
-                                    class="h-5 w-5"
-                                ></i>
-
+                                <i data-lucide="x" class="h-5 w-5"></i>
                             </span>
-
 
                             <div>
 
@@ -1535,7 +1311,7 @@
                                     Pengajuan belum dapat diterima
                                 </p>
 
-                                <h3 class="mt-2 text-xl font-extrabold text-navy">
+                                <h3 class="mt-2 text-xl font-bold text-navy">
                                     Silakan periksa keputusan resmi dari Dinas.
                                 </h3>
 
@@ -1555,30 +1331,23 @@
                     <div class="rounded-[1.75rem] bg-gradient-to-br from-navy to-ocean p-6 text-white">
 
                         <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15">
-
-                            <i
-                                data-lucide="clock"
-                                class="h-5 w-5"
-                            ></i>
-
+                            <i data-lucide="clock" class="h-5 w-5"></i>
                         </span>
 
                         <p class="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-blue-200">
                             Status saat ini
                         </p>
 
-                        <h3 class="mt-2 text-xl font-extrabold">
+                        <h3 class="mt-2 text-xl font-bold">
                             {{ $replyLetter ? 'Surat balasan telah dikirim' : 'Menunggu keputusan Dinas' }}
                         </h3>
 
                         <p class="mt-2 text-sm leading-relaxed text-blue-100">
-
                             {{
                                 $replyLetter
                                     ? 'Silakan periksa dan unduh surat balasan resmi dari Dinas di samping.'
                                     : 'Pantau notifikasi portal untuk keputusan atau surat balasan dari Dinas.'
                             }}
-
                         </p>
 
                     </div>
@@ -1591,7 +1360,7 @@
                     class="rounded-[1.75rem] border border-border bg-background p-6"
                 >
 
-                    <p class="text-sm font-extrabold text-navy">
+                    <p class="text-sm font-bold text-navy">
                         Surat balasan resmi
                     </p>
 
@@ -1605,14 +1374,8 @@
                             href="{{ route('peserta.response-letter.download') }}"
                             class="mt-5 inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white"
                         >
-
-                            <i
-                                data-lucide="download"
-                                class="h-4 w-4"
-                            ></i>
-
+                            <i data-lucide="download" class="h-4 w-4"></i>
                             Unduh Surat Balasan
-
                         </a>
 
                     @else
@@ -1652,22 +1415,16 @@
                     Tahap 6
                 </p>
 
-                <h2 class="mt-2 text-xl font-extrabold">
+                <h2 class="mt-2 text-xl font-bold">
                     Kalender pelaksanaan
                 </h2>
 
             </div>
 
-
             @unless($stageSixUnlocked)
 
                 <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
-
-                    <i
-                        data-lucide="lock"
-                        class="h-4 w-4"
-                    ></i>
-
+                    <i data-lucide="lock" class="h-4 w-4"></i>
                 </span>
 
             @endunless
@@ -1689,7 +1446,7 @@
 
                     <div>
 
-                        <p class="text-3xl font-extrabold">
+                        <p class="text-3xl font-bold">
                             {{ $daysRemaining }} hari
                         </p>
 
@@ -1701,14 +1458,8 @@
                         <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold text-blue-100">
 
                             <span class="inline-flex items-center gap-2">
-
-                                <i
-                                    data-lucide="calendar-range"
-                                    class="h-4 w-4 text-teal-200"
-                                ></i>
-
+                                <i data-lucide="calendar-range" class="h-4 w-4 text-teal-200"></i>
                                 {{ $officialStarted->translatedFormat('d M Y') }}
-
                             </span>
 
                             <span class="text-blue-300">
@@ -1729,13 +1480,10 @@
                         data-internship-calendar-toggle
                         aria-expanded="false"
                         aria-controls="internship-calendar-detail"
-                        class="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-extrabold text-ocean shadow-lg shadow-navy/20 transition hover:-translate-y-0.5 hover:bg-blue-50"
+                        class="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-ocean shadow-lg shadow-navy/20 transition hover:-translate-y-0.5 hover:bg-blue-50"
                     >
 
-                        <i
-                            data-lucide="calendar-range"
-                            class="h-4 w-4"
-                        ></i>
+                        <i data-lucide="calendar-range" class="h-4 w-4"></i>
 
                         <span data-calendar-toggle-label>
                             Lihat kalender kegiatan
@@ -1763,11 +1511,11 @@
 
                         <div class="rounded-2xl bg-light p-5">
 
-                            <p class="text-[10px] font-extrabold uppercase tracking-[0.18em] text-teal">
+                            <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-teal">
                                 Periode pelaksanaan
                             </p>
 
-                            <h3 class="mt-2 text-xl font-extrabold">
+                            <h3 class="mt-2 text-xl font-bold">
                                 Agenda magang Anda
                             </h3>
 
@@ -1776,12 +1524,7 @@
                                 <div class="flex items-start gap-3 rounded-xl bg-white p-3">
 
                                     <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-ocean/10 text-ocean">
-
-                                        <i
-                                            data-lucide="play"
-                                            class="h-4 w-4"
-                                        ></i>
-
+                                        <i data-lucide="play" class="h-4 w-4"></i>
                                     </span>
 
                                     <div>
@@ -1790,7 +1533,7 @@
                                             Hari pertama
                                         </p>
 
-                                        <p class="mt-1 text-sm font-extrabold">
+                                        <p class="mt-1 text-sm font-bold">
                                             {{ $officialStarted->translatedFormat('l, d F Y') }}
                                         </p>
 
@@ -1802,12 +1545,7 @@
                                 <div class="flex items-start gap-3 rounded-xl bg-white p-3">
 
                                     <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-teal/10 text-teal">
-
-                                        <i
-                                            data-lucide="flag"
-                                            class="h-4 w-4"
-                                        ></i>
-
+                                        <i data-lucide="flag" class="h-4 w-4"></i>
                                     </span>
 
                                     <div>
@@ -1816,7 +1554,7 @@
                                             Hari terakhir
                                         </p>
 
-                                        <p class="mt-1 text-sm font-extrabold">
+                                        <p class="mt-1 text-sm font-bold">
                                             {{ $officialEnded->translatedFormat('l, d F Y') }}
                                         </p>
 
@@ -1844,7 +1582,7 @@
                                         Kalender pelaksanaan
                                     </p>
 
-                                    <h3 class="mt-1 text-lg font-extrabold">
+                                    <h3 class="mt-1 text-lg font-bold">
                                         {{ $calendarMonth->translatedFormat('F Y') }}
                                     </h3>
 
@@ -1853,19 +1591,13 @@
                                 <div class="flex flex-wrap gap-3 text-[10px] font-bold text-muted-foreground">
 
                                     <span class="inline-flex items-center gap-1.5">
-
                                         <span class="h-2.5 w-2.5 rounded-full bg-ocean"></span>
-
                                         Periode magang
-
                                     </span>
 
                                     <span class="inline-flex items-center gap-1.5">
-
                                         <span class="h-2.5 w-2.5 rounded-full bg-teal ring-2 ring-teal/20"></span>
-
                                         Hari ini
-
                                     </span>
 
                                 </div>
@@ -1877,7 +1609,7 @@
 
                                 @foreach (['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'] as $dayName)
 
-                                    <span class="py-2 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">
+                                    <span class="py-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                                         {{ $dayName }}
                                     </span>
 

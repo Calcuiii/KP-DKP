@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
-use App\Notifications\ParticipantVerifyEmail;
 use App\Notifications\ParticipantResetPassword;
+use App\Notifications\ParticipantVerifyEmail;
 use Database\Factories\ParticipantFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use App\Models\ReplyLetter;
 
 class Participant extends Authenticatable implements MustVerifyEmail
 {
@@ -23,6 +22,8 @@ class Participant extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name',
+        'institution',
+        'phone',
         'email',
         'password',
     ];

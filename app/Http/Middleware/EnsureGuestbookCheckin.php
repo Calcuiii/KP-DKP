@@ -14,6 +14,11 @@ final class EnsureGuestbookCheckin
 {
     public function handle(Request $request, Closure $next): Response|JsonResponse|RedirectResponse
     {
+        // Access follows the current participant login, without granting a guest session.
+        if ($request->user('peserta')?->hasVerifiedEmail()) {
+            return $next($request);
+        }
+
         if ((int) $request->session()->get('guestbook_verified_until', 0) > now()->timestamp) {
             return $next($request);
         }

@@ -29,6 +29,16 @@ class ParticipantApplicationTest extends TestCase
             ->get(route('peserta.dashboard'))
             ->assertOk()
             ->assertSee('Selamat menjalankan kegiatan')
+            ->assertDontSee('data-calendar-month-panel', false)
+            ->assertSee(route('peserta.activities'))
+            ->assertDontSee('Tahap persiapan telah selesai')
+            ->assertSee(route('infographics'))
+            ->assertDontSee('Keputusan dan surat balasan Dinas');
+
+        $this->get(route('peserta.activities'))
+            ->assertOk()
+            ->assertSee('Ketentuan &amp; tata tertib peserta', false)
+            ->assertDontSee('Simpan checklist saya')
             ->assertSee('Kalender kegiatan magang')
             ->assertSee('Persiapan laporan &amp; presentasi', false)
             ->assertSee('Periode persiapan laporan dan presentasi')
@@ -36,9 +46,18 @@ class ParticipantApplicationTest extends TestCase
             ->assertSee('data-preparation-window-day', false)
             ->assertSee('Lihat bulan sebelumnya')
             ->assertSee('Lihat bulan berikutnya')
-            ->assertSee('data-calendar-month-panel', false)
-            ->assertSee('Tahap persiapan telah selesai')
-            ->assertDontSee('Keputusan dan surat balasan Dinas');
+            ->assertSee('data-calendar-month-panel', false);
+    }
+
+    public function test_activity_page_requires_an_accepted_internship_and_handles_missing_dates(): void
+    {
+        $this->get(route('peserta.activities'))->assertRedirect();
+        $participant = Participant::factory()->create(['email_verified_at' => now()]);
+        $this->actingAs($participant, 'peserta')->get(route('peserta.activities'))->assertForbidden();
+        $application = $participant->applications()->create(['service_type' => 'wopps', 'decision' => 'accepted', 'status' => 'accepted']);
+        $this->get(route('peserta.activities'))->assertForbidden();
+        $application->update(['service_type' => 'magang_pkl']);
+        $this->get(route('peserta.activities'))->assertOk()->assertSee('Menunggu admin menetapkan tanggal mulai dan selesai resmi.');
     }
 
     public function test_a_verified_participant_can_create_a_magang_pkl_preparation_draft(): void
@@ -263,6 +282,19 @@ class ParticipantApplicationTest extends TestCase
         $this->assertSame('wopps_form_submitted', $application->fresh()->status);
         $this->assertNotNull($application->fresh()->google_form_confirmed_at);
         Storage::disk('local')->assertExists($proof->file_path);
+        $confirmedAt = $application->fresh()->google_form_confirmed_at;
+        $files = Storage::disk('local')->allFiles();
+        $application->update(['status' => 'accepted', 'decision' => 'accepted']);
+        $this->actingAs($participant, 'peserta')
+            ->post(route('peserta.wopps-form-proof.store'), [
+                'wopps_form_proof' => UploadedFile::fake()->image('duplicate.png'),
+                'wopps_form_declaration' => '1',
+            ])->assertRedirect(route('peserta.dashboard'))
+            ->assertSessionHas('status', 'Bukti pengisian Form WOPPS sudah tersimpan. Silakan menunggu tindak lanjut Dinas.');
+        $this->assertSame(1, $application->documents()->where('type', ParticipantApplicationDocument::TYPE_WOPPS_FORM_PROOF)->count());
+        $this->assertSame($files, Storage::disk('local')->allFiles());
+        $this->assertSame('accepted', $application->fresh()->status);
+        $this->assertTrue($confirmedAt->equalTo($application->fresh()->google_form_confirmed_at));
     }
 
     public function test_approved_ethics_document_unlocks_the_wopps_form_stage_on_dashboard(): void
