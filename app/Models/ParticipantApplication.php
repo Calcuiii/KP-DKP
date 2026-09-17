@@ -31,6 +31,14 @@ class ParticipantApplication extends Model
         'official_ended_at',
         'decision',
         'response_letter_path',
+
+        /*
+        |--------------------------------------------------------------------------
+        | Tindak lanjut sertifikat
+        |--------------------------------------------------------------------------
+        */
+        'certificate_follow_up_choice',
+        'certificate_follow_up_at',
     ];
 
     /**
@@ -46,6 +54,13 @@ class ParticipantApplication extends Model
             'letter_submitted_at' => 'datetime',
             'official_started_at' => 'datetime',
             'official_ended_at' => 'datetime',
+
+            /*
+            |--------------------------------------------------------------------------
+            | Tanggal peserta memilih tindak lanjut sertifikat
+            |--------------------------------------------------------------------------
+            */
+            'certificate_follow_up_at' => 'datetime',
         ];
     }
 
@@ -59,52 +74,172 @@ class ParticipantApplication extends Model
 
     public function replyLetter(): HasOne
     {
-        return $this->hasOne(ReplyLetter::class, 'participant_application_id');
+        return $this->hasOne(
+            ReplyLetter::class,
+            'participant_application_id'
+        );
     }
 
     public function documents(): HasMany
     {
-        return $this->hasMany(ParticipantApplicationDocument::class);
+        return $this->hasMany(
+            ParticipantApplicationDocument::class
+        );
     }
 
-    public function latestDocument(string $type): ?ParticipantApplicationDocument
-    {
-        return $this->documents->where('type', $type)->sortByDesc('version')->first();
+    public function latestDocument(
+        string $type
+    ): ?ParticipantApplicationDocument {
+        return $this->documents
+            ->where('type', $type)
+            ->sortByDesc('version')
+            ->first();
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | SURAT PERMOHONAN
+    |--------------------------------------------------------------------------
+    */
 
     public function requestLetterApproved(): bool
     {
-        return $this->latestDocument(ParticipantApplicationDocument::TYPE_REQUEST_LETTER)?->review_status === ParticipantApplicationDocument::REVIEW_APPROVED;
+        return $this->latestDocument(
+            ParticipantApplicationDocument::TYPE_REQUEST_LETTER
+        )?->review_status
+            === ParticipantApplicationDocument::REVIEW_APPROVED;
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ETHICS APPROVAL
+    |--------------------------------------------------------------------------
+    */
 
     public function ethicsApprovalApproved(): bool
     {
-        return $this->latestDocument(ParticipantApplicationDocument::TYPE_ETHICS_APPROVAL)?->review_status === ParticipantApplicationDocument::REVIEW_APPROVED;
+        return $this->latestDocument(
+            ParticipantApplicationDocument::TYPE_ETHICS_APPROVAL
+        )?->review_status
+            === ParticipantApplicationDocument::REVIEW_APPROVED;
     }
 
-    public function isClosed(): bool
+    /*
+    |--------------------------------------------------------------------------
+    | CEK APAKAH PESERTA HARUS MEMILIH TINDAK LANJUT SERTIFIKAT
+    |--------------------------------------------------------------------------
+    */
+
+    public function certificateFollowUpRequired(): bool
     {
-        if (in_array($this->status, ['rejected', 'completed'], true)) {
+        $letter = $this->latestDocument(
+            ParticipantApplicationDocument::TYPE_REQUEST_LETTER
+        );
+
+        return $letter?->review_status
+            === ParticipantApplicationDocument::REVIEW_APPROVED
+            && $letter->certificate_eligible === false
+            && $this->certificate_follow_up_choice === null;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CEK APAKAH GOOGLE FORM BOLEH DIAKSES
+    |--------------------------------------------------------------------------
+    */
+
+    public function canProceedToInternshipForm(): bool
+    {
+        $letter = $this->latestDocument(
+            ParticipantApplicationDocument::TYPE_REQUEST_LETTER
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Surat belum disetujui
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $letter?->review_status
+            !== ParticipantApplicationDocument::REVIEW_APPROVED
+        ) {
+            return false;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Surat normal / mencantumkan permintaan sertifikat
+        |--------------------------------------------------------------------------
+        |
+        | Jika certificate_eligible bukan false, maka surat dianggap normal.
+        |
+        */
+
+        if ($letter->certificate_eligible !== false) {
             return true;
         }
 
-        return $this->service_type === self::SERVICE_MAGANG_PKL
-            && $this->official_ended_at?->copy()->endOfDay()->isPast();
+        /*
+        |--------------------------------------------------------------------------
+        | Surat disetujui tanpa pernyataan sertifikat
+        |--------------------------------------------------------------------------
+        |
+        | Hanya pilihan "continue_without_upload" yang membuka Google Form.
+        |
+        | upload_again TIDAK membuka Google Form.
+        |
+        */
+
+        return $this->certificate_follow_up_choice
+            === 'continue_without_upload';
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | STATUS PENGAJUAN
+    |--------------------------------------------------------------------------
+    */
+
+    public function isClosed(): bool
+    {
+        if (
+            in_array(
+                $this->status,
+                ['rejected', 'completed'],
+                true
+            )
+        ) {
+            return true;
+        }
+
+        return $this->service_type
+            === self::SERVICE_MAGANG_PKL
+            && $this->official_ended_at
+                ?->copy()
+                ->endOfDay()
+                ->isPast();
     }
 
     /**
-     * @return array<string, array{label: string, description: string}>
+     * @return array<string, array{
+     *     label: string,
+     *     description: string
+     * }>
      */
     public static function serviceOptions(): array
     {
         return [
             self::SERVICE_MAGANG_PKL => [
                 'label' => 'Kerja Praktik, Magang, atau PKL',
-                'description' => 'Persiapan administrasi untuk kegiatan magang atau praktik kerja lapangan.',
+                'description' =>
+                    'Persiapan administrasi untuk kegiatan magang atau praktik kerja lapangan.',
             ],
+
             self::SERVICE_WOPPS => [
                 'label' => 'WOPPS',
-                'description' => 'Wawancara, observasi, penelitian, pendataan, survei, dan layanan terkait.',
+                'description' =>
+                    'Wawancara, observasi, penelitian, pendataan, survei, dan layanan terkait.',
             ],
         ];
     }
@@ -117,8 +252,11 @@ class ParticipantApplication extends Model
     public function googleFormUrl(): string
     {
         return match ($this->service_type) {
-            self::SERVICE_WOPPS => 'https://bit.ly/WOPPS',
-            default => 'https://tinyurl.com/DaftarMagangDKP-PT',
+            self::SERVICE_WOPPS =>
+                'https://bit.ly/WOPPS',
+
+            default =>
+                'https://tinyurl.com/DaftarMagangDKP-PT',
         };
     }
 
@@ -129,37 +267,85 @@ class ParticipantApplication extends Model
     {
         return match ($this->service_type) {
             self::SERVICE_WOPPS => [
-                'Buka Google Form WOPPS' => 'https://bit.ly/WOPPS',
+                'Buka Google Form WOPPS' =>
+                    'https://bit.ly/WOPPS',
             ],
+
             default => [
-                'SMA/SMK' => 'https://tinyurl.com/DaftarMagangDKP-SM',
-                'Perguruan Tinggi' => 'https://tinyurl.com/DaftarMagangDKP-PT',
+                'SMA/SMK' =>
+                    'https://tinyurl.com/DaftarMagangDKP-SM',
+
+                'Perguruan Tinggi' =>
+                    'https://tinyurl.com/DaftarMagangDKP-PT',
             ],
         };
     }
 
     public function getApplicationCodeAttribute(): string
     {
-        return 'KP-'.now()->format('Y').'-'.str_pad((string) $this->id, 5, '0', STR_PAD_LEFT);
+        return 'KP-'
+            . now()->format('Y')
+            . '-'
+            . str_pad(
+                (string) $this->id,
+                5,
+                '0',
+                STR_PAD_LEFT
+            );
     }
 
     /**
-     * @return list<array{label: string, description: string}>
+     * @return list<array{
+     *     label: string,
+     *     description: string
+     * }>
      */
     public function preparationChecklist(): array
     {
         return match ($this->service_type) {
             self::SERVICE_WOPPS => [
-                ['label' => 'Identitas diri yang masih berlaku', 'description' => 'KTM, KTP, atau SIM.'],
-                ['label' => 'Surat permohonan resmi', 'description' => 'Dari institusi pendidikan atau instansi asal.'],
-                ['label' => 'Proposal kegiatan', 'description' => 'Sesuai kebutuhan layanan.'],
-                ['label' => 'Persetujuan etik', 'description' => 'Bila dipersyaratkan untuk kegiatan.'],
+                [
+                    'label' => 'Identitas diri yang masih berlaku',
+                    'description' => 'KTM, KTP, atau SIM.',
+                ],
+                [
+                    'label' => 'Surat permohonan resmi',
+                    'description' =>
+                        'Dari institusi pendidikan atau instansi asal.',
+                ],
+                [
+                    'label' => 'Proposal kegiatan',
+                    'description' =>
+                        'Sesuai kebutuhan layanan.',
+                ],
+                [
+                    'label' => 'Persetujuan etik',
+                    'description' =>
+                        'Bila dipersyaratkan untuk kegiatan.',
+                ],
             ],
+
             default => [
-                ['label' => 'Buku Tamu Magang / PKL', 'description' => 'Diisi secara individu sebagai pendataan awal.'],
-                ['label' => 'Koordinasi kuota', 'description' => 'Konfirmasi ketersediaan kuota dan kesesuaian jurusan.'],
-                ['label' => 'Surat permohonan resmi', 'description' => 'Dari sekolah atau perguruan tinggi, dengan informasi lengkap.'],
-                ['label' => 'Kebutuhan sertifikat', 'description' => 'Dicantumkan sejak awal bila diperlukan.'],
+                [
+                    'label' => 'Buku Tamu Magang / PKL',
+                    'description' =>
+                        'Diisi secara individu sebagai pendataan awal.',
+                ],
+                [
+                    'label' => 'Koordinasi kuota',
+                    'description' =>
+                        'Konfirmasi ketersediaan kuota dan kesesuaian jurusan.',
+                ],
+                [
+                    'label' => 'Surat permohonan resmi',
+                    'description' =>
+                        'Dari sekolah atau perguruan tinggi, dengan informasi lengkap.',
+                ],
+                [
+                    'label' => 'Kebutuhan sertifikat',
+                    'description' =>
+                        'Dicantumkan sejak awal bila diperlukan.',
+                ],
             ],
         };
     }

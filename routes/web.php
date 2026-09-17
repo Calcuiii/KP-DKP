@@ -92,6 +92,8 @@ Route::middleware('auth:peserta')->group(function (): void {
             ->middleware('verified')->name('guestbook-proof.store');
         Route::post('/surat-permohonan', [ParticipantApplicationController::class, 'storeRequestLetter'])
             ->middleware('verified')->name('request-letter.store');
+        Route::post('/surat-permohonan/tindak-lanjut-sertifikat', [ParticipantApplicationController::class, 'chooseCertificateFollowUp'])
+             ->middleware('verified')->name('request-letter.certificate-follow-up');
         Route::post('/ethics-approval', [ParticipantApplicationController::class, 'storeEthicsApproval'])
             ->middleware('verified')->name('ethics-approval.store');
         Route::post('/bukti-form-wopps', [ParticipantApplicationController::class, 'storeWoppsFormProof'])
@@ -152,6 +154,9 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
 
         Route::patch('/pemeriksaan-dokumen/{document}/revision', [DocumentReviewController::class, 'revision'])
             ->name('admin.pemeriksaan-dokumen.revision');
+
+        Route::get('/pemeriksaan-dokumen/{document}/preview', [DocumentReviewController::class, 'preview'])
+            ->name('admin.pemeriksaan-dokumen.preview');
 
         Route::get('/pemeriksaan-dokumen/{document}/unduh', [DocumentReviewController::class, 'download'])
             ->name('admin.pemeriksaan-dokumen.download');

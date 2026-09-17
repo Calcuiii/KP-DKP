@@ -104,6 +104,7 @@ import {
     SearchCheck,
     SlidersHorizontal,
     BadgeCheck,
+    TriangleAlert,
 } from 'lucide';
 
 createIcons({
@@ -122,7 +123,7 @@ createIcons({
         ShieldCheck, UserCheck, Stamp,
         CheckCircle2, Play, Flag, BriefcaseBusiness, MessagesSquare, MapPinned,
         MessageSquareText, ChartNoAxesCombined, History, UsersRound, FileOutput, Mail, Pencil, FileClock, MapPin, PieChart, PhoneCall,
-        LayoutDashboard, Lightbulb, MailCheck, SearchCheck, SlidersHorizontal, BadgeCheck
+        LayoutDashboard, Lightbulb, MailCheck, SearchCheck, SlidersHorizontal, BadgeCheck, TriangleAlert
     },
 });
 

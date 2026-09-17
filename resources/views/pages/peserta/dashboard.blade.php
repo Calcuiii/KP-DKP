@@ -53,6 +53,8 @@
         $activeProgressLabel = $sidebarProgress[$activeProgressIndex]['label'];
         $activeStatusLabel = match ($application?->status) {
             'letter_revision_required' => 'Revisi Surat Diperlukan',
+            'letter_resubmission_required' => 'Menunggu Upload Ulang Surat',
+            'letter_approved_no_certificate' => 'Disetujui tanpa Sertifikat',
             'ethics_revision_required' => 'Revisi Ethics Approval Diperlukan',
             'ethics_under_review' => 'Ethics Approval Sedang Diperiksa',
             'wopps_waiting_contact' => 'Menunggu Dihubungi Dinas',

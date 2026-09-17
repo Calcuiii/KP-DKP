@@ -2,7 +2,6 @@
 
 namespace App\Notifications;
 
-use App\Models\ParticipantApplication;
 use App\Models\ParticipantApplicationDocument;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -28,41 +27,24 @@ final class DocumentReviewUpdated extends Notification
         $isApproved = $this->decision === ParticipantApplicationDocument::REVIEW_APPROVED;
         $isEthics = $this->document->type === ParticipantApplicationDocument::TYPE_ETHICS_APPROVAL;
         $documentName = $isEthics ? 'Ethics Approval Statement Letter' : 'surat permohonan';
+        $noCertificate = $isApproved && $this->document->certificate_eligible === false;
 
         return [
-            'title' => $isApproved ? 'Dokumen disetujui' : 'Perbaikan dokumen diperlukan',
-            'message' => $isApproved
-                ? ucfirst($documentName).' Anda telah disetujui admin. Silakan lanjutkan ke tahap berikutnya.'
-                : 'Admin meminta perbaikan pada '.$documentName.' Anda.',
+            'title' => match (true) {
+                $noCertificate => 'Diterima (tanpa sertifikat)',
+                $isApproved => 'Dokumen disetujui',
+                default => 'Perbaikan dokumen diperlukan',
+            },
+            'message' => match (true) {
+                $noCertificate => 'Surat disetujui, namun Anda tidak mendapatkan sertifikat karena '.$documentName.' Anda tidak menyertakan permintaan sertifikat. Jika Anda menginginkan sertifikat, silakan unggah surat permohonan baru yang mencantumkan permintaan tersebut.',
+                $isApproved => ucfirst($documentName).' Anda telah disetujui admin. Silakan lanjutkan ke tahap berikutnya.',
+                default => 'Admin meminta perbaikan pada '.$documentName.' Anda.',
+            },
             'review_notes' => $this->document->review_notes,
-            'status' => $isApproved ? 'approved' : 'revision_required',
+            'status' => $isApproved ? ($noCertificate ? 'approved_no_certificate' : 'approved') : 'revision_required',
             'document_type' => $this->document->type,
             'application_id' => $this->document->participant_application_id,
-            'action_url' => route('peserta.dashboard').'#'.$this->targetAnchor(),
+            'action_url' => route('peserta.document.view', $this->document),
         ];
-    }
-
-    /**
-     * Anchor tujuan berbeda tergantung jenis dokumen DAN jenis layanan peserta,
-     * karena struktur halaman dashboard Magang/PKL dan WOPPS berbeda.
-     */
-    private function targetAnchor(): string
-    {
-        $this->document->loadMissing('application');
-
-        $serviceType = $this->document->application?->service_type;
-
-        // Ethics Approval hanya ada di alur WOPPS.
-        if ($this->document->type === ParticipantApplicationDocument::TYPE_ETHICS_APPROVAL) {
-            return 'ethics-approval';
-        }
-
-        // Surat permohonan: WOPPS menaruhnya di section "persiapan",
-        // sedangkan Magang/PKL punya section terpisah "surat-permohonan".
-        if ($serviceType === ParticipantApplication::SERVICE_WOPPS) {
-            return 'persiapan';
-        }
-
-        return 'surat-permohonan';
     }
 }
