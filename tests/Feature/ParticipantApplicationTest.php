@@ -88,8 +88,32 @@ class ParticipantApplicationTest extends TestCase
             ->post(route('peserta.application.store'), ['service_type' => ParticipantApplication::SERVICE_WOPPS])
             ->assertRedirect(route('peserta.dashboard'));
 
-        $this->assertSame(1, $participant->applications()->count());
-        $this->assertSame(ParticipantApplication::SERVICE_WOPPS, $participant->applications()->sole()->service_type);
+        $applications = $participant->applications()->orderBy('created_at')->get();
+
+        $this->assertCount(2, $applications);
+        $this->assertSame(ParticipantApplication::SERVICE_MAGANG_PKL, $applications->first()->service_type);
+        $this->assertSame(ParticipantApplication::SERVICE_WOPPS, $applications->last()->service_type);
+    }
+
+    public function test_a_participant_can_keep_multiple_applications_for_different_services(): void
+    {
+        $participant = Participant::factory()->create(['email_verified_at' => now()]);
+
+        $magang = $participant->applications()->create([
+            'service_type' => ParticipantApplication::SERVICE_MAGANG_PKL,
+            'status' => 'preparation',
+        ]);
+
+        $this->actingAs($participant, 'peserta')
+            ->post(route('peserta.application.store'), ['service_type' => ParticipantApplication::SERVICE_WOPPS])
+            ->assertRedirect(route('peserta.dashboard'));
+
+        $applications = $participant->applications()->orderBy('created_at')->get();
+
+        $this->assertCount(2, $applications);
+        $this->assertSame([$magang->id, $applications->last()->id], $applications->pluck('id')->all());
+        $this->assertSame(ParticipantApplication::SERVICE_MAGANG_PKL, $applications->first()->service_type);
+        $this->assertSame(ParticipantApplication::SERVICE_WOPPS, $applications->last()->service_type);
     }
 
     public function test_the_dashboard_shows_service_specific_preparation_information(): void

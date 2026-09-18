@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Participant;
+use App\Models\ParticipantApplication;
 use App\Services\GoogleGuestbookReader;
 use App\Support\GuestbookPhone;
 use Tests\TestCase;
@@ -68,14 +70,39 @@ class GuestbookCheckinTest extends TestCase
             ->assertSessionHasErrors('verification')->assertSessionMissing('guestbook_pending')->assertSessionMissing('guestbook_verified_until');
     }
 
-    public function test_only_matched_phone_grants_access_using_the_server_session(): void
+    public function test_only_the_active_application_controls_guestbook_access(): void
     {
-        $pending = $this->pending();
-        $this->mock(GoogleGuestbookReader::class)->shouldReceive('hasResponse')->once()
-            ->with($pending['phone_hash'])->andReturn(true);
-        $this->withSession(['guestbook_pending' => $pending])->post(route('guestbook.complete'), ['phone' => '081111111111'])
-            ->assertRedirect(route('chatbot'))->assertSessionHas('guestbook_verified_until')->assertSessionMissing('guestbook_pending');
-        $this->get(route('chatbot'))->assertOk();
+        $participant = Participant::factory()->create(['email_verified_at' => now()]);
+
+        $wopps = $participant->applications()->create([
+            'service_type' => ParticipantApplication::SERVICE_WOPPS,
+            'status' => 'preparation',
+        ]);
+
+        $this->actingAs($participant, 'peserta')
+            ->withSession(['participant_active_application_id' => $wopps->id])
+            ->get(route('chatbot'))
+            ->assertOk();
+
+        $magang = $participant->applications()->create([
+            'service_type' => ParticipantApplication::SERVICE_MAGANG_PKL,
+            'status' => 'preparation',
+        ]);
+
+        $this->actingAs($participant, 'peserta')
+            ->withSession([
+                'participant_active_application_id' => $magang->id,
+                'guestbook_verified_until' => now()->addMinutes(5)->timestamp,
+            ])
+            ->get(route('chatbot'))
+            ->assertOk();
+
+        $this->actingAs($participant, 'peserta')
+            ->withSession([
+                'guestbook_verified_until' => now()->addMinutes(5)->timestamp,
+            ])
+            ->get(route('chatbot'))
+            ->assertRedirect(route('guestbook.checkin'));
     }
 
     public function test_unmatched_response_keeps_chatbot_locked(): void

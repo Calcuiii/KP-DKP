@@ -19,11 +19,8 @@ use App\Http\Controllers\Auth\ParticipantEmailVerificationController;
 use App\Http\Controllers\Auth\ParticipantPasswordResetController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\GuestbookCheckinController;
-use App\Http\Controllers\Peserta\CertificateController;
-use App\Http\Controllers\Peserta\CompletionFormProofController;
 use App\Http\Controllers\Peserta\ParticipantApplicationController;
 use App\Http\Controllers\Peserta\ParticipantNotificationController;
-use App\Http\Controllers\Peserta\PresentationController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'pages.landing')->name('landing');
@@ -88,13 +85,9 @@ Route::middleware('auth:peserta')->group(function (): void {
         Route::get('/dashboard', [ParticipantAuthController::class, 'dashboard'])
             ->middleware('verified')
             ->name('dashboard');
-        Route::post('/presentasi/{application}', [PresentationController::class, 'store'])->middleware('verified')->name('presentation.store');
-        Route::post('/form-selesai/{application}/bukti', [CompletionFormProofController::class, 'store'])->middleware(['verified', 'throttle:10,1'])->name('completion-proof.store');
-        Route::get('/form-selesai/{application}/bukti', [CompletionFormProofController::class, 'download'])->middleware('verified')->name('completion-proof.download');
-        Route::get('/presentasi/{application}/unduh', [PresentationController::class, 'download'])->middleware('verified')->name('presentation.download');
-        Route::patch('/data-institusi', [PresentationController::class, 'profile'])->middleware('verified')->name('profile.details');
-        Route::get('/kegiatan', [ParticipantAuthController::class, 'dashboard'])
-            ->middleware('verified')->name('activities');
+        Route::get('/pengajuan/{application}/pilih', [ParticipantApplicationController::class, 'selectApplication'])
+            ->middleware('verified')
+            ->name('application.select');
         Route::post('/persiapan-pengajuan', [ParticipantApplicationController::class, 'store'])
             ->middleware('verified')
             ->name('application.store');
@@ -102,8 +95,6 @@ Route::middleware('auth:peserta')->group(function (): void {
             ->middleware('verified')->name('guestbook-proof.store');
         Route::post('/surat-permohonan', [ParticipantApplicationController::class, 'storeRequestLetter'])
             ->middleware('verified')->name('request-letter.store');
-        Route::post('/surat-permohonan/tindak-lanjut-sertifikat', [ParticipantApplicationController::class, 'chooseCertificateFollowUp'])
-             ->middleware('verified')->name('request-letter.certificate-follow-up');
         Route::post('/ethics-approval', [ParticipantApplicationController::class, 'storeEthicsApproval'])
             ->middleware('verified')->name('ethics-approval.store');
         Route::post('/bukti-form-wopps', [ParticipantApplicationController::class, 'storeWoppsFormProof'])
@@ -116,8 +107,6 @@ Route::middleware('auth:peserta')->group(function (): void {
             ->middleware('verified')->name('document.view');
         Route::get('/surat-balasan/unduh', [ParticipantApplicationController::class, 'downloadResponseLetter'])
             ->middleware('verified')->name('response-letter.download');
-        Route::get('/sertifikat/{application}/unduh', [CertificateController::class, 'download'])
-            ->middleware('verified')->name('certificate.download');
         Route::post('/notifikasi/{notification}/baca', [ParticipantNotificationController::class, 'read'])
             ->middleware('verified')->name('notifications.read');
         Route::post('/notifikasi/baca-semua', [ParticipantNotificationController::class, 'readAll'])
@@ -167,9 +156,6 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
         Route::patch('/pemeriksaan-dokumen/{document}/revision', [DocumentReviewController::class, 'revision'])
             ->name('admin.pemeriksaan-dokumen.revision');
 
-        Route::get('/pemeriksaan-dokumen/{document}/preview', [DocumentReviewController::class, 'preview'])
-            ->name('admin.pemeriksaan-dokumen.preview');
-
         Route::get('/pemeriksaan-dokumen/{document}/unduh', [DocumentReviewController::class, 'download'])
             ->name('admin.pemeriksaan-dokumen.download');
 
@@ -188,8 +174,6 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
         Route::get('/wopps-follow-up', [WoppsFollowUpController::class, 'index'])->name('admin.wopps-follow-up');
         Route::get('/wopps-follow-up/bukti/{document}/unduh', [WoppsFollowUpController::class, 'download'])->name('admin.wopps-follow-up.download');
         Route::post('/wopps-follow-up/{application}/tandai', [WoppsFollowUpController::class, 'markContacted'])->name('admin.wopps-follow-up.mark-contacted');
-        Route::post('/wopps-follow-up/{application}/keputusan', [WoppsFollowUpController::class, 'sendDecision'])->name('admin.wopps-follow-up.decision');
-        Route::post('/wopps-follow-up/{application}/selesai', [WoppsFollowUpController::class, 'markCompleted'])->name('admin.wopps-follow-up.complete');
 
         Route::get('/knowledge-base', [KnowledgeBaseController::class, 'index'])->name('admin.knowledge-base');
         Route::post('/knowledge-base', [KnowledgeBaseController::class, 'store'])->name('admin.knowledge-base.store');

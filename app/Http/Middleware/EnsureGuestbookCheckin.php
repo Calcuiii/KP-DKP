@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Models\ParticipantApplication;
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -14,12 +15,18 @@ final class EnsureGuestbookCheckin
 {
     public function handle(Request $request, Closure $next): Response|JsonResponse|RedirectResponse
     {
-        // Access follows the current participant login, without granting a guest session.
-        if ($request->user('peserta')?->hasVerifiedEmail()) {
+        $participant = $request->user('peserta');
+        $activeApplicationId = $request->session()->get('participant_active_application_id');
+        $application = $participant && $activeApplicationId !== null
+            ? $participant->applications()->whereKey($activeApplicationId)->first()
+            : null;
+
+        if ($application?->service_type === ParticipantApplication::SERVICE_WOPPS) {
             return $next($request);
         }
 
-        if ((int) $request->session()->get('guestbook_verified_until', 0) > now()->timestamp) {
+        if ($application?->service_type === ParticipantApplication::SERVICE_MAGANG_PKL
+            && (int) $request->session()->get('guestbook_verified_until', 0) > now()->timestamp) {
             return $next($request);
         }
 

@@ -48,12 +48,20 @@ final class ParticipantAuthController extends Controller
             ->with('status', 'Akun berhasil dibuat. Periksa email Anda untuk memverifikasi akun.');
     }
 
-    public function dashboard(): View
+    public function dashboard(Request $request): View
     {
         /** @var Participant $participant */
         $participant = Auth::guard('peserta')->user();
 
-        $application = $participant->applications()->with('documents')->latest()->first();
+        $applications = $participant->applications()->with('documents')->latest()->get();
+        $selectedApplicationId = $request->session()->get('participant_active_application_id');
+
+        if ($selectedApplicationId !== null && $applications->contains('id', (int) $selectedApplicationId)) {
+            $application = $applications->firstWhere('id', (int) $selectedApplicationId);
+        } else {
+            $application = $applications->first();
+            $request->session()->put('participant_active_application_id', $application?->id);
+        }
 
         if (request()->routeIs('peserta.activities')) {
             abort_unless($application
@@ -63,6 +71,7 @@ final class ParticipantAuthController extends Controller
 
         return view('pages.peserta.dashboard', [
             'application' => $application,
+            'applications' => $applications,
             'participantNotifications' => $participant->notifications()->latest()->limit(8)->get(),
             'unreadNotificationCount' => $participant->unreadNotifications()->count(),
             'serviceOptions' => ParticipantApplication::serviceOptions(),
