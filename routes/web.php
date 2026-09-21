@@ -25,6 +25,8 @@ use App\Http\Controllers\Peserta\ParticipantApplicationController;
 use App\Http\Controllers\Peserta\ParticipantNotificationController;
 use App\Http\Controllers\Peserta\PresentationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\ParticipantAccountController;
+use App\Http\Controllers\Admin\CertificatePublishController;
 
 Route::view('/', 'pages.landing')->name('landing');
 
@@ -184,6 +186,14 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
 
         Route::get('/surat-balasan/bukti/{document}/preview', [ReplyLetterController::class, 'previewProof'])
             ->name('admin.surat-balasan.proof.preview');
+        
+        Route::get('/akun-peserta', [ParticipantAccountController::class, 'index'])
+            ->name('admin.akun-peserta');
+        
+        Route::get('/sertifikat', [CertificatePublishController::class, 'index'])->name('admin.sertifikat');
+        Route::get('/sertifikat/{application}/presentasi', [CertificatePublishController::class, 'previewPresentation'])->name('admin.sertifikat.presentasi');
+        Route::get('/sertifikat/{application}/bukti-gform', [CertificatePublishController::class, 'previewCompletionProof'])->name('admin.sertifikat.bukti-gform');
+        Route::post('/sertifikat/{application}/kirim', [CertificatePublishController::class, 'publish'])->name('admin.sertifikat.kirim');
 
         Route::get('/wopps-follow-up', [WoppsFollowUpController::class, 'index'])->name('admin.wopps-follow-up');
         Route::get('/wopps-follow-up/bukti/{document}/unduh', [WoppsFollowUpController::class, 'download'])->name('admin.wopps-follow-up.download');

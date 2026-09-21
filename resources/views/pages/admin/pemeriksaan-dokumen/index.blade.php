@@ -367,42 +367,26 @@
                                 --}}
 
                                 @else
-
                                     <span class="text-xs font-semibold text-muted-foreground">
                                         --
                                     </span>
-
                                 @endif
-
                             </td>
-
                         </tr>
-
-
                     @empty
-
                         <tr>
-
                             <td colspan="5" class="px-5 py-12 text-center">
-
                                 <p class="font-bold text-navy">
                                     Belum ada surat permohonan
                                 </p>
-
                                 <p class="mt-1 text-sm text-muted-foreground">
                                     Surat yang diunggah peserta akan muncul di halaman ini.
                                 </p>
-
                             </td>
-
                         </tr>
-
                     @endforelse
-
                 </tbody>
-
             </table>
-
         </div>
 
 

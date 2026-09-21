@@ -3,10 +3,12 @@
     $isSuperAdmin = $user?->isSuperAdmin();
     $initials = collect(explode(' ', $user?->name ?? 'Admin'))->filter()->map(fn ($word) => mb_substr($word, 0, 1))->take(2)->implode('');
     $groups = [
-        ['label' => 'Portal Peserta', 'icon' => 'briefcase-business', 'active' => request()->routeIs('admin.pemeriksaan-dokumen*', 'admin.internship-locations*', 'admin.surat-balasan*', 'admin.wopps-follow-up*'), 'items' => array_values(array_filter([
+        ['label' => 'Portal Peserta', 'icon' => 'briefcase-business', 'active' => request()->routeIs('admin.akun-peserta*', 'admin.pemeriksaan-dokumen*', 'admin.internship-locations*', 'admin.surat-balasan*', 'admin.wopps-follow-up*', 'admin.sertifikat*'), 'items' => array_values(array_filter([
+            ['icon' => 'user-round', 'label' => 'Akun Peserta', 'route' => 'admin.akun-peserta', 'active' => ['admin.akun-peserta', 'admin.akun-peserta.*']],
             $isSuperAdmin ? ['icon' => 'file-check-2', 'label' => 'Pemeriksaan Dokumen', 'route' => 'admin.pemeriksaan-dokumen', 'active' => ['admin.pemeriksaan-dokumen', 'admin.pemeriksaan-dokumen.*']] : null,
             ['icon' => 'map-pinned', 'label' => 'Kuota Lokasi Magang', 'route' => 'admin.internship-locations', 'active' => ['admin.internship-locations', 'admin.internship-locations.*']],
             $isSuperAdmin ? ['icon' => 'file-output', 'label' => 'Surat Balasan', 'route' => 'admin.surat-balasan', 'active' => ['admin.surat-balasan', 'admin.surat-balasan.*', 'admin.wopps-follow-up', 'admin.wopps-follow-up.*']] : null,
+            $isSuperAdmin ? ['icon' => 'award', 'label' => 'Unggah Sertifikat', 'route' => 'admin.sertifikat', 'active' => ['admin.sertifikat', 'admin.sertifikat.*']] : null,
         ]))],
         ['label' => 'Asisten SI-MELAYUR', 'icon' => 'messages-square', 'active' => request()->routeIs('admin.knowledge-base*', 'admin.infographics*', 'admin.unanswered-questions*', 'admin.conversation-logs*', 'admin.analytics*'), 'items' => array_values(array_filter([
             $isSuperAdmin ? ['icon' => 'database', 'label' => 'Knowledge Base', 'route' => 'admin.knowledge-base', 'active' => ['admin.knowledge-base', 'admin.knowledge-base.*']] : null,

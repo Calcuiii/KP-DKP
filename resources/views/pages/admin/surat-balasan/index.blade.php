@@ -190,11 +190,21 @@
                                                     <div><label class="text-[11px] font-bold text-navy">Selesai <span class="text-red-600">*</span></label><input type="date" name="official_ended_at" value="{{ $application->official_ended_at?->format('Y-m-d') }}" class="mt-1 block w-full rounded-xl border border-border px-2 py-2 text-xs"></div>
                                                 </div>
                                                 <p class="text-[10px] leading-relaxed text-muted-foreground">Tanggal wajib diisi jika diterima dan akan langsung muncul pada kalender peserta.</p>
+
                                                 <div class="rounded-xl border border-dashed border-ocean/30 bg-ocean/[0.03] p-3">
                                                     <label for="reply-letter-{{ $application->id }}" class="flex items-center gap-1.5 text-xs font-extrabold text-navy"><i data-lucide="file-up" class="h-3.5 w-3.5 text-ocean" aria-hidden="true"></i>Surat balasan PDF</label>
                                                     <input id="reply-letter-{{ $application->id }}" type="file" name="reply_letter" accept="application/pdf,.pdf" required class="mt-2 block w-full cursor-pointer rounded-lg border border-border bg-white p-1.5 text-xs text-muted-foreground file:mr-3 file:rounded-md file:border-0 file:bg-ocean/10 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-ocean hover:file:bg-ocean/15">
                                                     <p class="mt-1.5 text-[10px] text-muted-foreground">Pilih surat resmi dalam format PDF, maksimal 10 MB.</p>
                                                 </div>
+
+                                                {{-- Pernyataan konfirmasi admin --}}
+                                                <label class="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-[11px] font-medium text-navy">
+                                                    <input type="checkbox" name="data_verified" value="1" required class="mt-0.5">
+                                                    <span>
+                                                        Saya sudah memeriksa dan mencocokkan data peserta ini pada spreadsheet Dinas.
+                                                    </span>
+                                                </label>
+
                                                 <button class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-teal px-4 py-2.5 text-xs font-extrabold text-white"><i data-lucide="send" class="h-4 w-4"></i>Kirim Keputusan &amp; Surat</button>
                                             </form>
                                         </details>
