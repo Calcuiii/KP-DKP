@@ -1,7 +1,7 @@
 <footer class="border-t border-border bg-white py-12">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-        <div class="mb-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="mb-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
 
             {{-- Brand --}}
             <div>
@@ -25,9 +25,25 @@
                     </div>
                 </div>
 
-                <p class="mt-3 max-w-[180px] text-xs leading-relaxed text-muted-foreground">
+                <p class="mt-3 max-w-64 text-xs leading-relaxed text-muted-foreground">
                     Sistem Informasi Magang, Penelitian, dan Data Kelautan Jawa Timur berbasis dokumen resmi.
                 </p>
+
+                <div class="mt-5 flex w-fit items-center gap-4 border-t border-border pt-4" aria-label="Instansi dan perguruan tinggi">
+                    <img
+                        src="{{ asset('images/brand/dkp-jatim.png') }}"
+                        alt="Logo Dinas Kelautan dan Perikanan Provinsi Jawa Timur"
+                        width="1254" height="1254" loading="lazy" decoding="async"
+                        class="h-11 w-18 shrink-0 object-cover"
+                    >
+                    <span class="h-7 w-px bg-border" aria-hidden="true"></span>
+                    <img
+                        src="{{ asset('images/brand/telkom-university-surabaya.png') }}"
+                        alt="Logo Telkom University Surabaya"
+                        width="677" height="277" loading="lazy" decoding="async"
+                        class="h-9 w-auto max-w-28 object-contain"
+                    >
+                </div>
             </div>
 
 

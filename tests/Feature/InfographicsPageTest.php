@@ -49,8 +49,9 @@ class InfographicsPageTest extends TestCase
             ->assertSee('WOPPS · Seri 07/07')
             ->assertSee('Surat Edaran Resmi');
 
-        self::assertSame(1, substr_count($content, 'loading="eager"'));
-        self::assertSame(7, substr_count($content, 'loading="lazy"'));
+        self::assertSame(1, preg_match('/<section\b[^>]*id="infografis"[^>]*>(.*?)<\/section>/s', $content, $preview));
+        self::assertSame(1, substr_count($preview[1], 'loading="eager"'));
+        self::assertSame(7, substr_count($preview[1], 'loading="lazy"'));
     }
 
     public function test_infographics_are_categorized_by_service(): void
