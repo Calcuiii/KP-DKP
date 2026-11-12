@@ -28,8 +28,8 @@
     <div class="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
         <div class="max-w-3xl">
             <span class="inline-flex items-center gap-2 rounded-full border border-teal-200/20 bg-teal/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-teal-100"><span class="h-2 w-2 rounded-full bg-teal-300"></span>{{ $phaseLabel }}</span>
-            <h1 class="mt-5 text-3xl font-bold sm:text-4xl">Selamat menjalankan kegiatan, {{ $participant->name }}!</h1>
-            <p class="mt-3 max-w-2xl text-sm leading-relaxed text-blue-100 sm:text-base">Pengajuan Anda telah diterima. Dampingi kegiatan Anda hingga laporan, presentasi, dan penyelesaian administrasi akhir melalui portal ini.</p>
+            <h1 class="mt-5 text-3xl font-bold sm:text-4xl">{{ $application->completed_at ? 'Magang Anda telah selesai' : 'Selamat menjalankan kegiatan' }}, {{ $participant->name }}!</h1>
+            <p class="mt-3 max-w-2xl text-sm leading-relaxed text-blue-100 sm:text-base">{{ $application->completed_at ? 'Terima kasih atas partisipasi Anda. Dokumen dan informasi pengajuan tetap tersedia di portal ini.' : 'Pengajuan Anda telah diterima. Dampingi kegiatan Anda hingga laporan, presentasi, dan penyelesaian administrasi akhir melalui portal ini.' }}</p>
             <a href="#penyelesaian" class="mt-5 inline-flex rounded-xl bg-white px-5 py-3 text-sm font-bold text-navy">Buka panduan penyelesaian →</a>
         </div>
         @if ($officialStarted && $officialEnded)

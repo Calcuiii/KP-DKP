@@ -27,7 +27,43 @@ final class KnowledgeBaseDocumentIndexer
 
     public function index(KnowledgeBaseDocument $document): int
     {
-        $sourcePath = Storage::disk('public')->path($document->file_path);
+        return $this->withLifecycleLock(function () use ($document): int {
+            $this->forgetIndex($document);
+
+            return $this->performIndex($document);
+        });
+    }
+
+    public function remove(KnowledgeBaseDocument $document): void
+    {
+        $this->withLifecycleLock(fn () => $this->forgetIndex($document));
+    }
+
+    private function withLifecycleLock(callable $operation): mixed
+    {
+        File::ensureDirectoryExists(dirname($this->registryPath));
+        $lock = fopen($this->registryPath.'.lifecycle.lock', 'c');
+        if ($lock === false || ! flock($lock, LOCK_EX)) {
+            throw new RuntimeException('Pengindeksan knowledge base tidak dapat dikunci.');
+        }
+        try {
+            return $operation();
+        } finally {
+            flock($lock, LOCK_UN);
+            fclose($lock);
+        }
+    }
+
+    private function forgetIndex(KnowledgeBaseDocument $document): void
+    {
+        $id = sprintf('KB-UPLOAD-%06d', $document->getKey());
+        $this->updateRegistry(null, $id);
+        File::delete(rtrim($this->processedDirectory, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.strtolower($id).'.md');
+    }
+
+    private function performIndex(KnowledgeBaseDocument $document): int
+    {
+        $sourcePath = Storage::disk('local')->path($document->file_path);
 
         if (! is_file($sourcePath)) {
             throw new RuntimeException('Berkas dokumen yang diunggah tidak ditemukan.');
@@ -211,82 +247,82 @@ final class KnowledgeBaseDocumentIndexer
                 default => 3,
             },
             status: 'active',
-            sourceFile: 'public/'.$document->file_path,
+            sourceFile: 'private/'.$document->file_path,
             processedFile: strtolower($documentId).'.md',
             sourceSha256: hash_file('sha256', $sourcePath),
         );
     }
 
     private function toMarkdown(RegistryDocument $document, string $content): string
-{
-    $body = $this->splitIntoSections($content);
+    {
+        $body = $this->splitIntoSections($content);
 
-    return implode("\n", [
-        '---', 'document_id: '.$document->documentId, 'title: '.$document->title,
-        'category: '.$document->category, 'document_type: '.$document->documentType,
-        'effective_date: '.($document->effectiveDate ?? 'null'), 'priority: '.$document->priority,
-        'status: '.$document->status, 'source_file: '.$document->sourceFile,
-        'policy_relations: []', '---', '', '# '.$document->title, '', $body, '',
-    ]);
-}
+        return implode("\n", [
+            '---', 'document_id: '.$document->documentId, 'title: '.$document->title,
+            'category: '.$document->category, 'document_type: '.$document->documentType,
+            'effective_date: '.($document->effectiveDate ?? 'null'), 'priority: '.$document->priority,
+            'status: '.$document->status, 'source_file: '.$document->sourceFile,
+            'policy_relations: []', '---', '', '# '.$document->title, '', $body, '',
+        ]);
+    }
 
-/**
- * Memecah dokumen jadi beberapa bagian (## heading) berdasarkan pola
- * "Question: ..." supaya tiap topik jadi chunk terpisah, bukan satu
- * blok raksasa yang bisa melebihi batas konteks jawaban AI.
- */
-private function splitIntoSections(string $content): string
-{
-    $lines = preg_split('/\r\n|\r|\n/', $content);
-    $sections = [];
-    $currentHeading = 'Ringkasan';
-    $currentBody = [];
-    $hasQuestionBlocks = false;
+    /**
+     * Memecah dokumen jadi beberapa bagian (## heading) berdasarkan pola
+     * "Question: ..." supaya tiap topik jadi chunk terpisah, bukan satu
+     * blok raksasa yang bisa melebihi batas konteks jawaban AI.
+     */
+    private function splitIntoSections(string $content): string
+    {
+        $lines = preg_split('/\r\n|\r|\n/', $content);
+        $sections = [];
+        $currentHeading = 'Ringkasan';
+        $currentBody = [];
+        $hasQuestionBlocks = false;
 
-    foreach ($lines as $line) {
-        if (preg_match('/^\s*Qu?u?estion\s*:\s*(.+)$/i', $line, $matches)) {
-            $hasQuestionBlocks = true;
+        foreach ($lines as $line) {
+            if (preg_match('/^\s*Qu?u?estion\s*:\s*(.+)$/i', $line, $matches)) {
+                $hasQuestionBlocks = true;
 
-            if ($currentBody !== []) {
-                $sections[] = ['heading' => $currentHeading, 'body' => $currentBody];
+                if ($currentBody !== []) {
+                    $sections[] = ['heading' => $currentHeading, 'body' => $currentBody];
+                }
+
+                $currentHeading = trim($matches[1]);
+                $currentBody = [];
+
+                continue;
             }
 
-            $currentHeading = trim($matches[1]);
-            $currentBody = [];
-
-            continue;
+            $currentBody[] = $line;
         }
 
-        $currentBody[] = $line;
-    }
-
-    if ($currentBody !== []) {
-        $sections[] = ['heading' => $currentHeading, 'body' => $currentBody];
-    }
-
-    if (! $hasQuestionBlocks) {
-        return "## Isi Dokumen\n\n".$content;
-    }
-
-    $markdown = [];
-
-    foreach ($sections as $section) {
-        $body = trim(implode("\n", $section['body']));
-
-        if ($body === '') {
-            continue;
+        if ($currentBody !== []) {
+            $sections[] = ['heading' => $currentHeading, 'body' => $currentBody];
         }
 
-        $markdown[] = '## '.$section['heading'];
-        $markdown[] = '';
-        $markdown[] = $body;
-        $markdown[] = '';
+        if (! $hasQuestionBlocks) {
+            return "## Isi Dokumen\n\n".$content;
+        }
+
+        $markdown = [];
+
+        foreach ($sections as $section) {
+            $body = trim(implode("\n", $section['body']));
+
+            if ($body === '') {
+                continue;
+            }
+
+            $markdown[] = '## '.$section['heading'];
+            $markdown[] = '';
+            $markdown[] = $body;
+            $markdown[] = '';
+        }
+
+        return implode("\n", $markdown);
     }
 
-    return implode("\n", $markdown);
-}
-
-    private function updateRegistry(RegistryDocument $document): void
+    private function updateRegistry(?RegistryDocument $document, ?string $removeId = null): void
     {
         $lock = fopen($this->registryPath.'.lock', 'c');
 
@@ -305,15 +341,17 @@ private function splitIntoSections(string $content): string
 
             $registry['documents'] = array_values(array_filter(
                 $registry['documents'],
-                static fn (array $entry): bool => $entry['document_id'] !== $document->documentId,
+                static fn (array $entry): bool => $entry['document_id'] !== ($document?->documentId ?? $removeId),
             ));
-            $registry['documents'][] = [
-                'document_id' => $document->documentId, 'title' => $document->title,
-                'category' => $document->category, 'document_type' => $document->documentType,
-                'effective_date' => $document->effectiveDate, 'priority' => $document->priority,
-                'status' => $document->status, 'source_file' => $document->sourceFile,
-                'processed_file' => $document->processedFile, 'source_sha256' => $document->sourceSha256,
-            ];
+            if ($document !== null) {
+                $registry['documents'][] = [
+                    'document_id' => $document->documentId, 'title' => $document->title,
+                    'category' => $document->category, 'document_type' => $document->documentType,
+                    'effective_date' => $document->effectiveDate, 'priority' => $document->priority,
+                    'status' => $document->status, 'source_file' => $document->sourceFile,
+                    'processed_file' => $document->processedFile, 'source_sha256' => $document->sourceSha256,
+                ];
+            }
 
             $json = json_encode($registry, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)."\n";
             $temporaryPath = $this->registryPath.'.'.bin2hex(random_bytes(8)).'.tmp';

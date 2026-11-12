@@ -7,6 +7,7 @@ use App\Models\ChatConversation;
 use App\Models\ChatMessage;
 use App\Models\KnowledgeBaseDocument;
 use App\Support\KnowledgeBaseCategoryResolver;
+use App\Support\SafeCsv;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\View\View;
@@ -57,31 +58,31 @@ class AnalyticsController extends Controller
     }
 
     public function export(Request $request)
-{
-    $days = (int) ($request->period ?? 30);
-    $from = Carbon::now()->subDays($days);
+    {
+        $days = (int) ($request->period ?? 30);
+        $from = Carbon::now()->subDays($days);
 
-    $messages = ChatMessage::where('role', 'user')
-        ->where('created_at', '>=', $from)
-        ->with(['conversation.messages'])
-        ->get();
+        $messages = ChatMessage::where('role', 'user')
+            ->where('created_at', '>=', $from)
+            ->with(['conversation.messages'])
+            ->get();
 
-    $csv = "Tanggal,Pertanyaan,Status,Waktu Respons (s)\n";
+        $csv = "Tanggal,Pertanyaan,Status,Waktu Respons (s)\n";
 
-    foreach ($messages as $userMsg) {
-        $answer = $userMsg->conversation->messages->where('role', 'assistant')->first();
+        foreach ($messages as $userMsg) {
+            $answer = $userMsg->conversation->messages->where('role', 'assistant')->first();
 
-        $csv .= implode(',', [
-            $userMsg->created_at->format('Y-m-d H:i'),
-            '"' . str_replace('"', '""', $userMsg->content) . '"',
-            $answer?->status === 'success' ? 'Dijawab' : 'Tidak Ditemukan',
-            $answer?->response_time_ms ? round($answer->response_time_ms / 1000, 1) : '0',
-        ]) . "\n";
+            $csv .= implode(',', [
+                $userMsg->created_at->format('Y-m-d H:i'),
+                SafeCsv::cell($userMsg->content),
+                $answer?->status === 'success' ? 'Dijawab' : 'Tidak Ditemukan',
+                $answer?->response_time_ms ? round($answer->response_time_ms / 1000, 1) : '0',
+            ])."\n";
+        }
+
+        return response($csv, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="analytics-report-'.now()->format('Y-m-d').'.csv"',
+        ]);
     }
-
-    return response($csv, 200, [
-        'Content-Type' => 'text/csv',
-        'Content-Disposition' => 'attachment; filename="analytics-report-' . now()->format('Y-m-d') . '.csv"',
-    ]);
-}
 }

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Portal Peserta | SI-MELAYUR')
+@section('title', request()->routeIs('peserta.services') ? 'Pilihan Layanan | SI-MELAYUR' : (request()->routeIs('peserta.activities') ? 'Kegiatan Magang | SI-MELAYUR' : 'Portal Peserta | SI-MELAYUR'))
 
 @section('hide_dev_nav', true)
 
@@ -9,6 +9,7 @@
         $application = $application ?? null;
         $applications = $applications ?? collect();
         $participant = auth('peserta')->user();
+        $isActivitiesPage = request()->routeIs('peserta.activities');
         $steps = [
             ['label' => 'Persiapan', 'description' => 'Pilih layanan dan pahami kebutuhan dokumen.'],
             ['label' => 'Pemeriksaan dokumen', 'description' => 'Unggah dan periksa dokumen sebelum pengajuan.'],
@@ -32,7 +33,9 @@
                     ['label' => 'Pemeriksaan', 'state' => $letterApproved ? 'done' : ($application->letter_submitted_at ? 'current' : 'upcoming')],
                     ['label' => 'Form Resmi', 'state' => $internshipFormCompleted ? 'done' : ($letterApproved ? 'current' : 'upcoming')],
                     ['label' => 'Surat Balasan', 'state' => $hasResponse ? 'done' : ($internshipFormCompleted ? 'current' : 'upcoming')],
-                    ['label' => 'Pelaksanaan', 'state' => $application->official_ended_at ? 'done' : (($hasResponse || $application->official_started_at) ? 'current' : 'upcoming')],
+                    ['label' => 'Pelaksanaan, laporan & presentasi', 'state' => $application->presentation_submitted_at ? 'done' : (in_array(strtolower((string) $application->decision), ['accepted', 'approved', 'diterima'], true) ? 'current' : 'upcoming')],
+                    ['label' => 'Form Selesai Magang', 'state' => ! $application->presentation_submitted_at ? 'upcoming' : ($application->completion_form_submitted_at ? 'done' : 'current')],
+                    ['label' => 'Penerimaan Sertifikat', 'state' => ! ($application->presentation_submitted_at && $application->completion_form_submitted_at) ? 'upcoming' : (($application->certificate_published_at && $application->certificate_path) ? 'done' : 'current')],
                 ];
             } else {
                 $letterApproved = $application->requestLetterApproved();
@@ -42,7 +45,7 @@
                     ['label' => 'Pemeriksaan Surat', 'state' => $letterApproved ? 'done' : 'current'],
                     ['label' => 'Ethics Approval', 'state' => $ethicsApproved ? 'done' : ($letterApproved ? 'current' : 'upcoming')],
                     ['label' => 'Form WOPPS', 'state' => $woppsFormCompleted ? 'done' : ($ethicsApproved ? 'current' : 'upcoming')],
-                    ['label' => 'Tindak Lanjut', 'state' => $woppsFormCompleted ? 'current' : 'upcoming'],
+                    ['label' => 'Tindak Lanjut', 'state' => $application->pic_contacted_at ? 'done' : ($woppsFormCompleted ? 'current' : 'upcoming')],
                 ];
             }
         }
@@ -71,7 +74,7 @@
         $portalNavigation = $isInternshipExecution
             ? [
                 ['href' => '#ringkasan', 'icon' => 'home', 'label' => 'Dashboard Pelaksanaan', 'enabled' => true],
-                ['href' => '#kalender-kegiatan', 'icon' => 'calendar-range', 'label' => 'Kalender Kegiatan', 'enabled' => true],
+                ['href' => route('peserta.activities'), 'icon' => 'calendar-range', 'label' => 'Kalender & Tata Tertib', 'enabled' => true],
                 ['href' => '#progress', 'icon' => 'list-checks', 'label' => 'Riwayat Tahapan', 'enabled' => true],
                 ['href' => '#kenali-si-molek', 'icon' => 'info', 'label' => 'Informasi Portal', 'enabled' => true],
             ]
@@ -81,26 +84,36 @@
                 ['href' => '#persiapan', 'icon' => 'file-check', 'label' => 'Persiapan Dokumen', 'enabled' => true],
                 ['href' => '#progress', 'icon' => 'trending-up', 'label' => 'Status Pengajuan', 'enabled' => (bool) $application],
             ];
+        if ($isActivitiesPage) {
+            $portalNavigation = array_map(function ($item) {
+                if (str_starts_with($item['href'], '#')) {
+                    $item['href'] = route('peserta.dashboard').$item['href'];
+                }
+
+                return $item;
+            }, $portalNavigation);
+        }
     @endphp
 
     <main class="participant-workspace min-h-screen bg-background font-sans text-navy">
         <header class="sticky top-0 z-40 border-b border-border bg-white/90 px-5 py-4 backdrop-blur-xl sm:px-8 lg:px-10">
             <div class="mx-auto flex max-w-7xl items-center justify-between gap-4">
                 <a href="{{ route('landing') }}" class="flex items-center gap-3">
-                    <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-ocean to-teal text-white shadow-lg shadow-ocean/20">
-                        <i data-lucide="compass" class="h-5 w-5" aria-hidden="true"></i>
-                    </span>
-                    <span>
-                        <span class="block text-base font-extrabold tracking-tight">SI-MELAYUR</span>
-                        <span class="block text-[11px] font-semibold text-muted-foreground">Portal pendamping peserta</span>
-                    </span>
+                    <x-brand />
                 </a>
 
                 <div class="flex items-center gap-3">
-                    <span class="hidden text-right sm:block">
-                        <span class="block text-sm font-bold">{{ $participant->name }}</span>
-                        <span class="block text-xs text-muted-foreground">Peserta terverifikasi</span>
-                    </span>
+                    <details class="relative" data-participant-account>
+                        <summary class="flex cursor-pointer list-none items-center gap-2 rounded-xl p-2 hover:bg-light focus-visible:outline-2 focus-visible:outline-ocean" aria-label="Menu akun {{ $participant->name }}">
+                            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal/10 text-sm font-bold text-teal" aria-hidden="true">{{ mb_strtoupper(mb_substr($participant->name, 0, 1)) }}</span>
+                            <span class="hidden max-w-48 text-left sm:block"><span class="block truncate text-sm font-bold">{{ $participant->name }}</span><span class="block text-xs text-muted-foreground">Peserta terverifikasi</span></span>
+                            <i data-lucide="chevron-down" class="h-4 w-4" aria-hidden="true"></i>
+                        </summary>
+                        <div class="absolute right-0 top-full z-50 mt-2 w-60 rounded-2xl border border-border bg-white p-2 shadow-xl">
+                            <p class="truncate border-b border-border px-3 py-3 text-xs text-muted-foreground">{{ $participant->email }}</p>
+                            <form method="POST" action="{{ route('peserta.logout') }}">@csrf<button type="submit" class="w-full rounded-xl px-3 py-3 text-left text-sm font-semibold text-red-700 hover:bg-red-50">Keluar</button></form>
+                        </div>
+                    </details>
                     <div class="relative" data-notification-center>
                         <button type="button" data-notification-toggle aria-expanded="false" aria-controls="participant-notification-panel" aria-label="Buka notifikasi" class="relative flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white text-muted-foreground shadow-sm transition hover:border-ocean/30 hover:text-ocean">
                             <i data-lucide="bell" class="h-4.5 w-4.5" aria-hidden="true"></i>
@@ -167,13 +180,6 @@
                             @endif
                         </div>
                     </div>
-                    <form method="POST" action="{{ route('peserta.logout') }}">
-                        @csrf
-                        <button type="submit" class="inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-2 text-xs font-bold text-muted-foreground transition hover:border-destructive/30 hover:text-destructive">
-                            <i data-lucide="log-out" class="h-4 w-4" aria-hidden="true"></i>
-                            Keluar
-                        </button>
-                    </form>
                 </div>
             </div>
         </header>
@@ -254,7 +260,7 @@
                     </div>
                 @endif
 
-                @if ($applications->isNotEmpty())
+                @if ($applications->count() > 1 && ! request()->routeIs('peserta.services'))
                     <section class="rounded-[2rem] border border-border bg-white p-5 shadow-sm sm:p-6">
                         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                             <div>
@@ -276,31 +282,22 @@
                 @endif
 
                 @unless (($isInternshipExecution ?? false))
-                <section id="kenali-si-molek" class="relative isolate overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#176ac7] via-[#258ddd] to-[#74c8ec] px-6 py-8 text-white shadow-xl shadow-ocean/15 sm:px-10 sm:py-10">
-                    <div class="pointer-events-none absolute left-8 top-10 h-6 w-20 rounded-full bg-white/30 blur-sm"></div>
-                    <div class="pointer-events-none absolute right-12 top-16 h-8 w-28 rounded-full bg-white/20 blur-sm"></div>
-                    <div class="pointer-events-none absolute -bottom-28 -right-20 h-72 w-72 rounded-full border-[3rem] border-white/[0.08]"></div>
-                    <span class="relative z-20 mx-auto flex w-fit items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-2 text-[11px] font-bold text-white shadow-sm backdrop-blur">
-                        <i data-lucide="fish" class="h-3.5 w-3.5" aria-hidden="true"></i>
-                        <span>MULAI DARI SINI</span>
-                    </span>
-
-                    <div class="participant-intro-content">
-                        <div class="participant-intro-content-inner">
-                            <div class="relative mx-auto max-w-3xl pt-5 text-center">
-                                <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">Selamat datang di SI-MELAYUR, {{ $participant->name }}!</h1>
-                                <p class="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-blue-50 sm:text-base">
-                                    SI-MELAYUR adalah <strong>Sistem Informasi Magang, Penelitian, dan Data Kelautan Jawa Timur</strong> milik Dinas Kelautan dan Perikanan Provinsi Jawa Timur. Nama ini terinspirasi dari ikan layur sebagai identitas bahari DKP Jawa Timur.
-                                </p>
-                            </div>
+                <section id="kenali-si-molek" class="relative isolate overflow-hidden rounded-[2rem] bg-[#dff3f7] px-4 py-8 text-navy shadow-sm sm:px-8 sm:py-10">
+                    <img src="{{ asset('images/si-melayur-welcome.png') }}" alt="" aria-hidden="true" fetchpriority="high" width="1536" height="1024" class="pointer-events-none absolute inset-0 -z-20 h-full w-full object-cover object-bottom">
+                    <div class="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-white/80 via-white/20 to-transparent"></div>
+                    <div class="relative mx-auto max-w-3xl text-center">
+                        <span class="inline-flex rounded-full border border-teal/20 bg-white/80 px-4 py-2 text-[11px] font-bold text-teal">MULAI DARI SINI</span>
+                        <h1 class="mt-5 text-3xl font-bold sm:text-4xl">Selamat datang di SI-MELAYUR, {{ $participant->name }}!</h1>
+                        <p class="mx-auto mt-4 max-w-2xl text-sm leading-relaxed sm:text-base">SI-MELAYUR adalah <strong>Sistem Informasi Magang, Penelitian, dan Data Kelautan Jawa Timur</strong> milik Dinas Kelautan dan Perikanan Provinsi Jawa Timur. Nama ini terinspirasi dari ikan layur sebagai identitas bahari DKP Jawa Timur.</p>
+                    </div>
 
                     <div id="portal-pendampingan" class="relative mt-9 scroll-mt-28 overflow-hidden rounded-[2rem] border border-white/70 bg-gradient-to-br from-[#edf8ff] via-white to-[#e7f8f5] px-5 py-7 text-navy shadow-2xl shadow-navy/15 sm:px-8 sm:py-9">
                         <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                             <div class="max-w-3xl">
-                                <span class="inline-flex items-center gap-2 rounded-full bg-teal/10 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.18em] text-teal">
+                                <span class="inline-flex items-center gap-2 rounded-full bg-teal/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-teal">
                                     <i data-lucide="map" class="h-3.5 w-3.5"></i> Panduan Portal Peserta
                                 </span>
-                                <h2 class="mt-4 text-2xl font-extrabold tracking-tight sm:text-3xl">Empat langkah menggunakan portal</h2>
+                                <h2 class="mt-4 text-2xl font-bold sm:text-3xl">Empat langkah menggunakan portal</h2>
                                 <p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">Pilih layanan, siapkan kebutuhan, gunakan panduan saat diperlukan, lalu pantau proses sampai layanan Anda selesai.</p>
                             </div>
                             <a href="#ringkasan" class="inline-flex w-fit shrink-0 items-center gap-2 rounded-full bg-navy px-5 py-3 text-xs font-bold text-white shadow-lg shadow-navy/15 transition hover:-translate-y-0.5 hover:bg-ocean">Mulai persiapan <i data-lucide="arrow-down" class="h-3.5 w-3.5"></i></a>
@@ -316,9 +313,9 @@
                                 <li class="relative rounded-2xl border border-ocean/10 bg-white/90 p-4 shadow-sm">
                                     <div class="flex items-center gap-3">
                                         <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-ocean to-teal text-white"><i data-lucide="{{ $icon }}" class="h-4 w-4"></i></span>
-                                        <span class="text-[10px] font-extrabold uppercase tracking-[0.15em] text-ocean/60">Langkah {{ $index + 1 }}</span>
+                                        <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-ocean/60">Langkah {{ $index + 1 }}</span>
                                     </div>
-                                    <h3 class="mt-4 text-sm font-extrabold">{{ $title }}</h3>
+                                    <h3 class="mt-4 text-sm font-bold">{{ $title }}</h3>
                                     <p class="mt-1 text-xs leading-relaxed text-muted-foreground">{{ $description }}</p>
                                     @if ($index < 3)
                                         <span class="absolute -right-2 top-1/2 z-10 hidden h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full bg-white text-ocean shadow-sm xl:flex"><i data-lucide="chevron-right" class="h-3 w-3"></i></span>
@@ -327,12 +324,12 @@
                             @endforeach
                         </ol>
                     </div>
-                        </div>
-                    </div>
                 </section>
                 @endunless
 
-                @if (($isInternshipExecution ?? false))
+                @if ($isActivitiesPage)
+                    @include('components.peserta.activity-page')
+                @elseif (($isInternshipExecution ?? false))
                     @include('components.peserta.execution-dashboard', [
                         'application' => $application,
                         'participant' => $participant,
@@ -342,12 +339,12 @@
                     <section id="ringkasan" class="overflow-hidden rounded-[2rem] bg-gradient-to-br from-navy via-[#123d72] to-ocean p-7 text-white shadow-xl shadow-navy/10 sm:p-10">
                         <div class="max-w-2xl">
                             <p class="text-xs font-bold uppercase tracking-[0.22em] text-teal-200">Portal Peserta SI-MELAYUR</p>
-                            <h1 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">Halo, {{ $participant->name }} 👋</h1>
+                            <h2 class="mt-3 text-3xl font-bold sm:text-4xl">Mulai persiapan pengajuan Anda</h2>
                             <p class="mt-3 max-w-xl text-sm leading-relaxed text-blue-100 sm:text-base">Mulailah dengan memilih layanan yang ingin Anda persiapkan. SI-MELAYUR membantu menata kebutuhan sebelum Anda mengirim pengajuan melalui Google Form resmi DKP.</p>
                         </div>
                     </section>
 
-                    <section id="persiapan" class="rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8">
+                    <section id="persiapan" class="scroll-mt-28 rounded-[2rem] border border-border bg-white p-6 shadow-sm sm:p-8">
                         <div class="max-w-2xl">
                             <p class="text-xs font-bold uppercase tracking-[0.18em] text-teal">Langkah pertama</p>
                             <h2 class="mt-2 text-2xl font-extrabold tracking-tight text-navy">Pilih layanan yang akan dipersiapkan</h2>
@@ -385,12 +382,30 @@
                             </button>
                         </form>
                     </section>
+
+                    @if (request()->routeIs('peserta.services') && $applications->isNotEmpty())
+                        <details class="rounded-2xl border border-border bg-white p-5 sm:p-6">
+                            <summary class="cursor-pointer text-sm font-bold text-navy">Riwayat pengajuan <span class="ml-2 text-xs font-medium text-muted-foreground">{{ $applications->count() }} pengajuan</span></summary>
+                            <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Pengajuan dan dokumen sebelumnya tetap tersedia. Buka kembali untuk melihat detail atau sertifikat yang sudah diterbitkan.</p>
+                            <ul class="mt-4 divide-y divide-border">
+                                @foreach ($applications as $previousApplication)
+                                    <li class="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+                                        <div>
+                                            <p class="text-sm font-semibold text-navy">{{ $previousApplication->serviceLabel() }}</p>
+                                            <p class="mt-1 text-xs text-muted-foreground">Pengajuan #{{ $previousApplication->id }} · {{ $previousApplication->completed_at ? 'Selesai pada '.$previousApplication->completed_at->format('d M Y') : 'Dibuat pada '.$previousApplication->created_at->format('d M Y') }}</p>
+                                        </div>
+                                        <a href="{{ route('peserta.application.select', $previousApplication) }}" class="inline-flex w-fit shrink-0 rounded-xl border border-border px-4 py-2 text-xs font-bold text-ocean transition hover:bg-light">Lihat pengajuan <span class="sr-only">#{{ $previousApplication->id }}</span></a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </details>
+                    @endif
                 @else
                     <section id="ringkasan" class="overflow-hidden rounded-[2rem] bg-gradient-to-br from-navy via-[#123d72] to-ocean p-7 text-white shadow-xl shadow-navy/10 sm:p-10">
                         <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
                             <div class="max-w-2xl">
                                 <p class="text-xs font-bold uppercase tracking-[0.22em] text-teal-200">{{ $application->serviceLabel() }}</p>
-                                <h1 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">Halo, {{ $participant->name }} 👋</h1>
+                                <h2 class="mt-3 text-3xl font-bold sm:text-4xl">Pantau pengajuan Anda</h2>
                                 <p class="mt-3 text-sm leading-relaxed text-blue-100 sm:text-base">Tahap aktif Anda adalah <strong class="text-white">{{ $activeStatusLabel }}</strong>. Ikuti langkah yang ditandai untuk melanjutkan proses layanan.</p>
                             </div>
                             <div class="rounded-3xl border border-white/15 bg-white/10 px-5 py-4 backdrop-blur-sm">

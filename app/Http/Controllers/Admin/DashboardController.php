@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\ChatConversation;
 use App\Models\ChatMessage;
 use App\Models\InternshipLocation;
-use App\Models\KnowledgeBaseDocument;
 use App\Models\ParticipantApplication;
 use App\Models\ParticipantApplicationDocument;
 use App\Models\ReplyLetter;
+use App\Services\ChatbotAiBudget;
 use App\Support\KnowledgeBaseCategoryResolver;
 use Illuminate\Support\Carbon;
 use Illuminate\View\View;
@@ -19,6 +19,7 @@ class DashboardController extends Controller
     public function index(KnowledgeBaseCategoryResolver $resolver): View
     {
         $totalConversations = ChatConversation::count();
+        $chatbotUsage = app(ChatbotAiBudget::class)->snapshot();
         $today = ChatMessage::where('role', 'user')->whereDate('created_at', today())->count();
 
         $unanswered = ChatMessage::where('role', 'assistant')->where('status', 'insufficient_information')->count();
@@ -141,9 +142,9 @@ class DashboardController extends Controller
         ];
 
         $recentApplications = ParticipantApplication::with([
-                'participant',
-                'documents' => fn ($q) => $q->whereIn('type', $reviewableTypes)->latest(),
-            ])
+            'participant',
+            'documents' => fn ($q) => $q->whereIn('type', $reviewableTypes)->latest(),
+        ])
             ->latest()
             ->take(5)
             ->get()
@@ -194,7 +195,7 @@ class DashboardController extends Controller
 
         return view('pages.admin.dashboard', compact(
             'metrics', 'trend', 'statusData', 'unansweredList', 'recentQuestions',
-            'portalMetrics', 'recentApplications', 'awaitingReplyLetterList'
+            'portalMetrics', 'recentApplications', 'awaitingReplyLetterList', 'chatbotUsage'
         ));
     }
 }

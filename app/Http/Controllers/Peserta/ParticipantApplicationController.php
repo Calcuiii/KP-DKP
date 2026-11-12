@@ -16,11 +16,12 @@ use App\Models\User;
 use App\Notifications\DocumentAutomatedCheckPassed;
 use App\Notifications\InternshipFormSubmitted;
 use App\Notifications\WoppsFormSubmitted;
-use App\Services\RequestLetterAutomatedChecker;
 use App\Services\EthicsApprovalAutomatedChecker;
+use App\Services\RequestLetterAutomatedChecker;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 final class ParticipantApplicationController extends Controller
@@ -60,12 +61,14 @@ final class ParticipantApplicationController extends Controller
         $request->session()->put('participant_active_application_id', $application->id);
 
         return redirect()->route('peserta.dashboard')
-            ->with('status', 'Layanan '. $application->serviceLabel() .' telah dipilih.');
+            ->with('status', 'Layanan '.$application->serviceLabel().' telah dipilih.');
     }
 
     public function storeGuestbookProof(UploadGuestbookProofRequest $request): RedirectResponse
     {
         $application = $this->magangApplication($request);
+        abort_if($application->decision !== null || $application->completed_at !== null || $application->google_form_confirmed_at !== null, 422, 'Tahap pengajuan ini telah ditutup.');
+        abort_if($application->letter_submitted_at !== null || $application->documents()->where('type', ParticipantApplicationDocument::TYPE_REQUEST_LETTER)->exists(), 422);
         $file = $request->file('guestbook_proof');
         $path = $file->store("participant-applications/{$application->id}/guestbook");
 
@@ -89,6 +92,7 @@ final class ParticipantApplicationController extends Controller
     public function storeRequestLetter(UploadRequestLetterRequest $request, RequestLetterAutomatedChecker $checker): RedirectResponse
     {
         $application = $this->participantApplication($request);
+        abort_if($application->decision !== null || $application->completed_at !== null || $application->google_form_confirmed_at !== null, 422, 'Tahap pengajuan ini telah ditutup.');
         if ($application->service_type === ParticipantApplication::SERVICE_MAGANG_PKL) {
             abort_unless($application->guestbook_confirmed_at !== null, 422, 'Lengkapi bukti Buku Tamu terlebih dahulu.');
         }
@@ -102,11 +106,23 @@ final class ParticipantApplicationController extends Controller
         );
 
         $file = $request->file('request_letter');
+        $institution = $request->boolean('shared_letter') ? trim($request->validated('letter_institution')) : null;
+        $group = $institution !== null ? ParticipantApplicationDocument::letterGroupKey($institution, hash_file('sha256', $file->getRealPath())) : null;
+        if ($group !== null) {
+            $reused = ParticipantApplicationDocument::query()->where('letter_group_key', $group)
+                ->whereHas('application', fn ($q) => $q->where('participant_id', $application->participant_id)
+                    ->where('id', '!=', $application->id))->exists();
+            if ($reused) {
+                throw ValidationException::withMessages(['request_letter' => 'Surat ini sudah dipakai pada pengajuan Anda sebelumnya.']);
+            }
+        }
+
         $path = $file->store("participant-applications/{$application->id}/request-letters");
 
         abort_unless(is_string($path), 500, 'Surat permohonan gagal disimpan.');
 
         $document = $application->documents()->create([
+            'letter_institution' => $institution, 'letter_group_key' => $group,
             'type' => ParticipantApplicationDocument::TYPE_REQUEST_LETTER,
             'version' => ($currentLetter?->version ?? 0) + 1,
             'file_path' => $path,
@@ -145,6 +161,7 @@ final class ParticipantApplicationController extends Controller
     public function storeInternshipFormProof(UploadInternshipFormProofRequest $request): RedirectResponse
     {
         $application = $this->magangApplication($request);
+        abort_if($application->decision !== null || $application->completed_at !== null || $application->google_form_confirmed_at !== null, 422, 'Tahap pengajuan ini telah ditutup.');
         abort_unless($application->requestLetterApproved(), 422, 'Surat permohonan belum dinyatakan lolos.');
         abort_if(
             $application->documents()->where('type', ParticipantApplicationDocument::TYPE_INTERNSHIP_FORM_PROOF)->exists(),
@@ -187,6 +204,7 @@ final class ParticipantApplicationController extends Controller
     public function storeEthicsApproval(UploadEthicsApprovalRequest $request, EthicsApprovalAutomatedChecker $checker): RedirectResponse
     {
         $application = $this->participantApplication($request);
+        abort_if($application->decision !== null || $application->completed_at !== null || $application->google_form_confirmed_at !== null, 422, 'Tahap pengajuan ini telah ditutup.');
         abort_unless($application->service_type === ParticipantApplication::SERVICE_WOPPS, 404);
         abort_unless($application->requestLetterApproved(), 422, 'Surat permohonan harus dinyatakan lolos terlebih dahulu.');
 
@@ -239,6 +257,7 @@ final class ParticipantApplicationController extends Controller
     public function storeWoppsFormProof(UploadWoppsFormProofRequest $request): RedirectResponse
     {
         $application = $this->participantApplication($request);
+        abort_if($application->decision !== null || $application->completed_at !== null || $application->google_form_confirmed_at !== null, 422, 'Tahap pengajuan ini telah ditutup.');
         abort_unless($application->service_type === ParticipantApplication::SERVICE_WOPPS, 404);
         abort_unless($application->ethicsApprovalApproved(), 422, 'Ethics Approval Statement Letter harus disetujui terlebih dahulu.');
         abort_if($application->google_form_confirmed_at !== null, 422, 'Bukti pengisian Form WOPPS sudah dikirim.');
@@ -299,12 +318,12 @@ final class ParticipantApplicationController extends Controller
         /** @var Participant $participant */
         $participant = $request->user('peserta');
 
-        $replyLetter = $participant->replyLetter;
+        $replyLetter = $this->participantApplication($request)->replyLetter;
 
         abort_unless($replyLetter && filled($replyLetter->file_path), 404);
-        abort_unless(Storage::disk('public')->exists($replyLetter->file_path), 404);
+        abort_unless(Storage::disk('local')->exists($replyLetter->file_path), 404);
 
-        return Storage::disk('public')->download(
+        return Storage::disk('local')->download(
             $replyLetter->file_path,
             $replyLetter->original_name ?? basename($replyLetter->file_path)
         );
@@ -331,7 +350,7 @@ final class ParticipantApplicationController extends Controller
             $query = $query->whereKey($applicationId);
         }
 
-        $application = $query->latest()->firstOrFail();
+        $application = $query->latest('id')->firstOrFail();
 
         if ($expectedServiceType !== null) {
             abort_unless($application->service_type === $expectedServiceType, 404);

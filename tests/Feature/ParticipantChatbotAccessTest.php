@@ -24,16 +24,16 @@ class ParticipantChatbotAccessTest extends TestCase
         // Passing the access gate reaches input validation without calling an AI provider.
         $this->postJson(route('chatbot.api.messages.send'), ['session_key' => $key, 'message' => ''])->assertUnprocessable()->assertJsonValidationErrors('message');
         $this->post(route('peserta.logout'))->assertRedirect();
-        $this->get(route('chatbot'))->assertRedirect(route('guestbook.checkin'));
+        $this->get(route('chatbot'))->assertOk();
         $this->getJson(route('chatbot.api.history', ['session_key' => $key]))->assertForbidden();
     }
 
-    public function test_unverified_participant_and_admin_login_do_not_bypass_guestbook(): void
+    public function test_logged_in_accounts_can_use_chatbot_without_the_guest_service_gate(): void
     {
         $participant = Participant::factory()->create(['email_verified_at' => null]);
-        $this->actingAs($participant, 'peserta')->get(route('chatbot'))->assertRedirect(route('guestbook.checkin'));
-        $this->getJson(route('chatbot.api.history'))->assertForbidden();
+        $this->actingAs($participant, 'peserta')->get(route('chatbot'))->assertOk();
+        $this->getJson(route('chatbot.api.history', ['session_key' => (string) Str::uuid()]))->assertOk();
         auth('peserta')->logout();
-        $this->actingAs(User::factory()->create(), 'web')->get(route('chatbot'))->assertRedirect(route('guestbook.checkin'));
+        $this->actingAs(User::factory()->create(), 'web')->get(route('chatbot'))->assertOk();
     }
 }

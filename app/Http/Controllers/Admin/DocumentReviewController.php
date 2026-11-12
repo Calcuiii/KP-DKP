@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ParticipantApplication;
 use App\Models\ParticipantApplicationDocument;
 use App\Notifications\DocumentReviewUpdated;
 use Illuminate\Http\RedirectResponse;
@@ -16,19 +17,24 @@ class DocumentReviewController extends Controller
     /**
      * Daftar dokumen yang perlu diperiksa admin.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
+        $serviceType = $request->query('service_type') === ParticipantApplication::SERVICE_WOPPS
+            ? ParticipantApplication::SERVICE_WOPPS
+            : ParticipantApplication::SERVICE_MAGANG_PKL;
         $documents = ParticipantApplicationDocument::query()
             ->whereIn('type', $this->reviewableTypes())
+            ->whereHas('application', fn ($query) => $query->where('service_type', $serviceType))
             ->with([
                 'application.participant',
             ])
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->appends(['service_type' => $serviceType]);
 
         return view(
             'pages.admin.pemeriksaan-dokumen.index',
-            compact('documents')
+            compact('documents', 'serviceType')
         );
     }
 
@@ -90,30 +96,7 @@ class DocumentReviewController extends Controller
         );
     }
 
-    /**
-     * Admin menyetujui dokumen.
-     *
-     * Untuk surat permohonan:
-     *
-     * 1. Jika surat lengkap dan memiliki pernyataan permohonan
-     *    penerbitan sertifikat:
-     *    - Surat disetujui.
-     *    - certificate_eligible = true.
-     *    - Peserta dapat melanjutkan ke tahap berikutnya.
-     *
-     * 2. Jika surat tidak mencantumkan pernyataan permohonan
-     *    penerbitan sertifikat dan admin mencentang
-     *    "no_certificate":
-     *    - Surat tetap disetujui.
-     *    - certificate_eligible = false.
-     *    - Peserta diberi notifikasi.
-     *    - Peserta harus memilih:
-     *        a. Upload ulang surat
-     *        b. Lanjut tanpa upload ulang
-     *
-     * Untuk surat persetujuan etika:
-     * - Surat tetap disetujui seperti biasa.
-     */
+    /** Menyetujui dokumen dan identitas peserta tanpa pemeriksaan permintaan sertifikat. */
     public function approve(
         Request $request,
         ParticipantApplicationDocument $document
@@ -131,124 +114,22 @@ class DocumentReviewController extends Controller
             404
         );
 
-        /*
-         * Validasi input dari form admin.
-         */
+        abort_if($document->application->completed_at !== null || $document->application->decision !== null, 422);
         $validated = $request->validate([
-            'review_notes' => [
-                'nullable',
-                'string',
-                'max:2000',
-            ],
-
-            /*
-             * Jika dokumen memiliki letter_group_key,
-             * admin wajib mencocokkan identitas peserta.
-             */
+            'review_notes' => ['nullable', 'string', 'max:2000'],
             'participant_identity_confirmed' => $document->letter_group_key
-                ? ['accepted']
-                : ['sometimes', 'accepted'],
-
-            /*
-             * Checkbox ini hanya akan digunakan untuk
-             * surat permohonan.
-             */
-            'no_certificate' => [
-                'sometimes',
-                'boolean',
-            ],
+                ? ['accepted'] : ['sometimes', 'accepted'],
         ]);
-
-        /*
-         * Checkbox "no_certificate" hanya dianggap aktif
-         * jika dokumen yang diperiksa adalah surat permohonan.
-         *
-         * Artinya:
-         *
-         * request_letter + checkbox dicentang
-         * = surat disetujui tanpa pernyataan sertifikat.
-         *
-         * ethics_approval + checkbox
-         * = checkbox diabaikan.
-         */
-        $noCertificate =
-            $document->type === ParticipantApplicationDocument::TYPE_REQUEST_LETTER
-            && $request->boolean('no_certificate');
-
-        /*
-         * Pesan khusus yang akan disampaikan kepada peserta
-         * apabila surat tidak mencantumkan pernyataan sertifikat.
-         */
-        $noCertificateNotice =
-            'Surat permohonan Anda telah disetujui, tetapi tidak mencantumkan '
-            . 'pernyataan permohonan penerbitan sertifikat. Silakan pilih '
-            . 'apakah ingin upload ulang surat atau tetap melanjutkan tanpa '
-            . 'upload ulang.';
-
-        /*
-         * Gabungkan catatan admin dengan pemberitahuan khusus
-         * apabila no_certificate aktif.
-         */
-        $finalNotes = $noCertificate
-            ? trim(
-                ($validated['review_notes'] ?? '')
-                . "\n\n"
-                . $noCertificateNotice
-            )
-            : ($validated['review_notes'] ?? null);
-
-        /*
-         * Update status dokumen.
-         */
         $document->update([
             'review_status' => ParticipantApplicationDocument::REVIEW_APPROVED,
-
-            'review_notes' => $finalNotes,
-
-            'reviewed_at' => now(),
-
-            /*
-             * true:
-             * surat memiliki/dianggap memenuhi pernyataan sertifikat.
-             *
-             * false:
-             * admin menyetujui surat tetapi surat tidak mencantumkan
-             * pernyataan permohonan penerbitan sertifikat.
-             */
-            'certificate_eligible' => ! $noCertificate,
+            'review_notes' => $validated['review_notes'] ?? null,
+            'reviewed_at' => now(), 'certificate_eligible' => null,
         ]);
-
-        /*
-         * Update status aplikasi peserta.
-         */
         $document->application()->update([
             'status' => $document->type === ParticipantApplicationDocument::TYPE_ETHICS_APPROVAL
-                ? 'ethics_approved'
-                : (
-                    $noCertificate
-                        ? 'letter_approved_no_certificate'
-                        : 'letter_approved'
-                ),
-
-            /*
-             * Setiap kali admin melakukan approval,
-             * pilihan tindak lanjut sebelumnya harus di-reset.
-             *
-             * Ini penting terutama ketika peserta sebelumnya
-             * memilih "upload_again" kemudian surat baru diperiksa.
-             */
-            'certificate_follow_up_choice' => null,
-
-            'certificate_follow_up_at' => null,
+                ? 'ethics_approved' : 'letter_approved',
+            'certificate_follow_up_choice' => null, 'certificate_follow_up_at' => null,
         ]);
-
-        /*
-         * Kirim notifikasi kepada peserta.
-         *
-         * Untuk no_certificate:
-         * peserta akan mendapatkan informasi bahwa surat tetap
-         * disetujui tetapi perlu memilih upload ulang atau lanjut.
-         */
         $this->notifyParticipant(
             $document,
             ParticipantApplicationDocument::REVIEW_APPROVED
@@ -264,9 +145,7 @@ class DocumentReviewController extends Controller
             )
             ->with(
                 'success',
-                $noCertificate
-                    ? 'Surat berhasil disetujui. Peserta telah diberi pemberitahuan untuk memilih upload ulang atau melanjutkan tanpa upload ulang.'
-                    : 'Surat berhasil disetujui.'
+                'Surat berhasil disetujui.'
             );
     }
 
@@ -301,8 +180,7 @@ class DocumentReviewController extends Controller
                 ],
             ],
             [
-                'review_notes.required' =>
-                    'Catatan perbaikan wajib diisi.',
+                'review_notes.required' => 'Catatan perbaikan wajib diisi.',
             ]
         );
 
@@ -310,11 +188,9 @@ class DocumentReviewController extends Controller
          * Update status dokumen menjadi revision.
          */
         $document->update([
-            'review_status' =>
-                ParticipantApplicationDocument::REVIEW_REVISION,
+            'review_status' => ParticipantApplicationDocument::REVIEW_REVISION,
 
-            'review_notes' =>
-                $validated['review_notes'],
+            'review_notes' => $validated['review_notes'],
 
             'reviewed_at' => now(),
         ]);
@@ -329,8 +205,7 @@ class DocumentReviewController extends Controller
          * ethics_revision_required
          */
         $document->application()->update([
-            'status' =>
-                $document->type ===
+            'status' => $document->type ===
                 ParticipantApplicationDocument::TYPE_ETHICS_APPROVAL
                     ? 'ethics_revision_required'
                     : 'letter_revision_required',
@@ -372,11 +247,11 @@ class DocumentReviewController extends Controller
 
         return response()->file($path, [
             'Content-Type' => $document->mime_type ?? 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' .
+            'Content-Disposition' => 'inline; filename="'.
                 addslashes(
                     $document->original_name
                     ?? basename($document->file_path)
-                ) .
+                ).
                 '"',
         ]);
     }

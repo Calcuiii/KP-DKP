@@ -31,6 +31,7 @@ final class GroundedChatbotResponder
     private const OVERVIEW_QUERY_TOKENS = [
         'alur',
         'tahap',
+        'tahapan',
         'berurutan',
         'awal',
         'akhir',
@@ -50,6 +51,7 @@ final class GroundedChatbotResponder
     private const OVERVIEW_ANCHOR_TOKENS = [
         'alur',
         'tahap',
+        'tahapan',
         'berurutan',
     ];
 

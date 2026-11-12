@@ -13,6 +13,13 @@ use Tests\TestCase;
 
 final class GroqKnowledgeBaseAnswerGeneratorTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        config(['chatbot.ai.account_owner' => 'dkp', 'chatbot.ai.free_plan_confirmed' => true,
+            'chatbot.ai.verified_key_hash' => hash('sha256', 'test-groq-key')]);
+    }
+
     public function test_it_generates_a_grounded_answer_through_groq(): void
     {
         Http::fake([
@@ -43,7 +50,7 @@ final class GroqKnowledgeBaseAnswerGeneratorTest extends TestCase
 
             return $request->url() === 'https://api.groq.com/openai/v1/chat/completions'
                 && $request->hasHeader('Authorization', 'Bearer test-groq-key')
-                && $request->data()['model'] === 'llama-3.1-8b-instant'
+                && $request->data()['model'] === 'openai/gpt-oss-20b'
                 && str_contains($messages[0]['content'], 'Gunakan hanya fakta')
                 && $request->data()['temperature'] === 0
                 && str_contains($messages[1]['content'], 'CHECKLIST CAKUPAN')
@@ -114,7 +121,7 @@ final class GroqKnowledgeBaseAnswerGeneratorTest extends TestCase
         $generator = new GroqKnowledgeBaseAnswerGenerator(
             enabled: false,
             apiKey: null,
-            model: 'llama-3.1-8b-instant',
+            model: 'openai/gpt-oss-20b',
             timeoutSeconds: 15,
             maxCompletionTokens: 700,
         );
@@ -133,7 +140,7 @@ final class GroqKnowledgeBaseAnswerGeneratorTest extends TestCase
         return new GroqKnowledgeBaseAnswerGenerator(
             enabled: true,
             apiKey: 'test-groq-key',
-            model: 'llama-3.1-8b-instant',
+            model: 'openai/gpt-oss-20b',
             timeoutSeconds: 15,
             maxCompletionTokens: 700,
         );

@@ -29,7 +29,7 @@ final class KnowledgeBaseDocumentIndexerTest extends TestCase
             'documents' => [],
         ], JSON_THROW_ON_ERROR));
 
-        Storage::fake('public');
+        Storage::fake('local');
     }
 
     protected function tearDown(): void
@@ -63,6 +63,9 @@ final class KnowledgeBaseDocumentIndexerTest extends TestCase
         $this->putDocx($document->file_path, 'Versi pertama.');
         $this->indexer()->index($document);
 
+        // A replacement upload has a new storage path, as in the application;
+        // do not overwrite an archive that Windows may still be scanning.
+        $document->file_path = 'knowledge-base/panduan-revised-'.bin2hex(random_bytes(8)).'.docx';
         $this->putDocx($document->file_path, 'Versi kedua.');
         $this->indexer()->index($document);
         $registry = json_decode(File::get($this->registryPath()), true, 512, JSON_THROW_ON_ERROR);
@@ -71,6 +74,26 @@ final class KnowledgeBaseDocumentIndexerTest extends TestCase
         self::assertStringContainsString('Versi kedua.', File::get(
             $this->processedDirectory().'/kb-upload-000042.md',
         ));
+    }
+
+    public function test_removed_and_failed_reindexed_documents_are_no_longer_registered(): void
+    {
+        $document = $this->document();
+        $this->putDocx($document->file_path, 'Pedoman riset laut yang dapat dicabut.');
+        $this->indexer()->index($document);
+        $this->indexer()->remove($document);
+        self::assertSame([], json_decode(File::get($this->registryPath()), true)['documents']);
+        self::assertFileDoesNotExist($this->processedDirectory().'/kb-upload-000042.md');
+
+        $this->indexer()->index($document);
+        Storage::disk('local')->delete($document->file_path);
+        try {
+            $this->indexer()->index($document);
+            self::fail('Missing file must fail reindexing.');
+        } catch (\RuntimeException $exception) {
+            self::assertSame([], json_decode(File::get($this->registryPath()), true)['documents']);
+            self::assertFileDoesNotExist($this->processedDirectory().'/kb-upload-000042.md');
+        }
     }
 
     private function indexer(): KnowledgeBaseDocumentIndexer
@@ -100,7 +123,7 @@ final class KnowledgeBaseDocumentIndexerTest extends TestCase
     private function putDocx(string $path, string $content): void
     {
         $archive = new ZipArchive;
-        $absolutePath = Storage::disk('public')->path($path);
+        $absolutePath = Storage::disk('local')->path($path);
         File::ensureDirectoryExists(dirname($absolutePath));
 
         self::assertTrue($archive->open($absolutePath, ZipArchive::CREATE | ZipArchive::OVERWRITE));

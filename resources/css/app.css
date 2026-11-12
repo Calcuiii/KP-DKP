@@ -201,12 +201,74 @@
     text-decoration: underline;
 }
 
-.chatbot-ocean-wash {
-    background: linear-gradient(to bottom, rgb(255 255 255 / 60%), rgb(255 255 255 / 38%) 55%, rgb(237 248 250 / 12%));
+[data-chat-sidebar] {
+    transition: margin-left 320ms cubic-bezier(0.22, 1, 0.36, 1),
+        translate 320ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 240ms ease;
 }
 
-.chatbot-ocean:has([data-chat-empty].hidden) .chatbot-ocean-wash {
-    background: rgb(247 250 254 / 92%);
+@media (min-width: 1024px) {
+    [data-chat-sidebar].chatbot-sidebar-collapsed {
+        margin-left: -16rem;
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+.chatbot-sidebar-overlay {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 240ms ease, visibility 240ms ease;
+}
+
+.chatbot-sidebar-overlay.is-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+@keyframes chatbot-content-enter {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+[data-chat-empty]:not(.hidden),
+[data-chat-messages]:not(.hidden),
+[data-chat-message-list] > article {
+    animation: chatbot-content-enter 280ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-chat-sidebar], .chatbot-sidebar-overlay {
+        transition: none;
+    }
+    [data-chat-empty], [data-chat-messages], [data-chat-message-list] > article {
+        animation: none !important;
+    }
+}
+
+.chatbot-composer-shell {
+    position: relative;
+    isolation: isolate;
+    border: 1px solid rgb(255 255 255 / 68%);
+    background: linear-gradient(125deg, rgb(255 255 255 / 48%), rgb(255 255 255 / 22%));
+    box-shadow:
+        0 18px 45px rgb(12 35 64 / 18%),
+        0 0 28px rgb(255 255 255 / 38%),
+        inset 0 1px 0 rgb(255 255 255 / 76%);
+    backdrop-filter: blur(20px) saturate(135%);
+    -webkit-backdrop-filter: blur(20px) saturate(135%);
+}
+
+.chatbot-composer-shell::before {
+    position: absolute;
+    z-index: -1;
+    inset: 1px;
+    border-radius: inherit;
+    background: radial-gradient(circle at 18% 0%, rgb(255 255 255 / 48%), transparent 48%);
+    content: '';
+    pointer-events: none;
 }
 
 .chatbot-pattern-content {
@@ -422,4 +484,27 @@
     .participant-auth-wave {
         animation: none;
     }
+}
+/* Native dialog keeps focus and background interaction inside the check-in pop-up. */
+.guestbook-dialog::backdrop {
+    background: rgb(15 39 68 / 55%);
+    backdrop-filter: blur(5px);
+}
+
+.reply-letter-dialog::backdrop {
+    background: rgb(15 39 68 / 55%);
+    backdrop-filter: blur(4px);
+}
+
+.guestbook-dialog[open] {
+    animation: guestbook-enter 180ms ease-out;
+}
+
+@keyframes guestbook-enter {
+    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .guestbook-dialog[open] { animation: none; }
 }

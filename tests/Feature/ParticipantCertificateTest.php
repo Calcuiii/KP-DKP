@@ -12,14 +12,14 @@ class ParticipantCertificateTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_admin_certificate_feature_is_removed(): void
+    public function test_certificate_management_requires_an_active_superadmin(): void
     {
-        $admin = User::factory()->create(['role' => 'superadmin', 'status' => 'Aktif']);
-        $this->actingAs($admin)->get('/admin/sertifikat')->assertNotFound();
-        $this->post('/admin/sertifikat/1')->assertNotFound();
-        $this->post('/admin/sertifikat/1/email')->assertNotFound();
-        $this->assertFalse(app('router')->has('admin.certificates'));
-        $this->get(route('admin.dashboard'))->assertOk()->assertDontSee('Sertifikat Magang');
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'Aktif']);
+        $this->actingAs($admin)->get(route('admin.sertifikat'))->assertForbidden();
+        $admin->update(['role' => 'superadmin']);
+        $this->get(route('admin.sertifikat'))->assertOk();
+        $admin->update(['status' => 'Nonaktif']);
+        $this->get(route('admin.sertifikat'))->assertForbidden();
     }
 
     public function test_existing_certificate_remains_available_only_to_its_owner_after_completion(): void

@@ -25,7 +25,7 @@ Markdown Knowledge Base
 → ChatbotController / JSON API / Chat UI
 ```
 
-`KnowledgeBaseAnswerGenerator` is implemented by `GroqKnowledgeBaseAnswerGenerator` and bound through the Laravel container. When enabled, Groq's `llama-3.1-8b-instant` model writes the final natural-language response from the selected grounded context.
+`KnowledgeBaseAnswerGenerator` is bound to `BudgetedGroqAnswerGenerator`, which enforces the institution-owned Free Plan policy, shared request/token budgets, cooldowns and encrypted context-versioned caching before invoking `GroqKnowledgeBaseAnswerGenerator`. The configured candidate is Groq's `openai/gpt-oss-20b`; the website does not use ChatGPT Plus or an OpenAI API account. Disabled or unverified configurations use the deterministic grounded renderer.
 
 ## Decision
 
@@ -84,7 +84,7 @@ When no eligible source is available, return the deterministic insufficient-info
 
 ## Groq LLM generation
 
-Groq is opt-in. `GROQ_ENABLED=false` keeps the deterministic renderer active. To enable the LLM, configure a `GROQ_API_KEY` and set `GROQ_ENABLED=true`; the default model is `llama-3.1-8b-instant`.
+Groq is opt-in and disabled by default. An API key and `GROQ_ENABLED=true` are insufficient: an operator must confirm institution ownership and a non-paid Groq Free Plan, bound to the active key fingerprint. Account billing cannot be proved through the model API. Follow [the free-plan handover procedure](../chatbot-free-plan-handover.md); never activate a personal key or substitute an unreviewed model. The default candidate is `openai/gpt-oss-20b`, and the KB-only path remains available without external credentials.
 
 The provider calls Groq's Chat Completions endpoint with a deterministic system prompt that requires Indonesian, natural, focused answers and prohibits facts outside the selected context. It receives only the already-selected, source-grounded sections, not the entire knowledge base. The request also supplies a coverage checklist so overview answers retain every selected step or stage. The source references returned to the UI are derived by the application, never by the model.
 

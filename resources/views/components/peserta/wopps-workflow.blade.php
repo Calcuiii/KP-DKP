@@ -46,24 +46,20 @@
             @endif
         </div>
 
-        <div class="mt-7 rounded-3xl border border-ocean/15 bg-gradient-to-br from-ocean/[0.05] to-teal/[0.05] p-5 sm:p-6">
-            <div class="flex items-start gap-3">
-                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-ocean text-white"><i data-lucide="list-checks" class="h-5 w-5"></i></span>
-                <div><h3 class="text-base font-bold">Informasi yang wajib tercantum</h3><p class="mt-1 text-xs leading-relaxed text-muted-foreground">Gunakan daftar ini untuk memeriksa surat sebelum diunggah.</p></div>
-            </div>
-            <ol class="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                @foreach ($requirements as $index => [$icon, $label])
-                    <li class="rounded-2xl border border-ocean/10 bg-white/90 p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-ocean/25 hover:shadow-md">
-                        <div class="flex items-center justify-between gap-3">
-                            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-ocean/15 to-teal/15 text-ocean"><i data-lucide="{{ $icon }}" class="h-4 w-4"></i></span>
-                            <span class="rounded-full bg-navy px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">{{ chr(97 + $index) }}</span>
-                        </div>
-                        <p class="mt-4 text-xs font-bold leading-relaxed text-navy">{{ $label }}</p>
-                        <p class="mt-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Wajib tercantum</p>
-                    </li>
+        <details class="group mt-6 rounded-2xl border border-border bg-light/60">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 rounded-2xl px-5 py-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ocean [&::-webkit-details-marker]:hidden">
+                <span>
+                    <span class="block text-sm font-semibold text-navy">Informasi yang wajib tercantum</span>
+                    <span class="mt-1 block text-xs text-muted-foreground">Lihat {{ count($requirements) }} poin sebelum mengunggah surat.</span>
+                </span>
+                <i data-lucide="chevron-down" aria-hidden="true" class="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180"></i>
+            </summary>
+            <ol class="mx-5 mb-5 list-decimal space-y-2 border-t border-border pl-5 pt-4 text-sm leading-6 text-navy">
+                @foreach ($requirements as [$icon, $label])
+                    <li class="pl-1">{{ $label }}</li>
                 @endforeach
             </ol>
-        </div>
+        </details>
 
         @if ($letterNeedsRevision)
             <div class="mt-5 rounded-2xl border border-red-200 bg-red-50 p-4"><p class="text-sm font-bold text-red-800">Surat perlu diperbaiki</p><p class="mt-1 text-sm leading-relaxed text-red-700">{{ $requestLetter->review_notes ?: 'Silakan periksa kembali kelengkapan surat dan unggah versi terbaru.' }}</p></div>
@@ -187,15 +183,12 @@
             @endif
         </div>
 
-        <div class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            @foreach ([
-                ['user-check', 'Identitas lengkap', 'Nama, NIS/NIM, program studi, fakultas, dan institusi.'],
-                ['calendar-range', 'Detail kegiatan', 'Jenis, periode, lokasi, serta judul atau tema laporan.'],
-                ['shield-check', 'Pernyataan etika', 'Empat komitmen kerahasiaan dan penggunaan data akademik.'],
-                ['stamp', 'Pengesahan', 'Tanda tangan, meterai, pembimbing/dekan, NIP, dan stempel institusi.'],
-            ] as [$icon, $title, $description])
-                <div class="rounded-2xl border border-ocean/10 bg-light/50 p-4"><span class="flex h-9 w-9 items-center justify-center rounded-xl bg-ocean/10 text-ocean"><i data-lucide="{{ $icon }}" class="h-4 w-4"></i></span><h3 class="mt-3 text-xs font-bold">{{ $title }}</h3><p class="mt-1 text-[11px] leading-relaxed text-muted-foreground">{{ $description }}</p></div>
-            @endforeach
+        <div class="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p class="text-sm leading-relaxed text-muted-foreground">Gunakan template EASL yang sudah disediakan dan ikuti petunjuk pengisiannya.</p>
+            <a href="https://bit.ly/EASL-DKP" target="_blank" rel="noopener noreferrer" class="inline-flex w-fit shrink-0 items-center gap-2 rounded-xl bg-ocean px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-ocean/90">
+                Buka template EASL
+                <i data-lucide="external-link" class="h-4 w-4" aria-hidden="true"></i>
+            </a>
         </div>
 
         @if ($letterApproved)
@@ -285,9 +278,20 @@
             @if($completed)
                 <div class="mt-6 rounded-3xl border border-emerald-200 bg-emerald-50 p-6"><p class="text-sm font-bold text-emerald-800">Layanan WOPPS selesai</p><p class="mt-2 text-sm text-emerald-700">Diselesaikan pada {{ $application->completed_at->translatedFormat('d F Y, H:i') }} WIB. Anda dapat mengajukan layanan baru melalui akun yang sama.</p></div>
             @elseif($contacted)
-                <div class="mt-6 rounded-3xl border border-teal/25 bg-teal/[0.06] p-6"><p class="text-sm font-bold text-teal">Anda sudah dihubungi petugas Dinas</p><p class="mt-2 text-sm text-muted-foreground">Silakan mengikuti arahan petugas. Status selesai akan diperbarui oleh Dinas setelah layanan tuntas.</p></div>
+                <div class="mt-6 rounded-3xl border border-teal/25 bg-teal/[0.06] p-6">
+                    <p class="text-sm font-bold text-teal">Anda sudah dihubungi petugas Dinas</p>
+                    <p class="mt-2 text-sm leading-relaxed text-muted-foreground">Silakan mengikuti arahan petugas untuk pelaksanaan layanan. Anda dapat kembali ke pilihan layanan; pengajuan ini tetap tersimpan.</p>
+                    <p class="mt-3 text-xs text-muted-foreground">Dicatat pada {{ $application->pic_contacted_at->translatedFormat('d F Y, H:i') }} WIB.</p>
+                </div>
             @else
                 <div class="mt-6 rounded-3xl border border-ocean/20 bg-ocean/[0.05] p-6"><p class="text-sm font-bold text-ocean">Menunggu dihubungi pihak Dinas</p><p class="mt-2 text-sm leading-relaxed text-muted-foreground">Anda tidak perlu menghubungi petugas terlebih dahulu. Pastikan nomor telepon pada Form WOPPS aktif; petugas Dinas akan menghubungi Anda.</p></div>
+                <form method="POST" action="{{ route('peserta.wopps.confirm-contact', $application) }}" class="mt-5">
+                    @csrf
+                    <button type="submit" aria-describedby="wopps-contact-help" class="inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white transition hover:bg-ocean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-2">
+                        Konfirmasi sudah dihubungi
+                    </button>
+                    <p id="wopps-contact-help" class="mt-3 text-xs leading-relaxed text-muted-foreground">Klik setelah petugas Dinas benar-benar menghubungi Anda.</p>
+                </form>
             @endif
         @elseif($rejected)
             <div class="mt-6 rounded-3xl bg-slate-50 p-6"><p class="text-sm font-bold">Pengajuan telah ditutup</p><p class="mt-2 text-sm text-muted-foreground">Anda dapat membuat pengajuan baru tanpa mengubah riwayat pengajuan yang ditolak.</p></div>
@@ -295,8 +299,12 @@
             <p class="mt-4 text-sm text-muted-foreground">Tahap ini tersedia setelah keputusan Dinas diterbitkan.</p>
         @endif
 
-        @if($completed || $rejected)
-            <div class="mt-6 rounded-3xl bg-gradient-to-br from-navy to-ocean p-6 text-white"><h3 class="text-lg font-bold">Ingin mengajukan layanan lagi?</h3><p class="mt-2 text-sm text-blue-100">Pilih layanan baru. Riwayat pengajuan ini tetap tersimpan dan tidak akan diubah.</p><form method="POST" action="{{ route('peserta.application.store') }}" class="mt-5 flex flex-wrap gap-3">@csrf<button name="service_type" value="magang_pkl" class="rounded-xl bg-white px-4 py-3 text-sm font-bold text-ocean">Magang / PKL / KP</button><button name="service_type" value="wopps" class="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-sm font-bold text-white">WOPPS</button></form></div>
+        @if($completed || $rejected || ($accepted && $contacted))
+            <div class="mt-6 border-t border-border pt-5">
+                <h3 class="text-base font-bold text-navy">Ingin mengajukan layanan lagi?</h3>
+                <p class="mt-2 text-sm leading-relaxed text-muted-foreground">Pilih layanan dari menu awal. Riwayat pengajuan ini tetap tersimpan.</p>
+                <a href="{{ route('peserta.services') }}#persiapan" class="mt-4 inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white transition hover:bg-ocean">Kembali ke pilihan layanan <span aria-hidden="true">→</span></a>
+            </div>
         @endif
     </article>
 </section>

@@ -12,6 +12,10 @@ final class ParticipantNotificationController extends Controller
     {
         $item = $request->user('peserta')->notifications()->findOrFail($notification);
         $item->markAsRead();
+        $applicationId = $item->data['application_id'] ?? null;
+        if ($applicationId && $request->user('peserta')->applications()->whereKey($applicationId)->exists()) {
+            $request->session()->put('participant_active_application_id', (int) $applicationId);
+        }
 
         return redirect()->to($item->data['action_url'] ?? route('peserta.dashboard'));
     }

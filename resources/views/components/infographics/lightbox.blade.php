@@ -30,6 +30,7 @@
         ></p>
 
         <div class="mt-3 flex flex-wrap justify-center gap-2">
+            <a data-infographic-download download class="rounded-lg bg-ocean px-4 py-2 text-sm font-semibold text-white hover:bg-ocean/90">Unduh infografis</a>
             <button
                 type="button"
                 data-infographic-lightbox-previous

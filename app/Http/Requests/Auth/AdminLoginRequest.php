@@ -38,6 +38,11 @@ class AdminLoginRequest extends FormRequest
 
         $user = Auth::user();
 
+        if (app()->isProduction() && in_array($this->string('password')->toString(), ['password123', 'password'], true)) {
+            Auth::logout();
+            throw ValidationException::withMessages(['email' => 'Password awal harus diganti oleh pengelola sebelum akun dapat digunakan.']);
+        }
+
         if (! $user->isAdmin()) {
             Auth::logout();
 

@@ -144,8 +144,7 @@ final class ChatbotController extends Controller
             return response()->json(['data' => $payload], 201);
         } catch (Throwable $exception) {
             Log::error('Chatbot request failed.', [
-                'exception' => $exception,
-                'session_key' => $validated['session_key'],
+                'exception_type' => get_class($exception),
             ]);
 
             return response()->json([

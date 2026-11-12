@@ -4,6 +4,7 @@
 
 @section('content')
 <div class="space-y-4">
+    @include('components.admin.chatbot-usage', ['usage' => $chatbotUsage])
     <section class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-navy via-ocean to-[#2875be] px-5 py-4 text-white shadow-sm sm:px-7">
         <div class="relative z-10 flex flex-wrap items-center justify-between gap-3">
             <div class="max-w-xl">
@@ -12,7 +13,9 @@
             </div>
             <div class="relative z-10 flex flex-wrap gap-2">
                 <a href="{{ route('admin.conversation-logs') }}" class="rounded-xl bg-white/15 px-3 py-2 text-xs font-semibold text-white transition hover:bg-white/25">Log Percakapan</a>
-                <a href="{{ route('admin.pemeriksaan-dokumen') }}" class="rounded-xl border border-white/35 px-3 py-2 text-xs font-semibold text-white transition hover:bg-white/10">Pemeriksaan Dokumen</a>
+                @if(auth()->user()->isSuperAdmin())
+                    <a href="{{ route('admin.pemeriksaan-dokumen') }}" class="rounded-xl border border-white/35 px-3 py-2 text-xs font-semibold text-white transition hover:bg-white/10">Pemeriksaan Dokumen</a>
+                @endif
             </div>
         </div>
         <div class="absolute -right-12 -top-16 h-40 w-40 rounded-full border-[24px] border-white/10"></div>

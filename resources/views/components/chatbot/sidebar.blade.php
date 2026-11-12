@@ -1,6 +1,7 @@
 <aside
+    id="chatbot-sidebar"
     data-chat-sidebar
-    class="fixed inset-y-0 left-0 z-40 flex w-72 -translate-x-full flex-col overflow-hidden bg-navy text-white transition-transform duration-300 lg:static lg:w-64 lg:translate-x-0"
+    class="fixed inset-y-0 left-0 z-40 flex w-72 shrink-0 -translate-x-full flex-col overflow-hidden bg-navy text-white transition-transform duration-300 lg:static lg:w-64 lg:translate-x-0"
 >
     <div class="flex h-16 items-center justify-between border-b border-white/10 px-4">
         <a href="{{ route('landing') }}" class="flex min-w-0 items-center gap-3">
@@ -17,7 +18,7 @@
         <button
             type="button"
             data-chat-sidebar-close
-            class="rounded-lg p-2 text-blue-300 transition hover:bg-white/10 hover:text-white lg:hidden"
+            class="shrink-0 rounded-lg p-2 text-blue-300 transition hover:bg-white/10 hover:text-white"
             aria-label="Tutup sidebar"
         >
             <i data-lucide="x" class="h-4 w-4"></i>
@@ -48,6 +49,9 @@
     </div>
 
     <nav class="border-t border-white/10 p-3">
+        @if ($chatGuest)
+            <button type="button" data-chat-topic-reset class="block rounded-lg px-3 py-2 text-xs text-blue-300 hover:bg-white/10">Ganti layanan</button>
+        @endif
         <a
             href="{{ route('landing') }}"
             class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs text-blue-300 transition hover:bg-white/10 hover:text-white"

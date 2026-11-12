@@ -3,6 +3,7 @@
 @php
     use App\Models\ParticipantApplicationDocument;
 
+
     $automatedStatus = $document->automated_check_status;
 
     /*
@@ -90,6 +91,13 @@
 
 
 @section('content')
+    @if($document->letter_group_key)
+        <section class="mb-6 rounded-xl border border-border bg-white p-5">
+            <h2 class="font-bold text-navy">Kelompok surat bersama</h2>
+            <p class="mt-2 text-sm text-muted-foreground">{{ $relatedLetters->count() }} pengajuan · {{ $document->letter_institution }}</p>
+            <p class="mt-2 text-sm">Cocokkan nama peserta ini dengan surat atau lampiran. Keputusan setiap pengajuan tetap diperiksa secara terpisah.</p>
+        </section>
+    @endif
 
 <div class="space-y-6">
 
@@ -155,7 +163,7 @@
     <div>
 
         <a
-            href="{{ route('admin.pemeriksaan-dokumen') }}"
+            href="{{ route('admin.pemeriksaan-dokumen', ['service_type' => $document->application->service_type]) }}"
             class="inline-flex items-center gap-2 text-sm font-semibold text-ocean hover:underline"
         >
             ← Kembali ke daftar dokumen
@@ -358,41 +366,21 @@
                 @elseif ($document->review_status === ParticipantApplicationDocument::REVIEW_APPROVED)
 
                     <div
-                        class="mt-5 rounded-xl border p-4
-                        {{ $document->certificate_eligible === false
-                            ? 'border-amber-200 bg-amber-50'
-                            : 'border-emerald-200 bg-emerald-50' }}"
+                        class="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-4"
                     >
 
                         <p
-                            class="text-sm font-bold
-                            {{ $document->certificate_eligible === false
-                                ? 'text-amber-800'
-                                : 'text-emerald-800' }}"
+                            class="text-sm font-bold text-emerald-800"
                         >
                             ✓ Dokumen telah disetujui
                         </p>
 
 
                         <p
-                            class="mt-1 text-xs
-                            {{ $document->certificate_eligible === false
-                                ? 'text-amber-700'
-                                : 'text-emerald-700' }}"
+                            class="mt-1 text-xs text-emerald-700"
                         >
 
-                            @if ($document->certificate_eligible === false)
-
-                                Pemeriksaan administrasi selesai.
-
-                                Peserta diterima tanpa pernyataan permohonan sertifikat
-                                dan akan diminta menentukan tindak lanjut.
-
-                            @else
-
                                 Pemeriksaan administrasi telah selesai.
-
-                            @endif
 
                         </p>
 
@@ -519,36 +507,6 @@
                                     @enderror
 
                                 @endif
-
-
-                                {{-- Tanpa Sertifikat --}}
-                                <label class="mt-3 flex items-start gap-2 rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs leading-relaxed text-amber-800">
-
-                                    <input
-                                        type="checkbox"
-                                        name="no_certificate"
-                                        value="1"
-                                        class="mt-0.5 h-4 w-4 shrink-0"
-                                    >
-
-                                    <span>
-
-                                        <span class="font-bold">
-                                            Diterima tanpa sertifikat
-                                        </span>
-
-                                        <span class="mt-1 block">
-                                            Surat tidak mencantumkan keterangan
-                                            permintaan penerbitan sertifikat.
-                                            Peserta tetap dapat melanjutkan proses
-                                            dan akan diminta memilih upload ulang
-                                            atau lanjut tanpa upload ulang.
-                                        </span>
-
-                                    </span>
-
-                                </label>
-
 
                                 {{-- Catatan --}}
                                 <textarea

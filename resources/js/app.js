@@ -1,4 +1,6 @@
 import './chatbot';
+import './internship-celebration';
+import './reply-letter-preview';
 
 import {
     createIcons,
@@ -513,6 +515,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         activeInfographicIndex = index;
         lightboxImage.src = item.dataset.imageSrc;
+        const downloadLink = lightbox.querySelector('[data-infographic-download]');
+        if (downloadLink) {
+            downloadLink.href = item.dataset.imageSrc;
+            downloadLink.setAttribute('download', '');
+        }
         lightboxImage.alt = item.dataset.imageAlt;
         lightboxImage.width = Number(item.dataset.imageWidth);
         lightboxImage.height = Number(item.dataset.imageHeight);

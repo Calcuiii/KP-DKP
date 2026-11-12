@@ -24,6 +24,8 @@ final class ParticipantApplicationDocument extends Model
     public const REVIEW_APPROVED = 'approved';
 
     protected $fillable = [
+        'letter_institution',
+        'letter_group_key',
         'type',
         'version',
         'file_path',
@@ -51,14 +53,13 @@ final class ParticipantApplicationDocument extends Model
         string $institution,
         string $fileHash
     ): string {
-        $normalize = fn (string $value): string =>
-            mb_strtolower(
-                preg_replace(
-                    '/\s+/u',
-                    ' ',
-                    trim($value)
-                )
-            );
+        $normalize = fn (string $value): string => mb_strtolower(
+            preg_replace(
+                '/\s+/u',
+                ' ',
+                trim($value)
+            )
+        );
 
         return hash(
             'sha256',

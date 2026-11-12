@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\KnowledgeBase;
 
+use App\Services\FreeGroqPolicy;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Throwable;
@@ -28,6 +29,9 @@ final class GroqKnowledgeBaseAnswerGenerator implements KnowledgeBaseAnswerGener
                 'provider_not_configured',
             );
         }
+        if (! app(FreeGroqPolicy::class)->allows($this->apiKey, $this->model)) {
+            return KnowledgeBaseAnswerGenerationResult::providerFailure('free_account_not_verified');
+        }
 
         try {
             $response = Http::acceptJson()
@@ -36,6 +40,7 @@ final class GroqKnowledgeBaseAnswerGenerator implements KnowledgeBaseAnswerGener
                 ->post(self::ENDPOINT, [
                     'model' => $this->model,
                     'temperature' => 0,
+                    'reasoning_effort' => 'low',
                     'max_completion_tokens' => $this->maxCompletionTokens,
                     'messages' => [
                         [
@@ -58,25 +63,66 @@ final class GroqKnowledgeBaseAnswerGenerator implements KnowledgeBaseAnswerGener
             );
         }
 
+        $tokens = $response->json('usage.total_tokens');
+        $tokens = is_int($tokens) && $tokens >= 0 ? $tokens : null;
+        $limits = [];
+        foreach (['x-ratelimit-limit-requests', 'x-ratelimit-limit-tokens', 'x-ratelimit-remaining-requests',
+            'x-ratelimit-remaining-tokens', 'x-ratelimit-reset-requests', 'x-ratelimit-reset-tokens'] as $header) {
+            $value = $response->header($header);
+            if ($value !== '' && preg_match('/^[0-9.dhms]+$/', $value)) {
+                $limits[$header] = $value;
+            }
+        }
+        if ($limits !== []) {
+            $limits['observed_at'] = now()->toIso8601String();
+        }
         if (! $response->successful()) {
             return KnowledgeBaseAnswerGenerationResult::providerFailure(
-                'provider_request_failed',
+                match ($response->status()) {
+                    429 => 'provider_rate_limited', 401 => 'provider_credentials_invalid',
+                    403 => 'provider_forbidden', 404 => 'provider_model_unavailable', default => 'provider_request_failed'
+                },
+                $tokens, $limits, is_numeric($response->header('retry-after')) ? (int) $response->header('retry-after') : null,
             );
+        }
+
+        if ($response->json('choices.0.finish_reason') === 'length') {
+            return KnowledgeBaseAnswerGenerationResult::providerFailure('provider_output_truncated', $tokens, $limits);
         }
 
         $answer = trim((string) $response->json('choices.0.message.content'));
 
+        if ($answer === '') {
+            return KnowledgeBaseAnswerGenerationResult::providerFailure('provider_empty_answer', $tokens, $limits);
+        }
+
         if (
-            $answer === ''
-            || preg_match('/^\s*INSUFFICIENT_INFORMATION\b/ui', $answer) === 1
+            preg_match('/^\s*INSUFFICIENT_INFORMATION\b/ui', $answer) === 1
         ) {
-            return KnowledgeBaseAnswerGenerationResult::insufficientInformation();
+            return KnowledgeBaseAnswerGenerationResult::insufficientInformation($tokens, $limits);
         }
 
         return KnowledgeBaseAnswerGenerationResult::success(
             $answer,
             $this->publicSources($context),
+            $tokens, $limits,
         );
+    }
+
+    public function promptBytes(KnowledgeBaseGroundedContext $context): int
+    {
+        return strlen($this->systemPrompt()) + strlen($this->userPrompt($context));
+    }
+
+    public function reservedTokens(KnowledgeBaseGroundedContext $context): int
+    {
+        // Conservative byte-based upper estimate plus message overhead and output/reasoning cap.
+        return $this->promptBytes($context) + 256 + $this->maxCompletionTokens;
+    }
+
+    public function promptFingerprint(KnowledgeBaseGroundedContext $context): string
+    {
+        return hash('sha256', $this->systemPrompt()."\0".$this->userPrompt($context));
     }
 
     private function systemPrompt(): string

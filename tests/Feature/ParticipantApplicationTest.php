@@ -313,8 +313,7 @@ class ParticipantApplicationTest extends TestCase
             ->post(route('peserta.wopps-form-proof.store'), [
                 'wopps_form_proof' => UploadedFile::fake()->image('duplicate.png'),
                 'wopps_form_declaration' => '1',
-            ])->assertRedirect(route('peserta.dashboard'))
-            ->assertSessionHas('status', 'Bukti pengisian Form WOPPS sudah tersimpan. Silakan menunggu tindak lanjut Dinas.');
+            ])->assertUnprocessable();
         $this->assertSame(1, $application->documents()->where('type', ParticipantApplicationDocument::TYPE_WOPPS_FORM_PROOF)->count());
         $this->assertSame($files, Storage::disk('local')->allFiles());
         $this->assertSame('accepted', $application->fresh()->status);

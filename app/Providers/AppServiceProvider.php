@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\KnowledgeBase\BudgetedGroqAnswerGenerator;
 use App\KnowledgeBase\GroqKnowledgeBaseAnswerGenerator;
 use App\KnowledgeBase\KnowledgeBaseAnswerGenerator;
 use App\KnowledgeBase\KnowledgeBaseChunker;
@@ -12,9 +13,13 @@ use App\KnowledgeBase\KnowledgeBaseRetrievalPipeline;
 use App\KnowledgeBase\KnowledgeBaseTopicResolver;
 use App\KnowledgeBase\LexicalKnowledgeBaseRetriever;
 use App\Models\Infographic;
+use App\Services\ChatbotRateLimits;
 use App\Services\KnowledgeBaseDocumentIndexer;
 use App\View\Composers\NotificationComposer;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Smalot\PdfParser\Parser;
@@ -28,13 +33,13 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(
             KnowledgeBaseAnswerGenerator::class,
-            static fn (): KnowledgeBaseAnswerGenerator => new GroqKnowledgeBaseAnswerGenerator(
+            static fn (): KnowledgeBaseAnswerGenerator => new BudgetedGroqAnswerGenerator(new GroqKnowledgeBaseAnswerGenerator(
                 enabled: (bool) config('services.groq.enabled'),
                 apiKey: config('services.groq.api_key'),
                 model: config('services.groq.model'),
-                timeoutSeconds: config('services.groq.timeout_seconds'),
-                maxCompletionTokens: config('services.groq.max_completion_tokens'),
-            ),
+                timeoutSeconds: min(20, max(5, (int) config('services.groq.timeout_seconds'))),
+                maxCompletionTokens: min(1800, max(256, (int) config('services.groq.max_completion_tokens'))),
+            )),
         );
 
         $this->app->singleton(
@@ -81,6 +86,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        RateLimiter::for('chatbot-messages', fn (Request $request) => app(ChatbotRateLimits::class)->messages($request));
+        RateLimiter::for('chatbot-read', fn (Request $request) => Limit::perMinute(120)->by('read:'.app(ChatbotRateLimits::class)->actor($request)));
+        RateLimiter::for('chatbot-actions', fn (Request $request) => Limit::perMinute(20)->by('actions:'.app(ChatbotRateLimits::class)->actor($request)));
         View::composer(['layouts.admin', 'components.admin.topbar'], NotificationComposer::class);
 
         View::composer(

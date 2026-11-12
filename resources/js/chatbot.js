@@ -20,6 +20,7 @@ import {
 } from 'lucide';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
+import { initializeGuestbookModal } from './guestbook-modal';
 
 marked.setOptions({ gfm: true, breaks: true });
 
@@ -59,16 +60,15 @@ const generateUuid = () => {
         return crypto.randomUUID();
     }
 
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (character) => {
-        const random = Math.floor(Math.random() * 16);
-        const value = character === 'x' ? random : (random & 0x3) | 0x8;
-
-        return value.toString(16);
-    });
+    const bytes = crypto.getRandomValues(new Uint8Array(16));
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const hex = Array.from(bytes, (value) => value.toString(16).padStart(2, '0')).join('');
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 };
 
-const getSessionKey = () => {
-    const storageKey = 'dkp_assistant_session_key';
+const getSessionKey = (scope = 'guest') => {
+    const storageKey = `dkp_assistant_session_key_${scope}`;
     let sessionKey = window.localStorage.getItem(storageKey);
 
     if (!sessionKey) {
@@ -156,10 +156,12 @@ const initializeChatbot = () => {
     }
 
     const state = {
-        sessionKey: getSessionKey(),
+        sessionKey: getSessionKey(app.dataset.chatSessionScope),
         conversationId: null,
         submitting: false,
         lastQuestion: null,
+        allowed: app.dataset.chatAllowed === 'true',
+        selectingService: false,
     };
 
     const urls = {
@@ -174,13 +176,13 @@ const initializeChatbot = () => {
     const request = async (url, options = {}) => {
         const response = await fetch(url, {
             credentials: 'same-origin',
+            ...options,
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': csrfToken,
                 ...(options.headers ?? {}),
             },
-            ...options,
         });
 
         let payload = {};
@@ -212,9 +214,11 @@ const initializeChatbot = () => {
     };
 
     const updateInputState = () => {
+        app.querySelector('[data-chat-composer]')?.classList.toggle('hidden', !state.allowed);
         const length = input.value.length;
         characterCount.textContent = `${length}/500`;
-        sendButton.disabled = state.submitting || input.value.trim() === '';
+        input.disabled = !state.allowed || state.selectingService;
+        sendButton.disabled = !state.allowed || state.selectingService || state.submitting || input.value.trim() === '';
         input.style.height = 'auto';
         input.style.height = `${Math.min(input.scrollHeight, 128)}px`;
     };
@@ -228,21 +232,35 @@ const initializeChatbot = () => {
         });
     };
 
-    const openSidebar = () => {
-        sidebar?.classList.remove('-translate-x-full');
-        sidebarOverlay?.classList.remove('hidden');
-        sidebarOpenButton?.setAttribute('aria-expanded', 'true');
+    const desktopSidebar = window.matchMedia('(min-width: 1024px)');
+    let sidebarVisible = desktopSidebar.matches;
+    let desktopSidebarVisible = true;
+
+    const setSidebarVisible = (visible) => {
+        sidebarVisible = visible;
+        sidebar?.classList.toggle('-translate-x-full', !visible);
+        sidebar?.classList.toggle('chatbot-sidebar-collapsed', desktopSidebar.matches && !visible);
+        sidebar?.toggleAttribute('inert', !visible);
+        sidebar?.setAttribute('aria-hidden', String(!visible));
+        sidebarOverlay?.classList.toggle('is-visible', visible && !desktopSidebar.matches);
+        sidebarOpenButton?.setAttribute('aria-expanded', String(visible));
+        sidebarOpenButton?.setAttribute('aria-label', visible ? 'Sembunyikan riwayat percakapan' : 'Buka riwayat percakapan');
     };
 
-    const closeSidebar = () => {
-        if (window.innerWidth >= 1024) {
-            return;
-        }
-
-        sidebar?.classList.add('-translate-x-full');
-        sidebarOverlay?.classList.add('hidden');
-        sidebarOpenButton?.setAttribute('aria-expanded', 'false');
+    const closeSidebar = (force = false) => {
+        if (desktopSidebar.matches && !force) return;
+        const focusWasInside = sidebar?.contains(document.activeElement);
+        if (desktopSidebar.matches) desktopSidebarVisible = false;
+        setSidebarVisible(false);
+        if (focusWasInside) sidebarOpenButton?.focus();
     };
+
+    desktopSidebar.addEventListener('change', () => {
+        const focusWasInside = sidebar?.contains(document.activeElement);
+        setSidebarVisible(desktopSidebar.matches && desktopSidebarVisible);
+        if (!sidebarVisible && focusWasInside) sidebarOpenButton?.focus();
+    });
+    setSidebarVisible(sidebarVisible);
 
     const setConversationVisible = (visible) => {
         emptyState.classList.toggle('hidden', visible);
@@ -261,7 +279,7 @@ const initializeChatbot = () => {
                 ? 'Tanyakan informasi tentang WOPPS...'
                 : 'Tanyakan informasi tentang Magang / PKL...';
         } else {
-            input.placeholder = 'Tanyakan informasi tentang layanan DKP...';
+            input.placeholder = state.allowed ? 'Tanyakan informasi tentang layanan DKP...' : 'Pilih layanan di atas untuk mulai bertanya...';
         }
     };
 
@@ -586,10 +604,14 @@ const initializeChatbot = () => {
     };
 
     const loadHistory = async () => {
+        if (!state.allowed) {
+            historyLoading?.classList.add('hidden');
+            historyEmpty?.classList.remove('hidden');
+            return;
+        }
         try {
             const url = new URL(urls.history, window.location.origin);
-            url.searchParams.set('session_key', state.sessionKey);
-            const payload = await request(url.toString(), { method: 'GET' });
+            const payload = await request(url.toString(), { method: 'GET', headers: { 'X-Chat-Session': state.sessionKey } });
             renderHistory(payload.data ?? []);
         } catch (error) {
             historyLoading?.classList.add('hidden');
@@ -604,8 +626,7 @@ const initializeChatbot = () => {
         try {
             const conversationUrl = urls.conversationTemplate.replace('__CONVERSATION__', String(conversationId));
             const url = new URL(conversationUrl, window.location.origin);
-            url.searchParams.set('session_key', state.sessionKey);
-            const payload = await request(url.toString(), { method: 'GET' });
+            const payload = await request(url.toString(), { method: 'GET', headers: { 'X-Chat-Session': state.sessionKey } });
             const conversation = payload.data;
 
             state.conversationId = conversation.id;
@@ -630,7 +651,7 @@ const initializeChatbot = () => {
     const sendQuestion = async (rawQuestion) => {
         const question = rawQuestion.trim();
 
-        if (!question || state.submitting) {
+        if (!question || state.submitting || !state.allowed || state.selectingService) {
             return;
         }
 
@@ -670,7 +691,9 @@ const initializeChatbot = () => {
             loadingMessage.remove();
 
             if (error.status === 429) {
-                showError('Batas permintaan sementara tercapai. Silakan tunggu sebentar lalu coba kembali.');
+                const seconds = Math.max(1, Number(error.payload?.retry_after_seconds) || 60);
+                const wait = seconds >= 3600 ? `${Math.ceil(seconds / 3600)} jam` : (seconds >= 60 ? `${Math.ceil(seconds / 60)} menit` : `${seconds} detik`);
+                showError(`Batas pertanyaan tercapai. Coba kembali sekitar ${wait} lagi. Panduan dan riwayat percakapan tetap tersedia.`);
             } else {
                 showError(error.message);
             }
@@ -699,24 +722,74 @@ const initializeChatbot = () => {
         button.addEventListener('click', () => sendQuestion(button.dataset.chatSuggested ?? ''));
     });
 
-    app.querySelectorAll('[data-chat-topic]').forEach((button) => {
-        button.addEventListener('click', () => {
-            selectTopic(button.dataset.chatTopic ?? null);
+    const guestbookModal = initializeGuestbookModal(app, request, async () => {
+        state.allowed = true;
+        resetConversation();
+        selectTopic('magang');
+        updateInputState();
+        await loadHistory();
+        input.focus();
+    });
+
+    const chooseService = async (topic) => {
+        if (state.selectingService || state.submitting) return;
+        if (app.dataset.chatGuest !== 'true') {
+            selectTopic(topic);
+            return;
+        }
+        state.selectingService = true;
+        state.allowed = false;
+        updateInputState();
+        clearError();
+        try {
+            const payload = await request(app.dataset.serviceChoiceUrl, {
+                method: 'POST', body: JSON.stringify({ service: topic === null ? 'none' : (topic === 'wopps' ? 'wopps' : 'magang_pkl') }),
+            });
+            if (payload.redirect) {
+                if (guestbookModal) await guestbookModal.open();
+                else window.location.assign(payload.redirect);
+                return;
+            }
+            state.allowed = payload.allowed;
+            resetConversation();
+            selectTopic(topic);
+            await loadHistory();
+        } catch (error) {
+            showError(error.message);
+        } finally {
+            state.selectingService = false;
+            updateInputState();
             refreshIcons(emptyState);
-        });
+        }
+    };
+    app.querySelectorAll('[data-chat-topic]').forEach((button) => {
+        button.addEventListener('click', () => chooseService(button.dataset.chatTopic ?? null));
     });
 
     app.querySelectorAll('[data-chat-topic-reset]').forEach((button) => {
-        button.addEventListener('click', () => selectTopic(null));
+        button.addEventListener('click', () => {
+            chooseService(null);
+        });
     });
 
     newChatButton?.addEventListener('click', resetConversation);
-    sidebarOpenButton?.addEventListener('click', openSidebar);
-    sidebarCloseButton?.addEventListener('click', closeSidebar);
-    sidebarOverlay?.addEventListener('click', closeSidebar);
+    sidebarOpenButton?.addEventListener('click', () => {
+        if (sidebarVisible) {
+            closeSidebar(true);
+        } else {
+            if (desktopSidebar.matches) desktopSidebarVisible = true;
+            setSidebarVisible(true);
+            if (!desktopSidebar.matches) sidebarCloseButton?.focus();
+        }
+    });
+    sidebarCloseButton?.addEventListener('click', () => closeSidebar(true));
+    sidebarOverlay?.addEventListener('click', () => closeSidebar(true));
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && sidebarVisible && !guestbookModal?.isOpen()) closeSidebar(true);
+    });
 
     updateInputState();
-    selectTopic(null);
+    selectTopic(state.allowed && app.dataset.guestService ? (app.dataset.guestService === 'wopps' ? 'wopps' : 'magang') : null);
     loadHistory();
     refreshIcons(app);
 

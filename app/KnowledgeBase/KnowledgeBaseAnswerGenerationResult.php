@@ -26,6 +26,9 @@ final readonly class KnowledgeBaseAnswerGenerationResult
         public ?string $answer,
         public array $sources,
         public ?string $failureCode,
+        public ?int $tokensUsed = null,
+        public array $providerLimits = [],
+        public ?int $retryAfter = null,
     ) {}
 
     /**
@@ -38,6 +41,8 @@ final readonly class KnowledgeBaseAnswerGenerationResult
     public static function success(
         string $answer,
         array $sources,
+        ?int $tokensUsed = null,
+        array $providerLimits = [],
     ): self {
         if (trim($answer) === '') {
             throw new InvalidArgumentException(
@@ -52,20 +57,24 @@ final readonly class KnowledgeBaseAnswerGenerationResult
             $answer,
             $sources,
             null,
+            $tokensUsed,
+            $providerLimits,
         );
     }
 
-    public static function insufficientInformation(): self
+    public static function insufficientInformation(?int $tokensUsed = null, array $providerLimits = []): self
     {
         return new self(
             self::STATUS_INSUFFICIENT_INFORMATION,
             'Knowledge Base resmi tidak memiliki informasi yang cukup untuk menjawab pertanyaan tersebut.',
             [],
             null,
+            $tokensUsed,
+            $providerLimits,
         );
     }
 
-    public static function providerFailure(string $failureCode): self
+    public static function providerFailure(string $failureCode, ?int $tokensUsed = null, array $providerLimits = [], ?int $retryAfter = null): self
     {
         if (trim($failureCode) === '') {
             throw new InvalidArgumentException(
@@ -78,6 +87,9 @@ final readonly class KnowledgeBaseAnswerGenerationResult
             null,
             [],
             $failureCode,
+            $tokensUsed,
+            $providerLimits,
+            $retryAfter,
         );
     }
 

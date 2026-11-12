@@ -14,10 +14,10 @@ class KnowledgeBaseDocumentAccessTest extends TestCase
 
     public function test_a_super_admin_can_view_document_details_and_download_the_original_file(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
         $superAdmin = User::factory()->create(['role' => 'superadmin']);
         $document = $this->documentFor($superAdmin);
-        Storage::disk('public')->put($document->file_path, 'Dokumen panduan magang.');
+        Storage::disk('local')->put($document->file_path, 'Dokumen panduan magang.');
 
         $this->actingAs($superAdmin)
             ->get(route('admin.knowledge-base.show', $document))

@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ParticipantApplication;
 use App\Models\ParticipantApplicationDocument;
-use App\Models\ReplyLetter;
 use App\Notifications\ReplyLetterSent;
 use App\Notifications\WoppsStatusUpdated;
+use App\Services\ReplyLetterPublisher;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -72,33 +72,15 @@ final class WoppsFollowUpController extends Controller
         ]);
 
         $participant = $application->participant;
-        $existing = $application->replyLetter;
-        if ($existing?->file_path) {
-            Storage::disk('public')->delete($existing->file_path);
-        }
-
-        $file = $request->file('reply_letter');
-        $path = $file->store('reply-letters', 'public');
-        $replyLetter = ReplyLetter::updateOrCreate(
-            ['participant_application_id' => $application->id],
-            [
-                'participant_id' => $participant->id,
-                'file_path' => $path,
-                'original_name' => $file->getClientOriginalName(),
-                'sent_at' => now(),
+        $accepted = $validated['decision'] === 'accepted';
+        $replyLetter = app(ReplyLetterPublisher::class)->publish(
+            $application, $request->file('reply_letter'), [
+                'decision' => $validated['decision'],
+                'status' => $accepted ? 'wopps_waiting_contact' : 'rejected',
+                'pic_contacted_at' => null, 'completed_at' => null,
+                'official_started_at' => null, 'official_ended_at' => null,
             ],
         );
-
-        $accepted = $validated['decision'] === 'accepted';
-        $application->update([
-            'decision' => $validated['decision'],
-            'status' => $accepted ? 'wopps_waiting_contact' : 'rejected',
-            'response_letter_path' => $path,
-            'pic_contacted_at' => null,
-            'completed_at' => null,
-            'official_started_at' => null,
-            'official_ended_at' => null,
-        ]);
 
         $participant->notify(new ReplyLetterSent($replyLetter, $application->fresh()));
 

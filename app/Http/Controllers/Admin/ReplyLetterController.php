@@ -8,6 +8,7 @@ use App\Models\ParticipantApplication;
 use App\Models\ParticipantApplicationDocument;
 use App\Models\ReplyLetter;
 use App\Notifications\ReplyLetterSent;
+use App\Services\ReplyLetterPublisher;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -51,6 +52,7 @@ final class ReplyLetterController extends Controller
         Participant $participant
     ): RedirectResponse {
         $request->validate([
+            'application_id' => ['nullable', 'integer'],
             'decision' => ['required', Rule::in(['accepted', 'rejected'])],
             'official_started_at' => [
                 'nullable',
@@ -83,64 +85,25 @@ final class ReplyLetterController extends Controller
 
         $application = $participant->applications()
             ->where('service_type', ParticipantApplication::SERVICE_MAGANG_PKL)
+            ->when($request->filled('application_id'), fn ($query) => $query->whereKey($request->integer('application_id')))
             ->whereHas('documents', function ($query) {
                 $query->where(
                     'type',
                     ParticipantApplicationDocument::TYPE_INTERNSHIP_FORM_PROOF
                 );
             })
-            ->latest()
+            ->latest('id')
             ->firstOrFail();
 
-        /*
-         * Cari surat balasan lama milik peserta.
-         */
-        $existing = $application->replyLetter;
-
-        /*
-         * Jika sudah ada surat lama,
-         * hapus file lama dari storage.
-         */
-        if ($existing && $existing->file_path) {
-            Storage::disk('public')->delete(
-                $existing->file_path
-            );
-        }
-
-        /*
-         * Simpan file baru.
-         */
-        $file = $request->file('reply_letter');
-
-        $path = $file->store(
-            'reply-letters',
-            'public'
-        );
-
-        /*
-         * Simpan data surat balasan.
-         */
-        $replyLetter = ReplyLetter::updateOrCreate(
-            [
-                'participant_application_id' => $application->id,
-            ],
-            [
-                'participant_id' => $participant->id,
-                'file_path' => $path,
-                'original_name' => $file->getClientOriginalName(),
-                'sent_at' => now(),
-            ]
-        );
-
         $accepted = $request->string('decision')->toString() === 'accepted';
-
-        $application->update([
-            'decision' => $accepted ? 'accepted' : 'rejected',
-            'status' => $accepted ? 'accepted' : 'rejected',
-            'official_started_at' => $accepted ? $request->date('official_started_at') : null,
-            'official_ended_at' => $accepted ? $request->date('official_ended_at') : null,
-            'response_letter_path' => $path,
-        ]);
+        $replyLetter = app(ReplyLetterPublisher::class)->publish(
+            $application, $request->file('reply_letter'), [
+                'decision' => $accepted ? 'accepted' : 'rejected',
+                'status' => $accepted ? 'accepted' : 'rejected',
+                'official_started_at' => $accepted ? $request->date('official_started_at') : null,
+                'official_ended_at' => $accepted ? $request->date('official_ended_at') : null,
+            ],
+        );
 
         /*
          * Kirim notifikasi portal dan email
@@ -170,13 +133,13 @@ final class ReplyLetterController extends Controller
         );
 
         abort_unless(
-            Storage::disk('public')->exists(
+            Storage::disk('local')->exists(
                 $replyLetter->file_path
             ),
             404
         );
 
-        return Storage::disk('public')->download(
+        return Storage::disk('local')->download(
             $replyLetter->file_path,
             $replyLetter->original_name
         );
@@ -194,25 +157,18 @@ final class ReplyLetterController extends Controller
         );
 
         abort_unless(
-            Storage::disk('public')->exists(
+            Storage::disk('local')->exists(
                 $replyLetter->file_path
             ),
             404
         );
 
-        $path = Storage::disk('public')->path(
+        $path = Storage::disk('local')->path(
             $replyLetter->file_path
         );
 
-        return response()->file($path, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="'.
-                addslashes(
-                    $replyLetter->original_name
-                    ?? basename($replyLetter->file_path)
-                ).
-                '"',
-        ]);
+        return response()->file($path, ['Content-Type' => 'application/pdf'])
+            ->setContentDisposition('inline', $replyLetter->original_name ?? basename($replyLetter->file_path));
     }
 
     /**

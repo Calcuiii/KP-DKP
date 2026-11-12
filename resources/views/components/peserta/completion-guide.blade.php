@@ -65,3 +65,28 @@
         <p class="mt-4 rounded-xl bg-light p-4 text-sm leading-7 text-muted-foreground">Sertifikat belum diterbitkan di portal. Setelah admin mengirimkannya, sertifikat dapat diunduh di sini dan dikirimkan juga melalui email Anda.</p>
     @endif
 </section>
+
+<section id="magang-selesai" class="rounded-[2rem] border border-teal/20 bg-teal/5 p-6 sm:p-8">
+    @if ($application->completed_at)
+        <h2 class="text-2xl font-bold text-navy">Selamat, magang Anda telah selesai!</h2>
+        <p class="mt-3 text-sm leading-7 text-muted-foreground">Terima kasih telah belajar dan berkontribusi di DKP Jawa Timur. Semoga pengalaman ini menjadi bekal untuk langkah berikutnya.</p>
+        <p class="mt-3 text-sm font-semibold text-teal">Ditandai selesai pada {{ $application->completed_at->format('d M Y') }}.</p>
+        <a href="{{ route('peserta.services') }}#persiapan" class="mt-5 inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white transition hover:bg-ocean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocean focus-visible:ring-offset-2">
+            Kembali ke pilihan layanan <span aria-hidden="true">→</span>
+        </a>
+        <p class="mt-3 text-sm leading-relaxed text-muted-foreground">Pengajuan ini tetap tersimpan dan bisa dibuka kembali melalui riwayat pengajuan.</p>
+    @else
+        <h2 class="text-xl font-bold">Sudah menyelesaikan kegiatan magang?</h2>
+        <p class="mt-3 text-sm leading-7 text-muted-foreground">Tandai selesai setelah periode magang berakhir dan bukti presentasi serta pengisian form selesai magang tersimpan. Penerbitan sertifikat tetap mengikuti proses Dinas.</p>
+        <form method="POST" action="{{ route('peserta.internship.complete', $application) }}" class="mt-5">
+            @csrf
+            <button @disabled(! $application->canMarkInternshipCompleted()) class="rounded-xl bg-teal px-5 py-3 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-40">Tandai magang selesai</button>
+        </form>
+        @unless ($application->canMarkInternshipCompleted())
+            <p class="mt-3 text-xs leading-6 text-muted-foreground">Tombol terbuka setelah tanggal akhir magang tercapai dan tahap 6 serta 7 selesai.</p>
+        @endunless
+    @endif
+    @if (session('internship_celebration'))
+        <div data-internship-celebration role="status" class="mt-4 font-bold text-teal">Selamat atas pencapaian Anda!</div>
+    @endif
+</section>

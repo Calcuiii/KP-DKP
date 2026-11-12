@@ -56,7 +56,9 @@ final class ParticipantAuthController extends Controller
         $applications = $participant->applications()->with('documents')->latest()->get();
         $selectedApplicationId = $request->session()->get('participant_active_application_id');
 
-        if ($selectedApplicationId !== null && $applications->contains('id', (int) $selectedApplicationId)) {
+        if ($request->routeIs('peserta.services')) {
+            $application = null;
+        } elseif ($selectedApplicationId !== null && $applications->contains('id', (int) $selectedApplicationId)) {
             $application = $applications->firstWhere('id', (int) $selectedApplicationId);
         } else {
             $application = $applications->first();

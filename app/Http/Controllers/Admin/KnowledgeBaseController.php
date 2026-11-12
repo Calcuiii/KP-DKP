@@ -41,7 +41,7 @@ class KnowledgeBaseController extends Controller
     public function store(StoreKnowledgeBaseDocumentRequest $request, KnowledgeBaseDocumentIndexer $indexer): RedirectResponse
     {
         $file = $request->file('file');
-        $path = $file->store('knowledge-base', 'public');
+        $path = $file->store('knowledge-base', 'local');
 
         $document = KnowledgeBaseDocument::create([
             'name' => $request->name,
@@ -79,9 +79,10 @@ class KnowledgeBaseController extends Controller
         }
     }
 
-    public function destroy(KnowledgeBaseDocument $document): RedirectResponse
+    public function destroy(KnowledgeBaseDocument $document, KnowledgeBaseDocumentIndexer $indexer): RedirectResponse
     {
-        Storage::disk('public')->delete($document->file_path);
+        $indexer->remove($document);
+        Storage::disk('local')->delete($document->file_path);
         ActivityLog::record('Delete', 'Knowledge Base', "Menghapus dokumen \"{$document->name}\"");
         $document->delete();
 
@@ -103,9 +104,9 @@ class KnowledgeBaseController extends Controller
 
     public function download(KnowledgeBaseDocument $document): StreamedResponse
     {
-        abort_unless(Storage::disk('public')->exists($document->file_path), 404);
+        abort_unless(Storage::disk('local')->exists($document->file_path), 404);
 
-        return Storage::disk('public')->download(
+        return Storage::disk('local')->download(
             $document->file_path,
             Str::slug($document->name).'.'.strtolower($document->type),
         );

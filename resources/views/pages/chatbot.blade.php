@@ -8,8 +8,19 @@
 @section('hide_dev_nav', true)
 
 @section('content')
+    @php
+        $chatGuest = ! auth('peserta')->check() && ! auth('web')->check();
+        $guestService = $chatGuest ? session('chatbot_guest_service') : null;
+        $chatAllowed = ! $chatGuest || $guestService === 'wopps' || ($guestService === 'magang_pkl' && (int) session('guestbook_verified_until', 0) > now()->timestamp);
+    @endphp
     <div
         data-chatbot-app
+        data-chat-session-scope="{{ auth('peserta')->check() ? hash_hmac('sha256', 'peserta:'.auth('peserta')->id(), config('app.key')) : (auth('web')->check() ? hash_hmac('sha256', 'admin:'.auth('web')->id(), config('app.key')) : 'guest') }}"
+        data-guest-service="{{ $guestService }}"
+        data-chat-guest="{{ $chatGuest ? 'true' : 'false' }}"
+        data-chat-allowed="{{ $chatAllowed ? 'true' : 'false' }}"
+        data-service-choice-url="{{ route('chatbot.service.store') }}"
+        data-guestbook-url="{{ route('guestbook.checkin') }}"
         data-history-url="{{ route('chatbot.api.history') }}"
         data-send-url="{{ route('chatbot.api.messages.send') }}"
         data-escalate-url-template="{{ route('chatbot.api.messages.escalate', ['message' => '__MESSAGE__']) }}"
@@ -22,12 +33,11 @@
 
         <div
             data-chat-sidebar-overlay
-            class="fixed inset-0 z-30 hidden bg-navy/40 lg:hidden"
+            class="chatbot-sidebar-overlay fixed inset-0 z-30 bg-navy/40 lg:hidden"
         ></div>
 
         <main class="chatbot-ocean relative isolate flex min-w-0 flex-1 flex-col bg-[#edf8fa]">
             <img src="{{ asset('images/si-melayur-chatbot-ocean.png') }}" alt="" aria-hidden="true" width="1536" height="1024" fetchpriority="high" class="pointer-events-none absolute inset-0 -z-20 h-full w-full object-cover object-bottom">
-            <div class="chatbot-ocean-wash pointer-events-none absolute inset-0 -z-10"></div>
             @include('components.chatbot.header')
 
             @include('components.chatbot.empty-state')
@@ -41,6 +51,9 @@
 
             @include('components.chatbot.chat-input')
         </main>
+        @if ($chatGuest)
+            @include('components.guestbook.modal')
+        @endif
     </div>
 @endsection
 

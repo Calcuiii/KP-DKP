@@ -23,7 +23,7 @@ class AdminRoleAccessTest extends TestCase
             ->assertSee('Analitik Chatbot')
             ->assertSee('Log Aktivitas')
             ->assertDontSee('Admin Login')
-            ->assertSee('RINGKASAN LAYANAN')
+            ->assertSee('Pantau aktivitas chatbot dan portal peserta')
             ->assertDontSee('Feedback Positif')
             ->assertSee(route('admin.unanswered-questions'))
             ->assertDontSee(route('admin.knowledge-base'))

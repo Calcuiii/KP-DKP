@@ -4,12 +4,14 @@ use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\AdminNotificationController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\Admin\CertificatePublishController;
 use App\Http\Controllers\Admin\ConversationLogController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DocumentReviewController;
 use App\Http\Controllers\Admin\InfographicController;
 use App\Http\Controllers\Admin\InternshipLocationController;
 use App\Http\Controllers\Admin\KnowledgeBaseController;
+use App\Http\Controllers\Admin\ParticipantAccountController;
 use App\Http\Controllers\Admin\ReplyLetterController;
 use App\Http\Controllers\Admin\UnansweredQuestionController;
 use App\Http\Controllers\Admin\WoppsFollowUpController;
@@ -19,11 +21,14 @@ use App\Http\Controllers\Auth\ParticipantEmailVerificationController;
 use App\Http\Controllers\Auth\ParticipantPasswordResetController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\GuestbookCheckinController;
+use App\Http\Controllers\Peserta\CertificateController;
+use App\Http\Controllers\Peserta\CompletionFormProofController;
+use App\Http\Controllers\Peserta\InternshipCompletionController;
 use App\Http\Controllers\Peserta\ParticipantApplicationController;
 use App\Http\Controllers\Peserta\ParticipantNotificationController;
+use App\Http\Controllers\Peserta\PresentationController;
+use App\Http\Controllers\Peserta\WoppsContactConfirmationController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\ParticipantAccountController;
-use App\Http\Controllers\Admin\CertificatePublishController;
 
 Route::view('/', 'pages.landing')->name('landing');
 
@@ -31,6 +36,8 @@ Route::view('/infografis', 'pages.infographics')->name('infographics');
 
 Route::get('/buku-tamu', [GuestbookCheckinController::class, 'show'])
     ->name('guestbook.checkin');
+Route::redirect('/chatbot/layanan', '/chatbot')->name('chatbot.service');
+Route::post('/chatbot/layanan', [GuestbookCheckinController::class, 'selectService'])->name('chatbot.service.store');
 Route::post('/buku-tamu/mulai', [GuestbookCheckinController::class, 'start'])
     ->middleware('throttle:5,1')->name('guestbook.start');
 Route::post('/buku-tamu/selesai', [GuestbookCheckinController::class, 'complete'])
@@ -42,21 +49,26 @@ Route::get('/chatbot', [ChatbotController::class, 'index'])
 
 Route::prefix('api/chatbot')
     ->name('chatbot.api.')
-    ->middleware(['throttle:60,1', 'guestbook'])
+    ->middleware(['guestbook'])
     ->group(function (): void {
         Route::get('/history', [ChatbotController::class, 'history'])
+            ->middleware('throttle:chatbot-read')
             ->name('history');
 
         Route::get('/conversations/{conversation}', [ChatbotController::class, 'conversation'])
+            ->middleware('throttle:chatbot-read')
             ->name('conversation');
 
         Route::post('/messages', [ChatbotController::class, 'send'])
+            ->middleware('throttle:chatbot-messages')
             ->name('messages.send');
 
         Route::post('/messages/{message}/feedback', [ChatbotController::class, 'feedback'])
+            ->middleware('throttle:chatbot-actions')
             ->name('messages.feedback');
 
         Route::post('/messages/{message}/escalate', [ChatbotController::class, 'escalate'])
+            ->middleware('throttle:chatbot-actions')
             ->name('messages.escalate');
     });
 
@@ -87,6 +99,21 @@ Route::middleware('auth:peserta')->group(function (): void {
         Route::get('/dashboard', [ParticipantAuthController::class, 'dashboard'])
             ->middleware('verified')
             ->name('dashboard');
+        Route::get('/layanan', [ParticipantAuthController::class, 'dashboard'])
+            ->middleware('verified')->name('services');
+        Route::get('/kegiatan', [ParticipantAuthController::class, 'dashboard'])
+            ->middleware('verified')->name('activities');
+        Route::post('/magang/{application}/selesai', [InternshipCompletionController::class, 'store'])
+            ->middleware('verified')->name('internship.complete');
+        Route::post('/wopps/{application}/konfirmasi-dihubungi', [WoppsContactConfirmationController::class, 'store'])
+            ->middleware(['verified', 'throttle:10,1'])->name('wopps.confirm-contact');
+        Route::post('/presentasi/{application}', [PresentationController::class, 'store'])->middleware(['verified', 'throttle:10,1'])->name('presentation.store');
+        Route::get('/presentasi/{application}/unduh', [PresentationController::class, 'download'])->middleware('verified')->name('presentation.download');
+        Route::patch('/data-institusi', [PresentationController::class, 'profile'])->middleware('verified')->name('profile.details');
+        Route::post('/form-selesai/{application}/bukti', [CompletionFormProofController::class, 'store'])->middleware(['verified', 'throttle:10,1'])->name('completion-proof.store');
+        Route::get('/form-selesai/{application}/bukti', [CompletionFormProofController::class, 'download'])->middleware('verified')->name('completion-proof.download');
+        Route::get('/sertifikat/{application}/unduh', [CertificateController::class, 'download'])
+            ->middleware('verified')->name('certificate.download');
         Route::get('/pengajuan/{application}/pilih', [ParticipantApplicationController::class, 'selectApplication'])
             ->middleware('verified')
             ->name('application.select');
@@ -94,15 +121,15 @@ Route::middleware('auth:peserta')->group(function (): void {
             ->middleware('verified')
             ->name('application.store');
         Route::post('/bukti-buku-tamu', [ParticipantApplicationController::class, 'storeGuestbookProof'])
-            ->middleware('verified')->name('guestbook-proof.store');
+            ->middleware(['verified', 'throttle:10,1'])->name('guestbook-proof.store');
         Route::post('/surat-permohonan', [ParticipantApplicationController::class, 'storeRequestLetter'])
-            ->middleware('verified')->name('request-letter.store');
+            ->middleware(['verified', 'throttle:10,1'])->name('request-letter.store');
         Route::post('/ethics-approval', [ParticipantApplicationController::class, 'storeEthicsApproval'])
-            ->middleware('verified')->name('ethics-approval.store');
+            ->middleware(['verified', 'throttle:10,1'])->name('ethics-approval.store');
         Route::post('/bukti-form-wopps', [ParticipantApplicationController::class, 'storeWoppsFormProof'])
-            ->middleware('verified')->name('wopps-form-proof.store');
+            ->middleware(['verified', 'throttle:10,1'])->name('wopps-form-proof.store');
         Route::post('/bukti-google-form-magang', [ParticipantApplicationController::class, 'storeInternshipFormProof'])
-            ->middleware('verified')->name('internship-form-proof.store');
+            ->middleware(['verified', 'throttle:10,1'])->name('internship-form-proof.store');
         Route::get('/dokumen/{document}/unduh', [ParticipantApplicationController::class, 'downloadDocument'])
             ->middleware('verified')->name('document.download');
         Route::get('/dokumen/{document}/lihat', [ParticipantApplicationController::class, 'viewDocument'])
@@ -161,6 +188,9 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
         Route::get('/pemeriksaan-dokumen/{document}/unduh', [DocumentReviewController::class, 'download'])
             ->name('admin.pemeriksaan-dokumen.download');
 
+        Route::get('/pemeriksaan-dokumen/{document}/preview', [DocumentReviewController::class, 'preview'])
+            ->name('admin.pemeriksaan-dokumen.preview');
+
         Route::get('/surat-balasan', [ReplyLetterController::class, 'index'])
             ->name('admin.surat-balasan');
 
@@ -170,17 +200,22 @@ Route::middleware(['auth:web', 'admin'])->prefix('admin')->group(function () {
         Route::get('/surat-balasan/{replyLetter}/download', [ReplyLetterController::class, 'download'])
             ->name('admin.surat-balasan.download');
 
+        Route::get('/surat-balasan/{replyLetter}/preview', [ReplyLetterController::class, 'preview'])
+            ->name('admin.surat-balasan.preview');
+
         Route::get('/surat-balasan/bukti/{document}/preview', [ReplyLetterController::class, 'previewProof'])
             ->name('admin.surat-balasan.proof.preview');
-        
+
         Route::get('/akun-peserta', [ParticipantAccountController::class, 'index'])
             ->name('admin.akun-peserta');
-        
+
         Route::get('/sertifikat', [CertificatePublishController::class, 'index'])->name('admin.sertifikat');
         Route::get('/sertifikat/{application}/presentasi', [CertificatePublishController::class, 'previewPresentation'])->name('admin.sertifikat.presentasi');
         Route::get('/sertifikat/{application}/bukti-gform', [CertificatePublishController::class, 'previewCompletionProof'])->name('admin.sertifikat.bukti-gform');
         Route::post('/sertifikat/{application}/kirim', [CertificatePublishController::class, 'publish'])->name('admin.sertifikat.kirim');
 
+        Route::post('/wopps-follow-up/{application}/decision', [WoppsFollowUpController::class, 'sendDecision'])->name('admin.wopps-follow-up.decision');
+        Route::post('/wopps-follow-up/{application}/complete', [WoppsFollowUpController::class, 'markCompleted'])->name('admin.wopps-follow-up.complete');
         Route::get('/wopps-follow-up', [WoppsFollowUpController::class, 'index'])->name('admin.wopps-follow-up');
         Route::get('/wopps-follow-up/bukti/{document}/unduh', [WoppsFollowUpController::class, 'download'])->name('admin.wopps-follow-up.download');
         Route::post('/wopps-follow-up/{application}/tandai', [WoppsFollowUpController::class, 'markContacted'])->name('admin.wopps-follow-up.mark-contacted');

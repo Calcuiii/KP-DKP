@@ -20,7 +20,7 @@ final class ReplyLetterDeliveryTest extends TestCase
 
     public function test_uploading_a_reply_letter_delivers_it_to_the_portal_and_participant_email(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
         Notification::fake();
 
         $admin = User::factory()->create([
@@ -66,7 +66,7 @@ final class ReplyLetterDeliveryTest extends TestCase
             ->whereBelongsTo($participant)
             ->firstOrFail();
 
-        Storage::disk('public')->assertExists($replyLetter->file_path);
+        Storage::disk('local')->assertExists($replyLetter->file_path);
 
         $application->refresh();
         $this->assertSame('accepted', $application->decision);
@@ -109,14 +109,14 @@ final class ReplyLetterDeliveryTest extends TestCase
             ->actingAs($participant, 'peserta')
             ->get(route('peserta.dashboard'))
             ->assertOk()
-            ->assertSee('Kalender kegiatan magang')
+            ->assertSee('Kalender &amp; Tata Tertib', false)
             ->assertSee($application->official_started_at->translatedFormat('d M Y'))
             ->assertSee($application->official_ended_at->translatedFormat('d M Y'));
     }
 
     public function test_rejected_decision_clears_the_official_period(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
         Notification::fake();
 
         $admin = User::factory()->create(['role' => 'superadmin', 'status' => 'Aktif']);
@@ -152,5 +152,38 @@ final class ReplyLetterDeliveryTest extends TestCase
         Notification::assertSentTo($participant, ReplyLetterSent::class, function (ReplyLetterSent $notification) use ($participant): bool {
             return $notification->toArray($participant)['status'] === 'rejected';
         });
+    }
+
+    public function test_reply_letter_preview_is_inline_and_restricted_to_authorized_admins(): void
+    {
+        Storage::fake('local');
+        $participant = Participant::factory()->create(['email_verified_at' => now()]);
+        $application = $participant->applications()->create(['service_type' => ParticipantApplication::SERVICE_MAGANG_PKL, 'status' => 'accepted']);
+        $application->documents()->create([
+            'type' => ParticipantApplicationDocument::TYPE_INTERNSHIP_FORM_PROOF,
+            'version' => 1, 'file_path' => 'participant-applications/form-proof.pdf',
+            'original_name' => 'form-proof.pdf', 'mime_type' => 'application/pdf', 'file_size' => 100,
+        ]);
+        Storage::disk('local')->put('reply-letters/test.pdf', '%PDF-1.4 test');
+        $letter = ReplyLetter::create([
+            'participant_id' => $participant->id, 'participant_application_id' => $application->id,
+            'file_path' => 'reply-letters/test.pdf', 'original_name' => 'Surat Balasan.pdf', 'sent_at' => now(),
+        ]);
+        $preview = route('admin.surat-balasan.preview', $letter);
+        $this->get($preview)->assertRedirect(route('admin.login'));
+        $this->actingAs($participant, 'peserta')->get($preview)->assertRedirect(route('admin.login'));
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'Aktif']);
+        $this->actingAs($admin, 'web')->get($preview)->assertForbidden();
+        $superadmin = User::factory()->create(['role' => 'superadmin', 'status' => 'Aktif']);
+        $response = $this->actingAs($superadmin, 'web')->get($preview)
+            ->assertOk()->assertHeader('Content-Type', 'application/pdf');
+        $this->assertStringStartsWith('inline;', $response->headers->get('Content-Disposition'));
+        $this->assertStringContainsString('private', $response->headers->get('Cache-Control'));
+        $this->get(route('admin.surat-balasan'))->assertOk()
+            ->assertSee('href="'.$preview.'"', false)->assertSee('data-reply-letter-preview', false)
+            ->assertDontSee('href="'.route('admin.surat-balasan.download', $letter).'"', false);
+        $this->get(route('admin.surat-balasan.download', $letter))->assertDownload('Surat Balasan.pdf');
+        Storage::disk('local')->delete('reply-letters/test.pdf');
+        $this->get($preview)->assertNotFound();
     }
 }

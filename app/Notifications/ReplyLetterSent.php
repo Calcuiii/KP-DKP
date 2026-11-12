@@ -71,10 +71,10 @@ final class ReplyLetterSent extends Notification
 
         if (
             filled($this->replyLetter->file_path)
-            && Storage::disk('public')->exists($this->replyLetter->file_path)
+            && Storage::disk('local')->exists($this->replyLetter->file_path)
         ) {
             $message->attach(
-                Storage::disk('public')->path($this->replyLetter->file_path),
+                Storage::disk('local')->path($this->replyLetter->file_path),
                 [
                     'as' => $this->replyLetter->original_name ?? 'surat-balasan.pdf',
                     'mime' => 'application/pdf',

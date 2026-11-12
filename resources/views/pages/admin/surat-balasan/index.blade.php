@@ -89,7 +89,9 @@
                     @forelse($participants as $index => $participant)
                         @php
                             $application = $participant->applications
-                                ->sortByDesc('created_at')
+                                ->where('service_type', \App\Models\ParticipantApplication::SERVICE_MAGANG_PKL)
+                                ->filter(fn ($item) => $item->latestDocument(\App\Models\ParticipantApplicationDocument::TYPE_INTERNSHIP_FORM_PROOF))
+                                ->sortByDesc('id')
                                 ->first();
                             $replyLetter = $application?->replyLetter;
                             $proof = $application?->latestDocument(
@@ -176,6 +178,7 @@
                                                 {{ $replyLetter ? 'Perbarui Keputusan' : 'Tetapkan Keputusan' }}
                                             </summary>
                                             <form method="POST" action="{{ route('admin.surat-balasan.upload', $participant) }}" enctype="multipart/form-data" class="mt-3 w-[19rem] space-y-3 rounded-2xl border border-border bg-white p-4 shadow-xl">
+                                                <input type="hidden" name="application_id" value="{{ $application->id }}">
                                                 @csrf
                                                 <div>
                                                     <label for="decision-{{ $application->id }}" class="text-xs font-extrabold text-navy">Keputusan resmi</label>
@@ -211,8 +214,13 @@
 
                                         @if($replyLetter)
                                             <a
-                                                href="{{ route('admin.surat-balasan.download', $replyLetter) }}"
+                                                href="{{ route('admin.surat-balasan.preview', $replyLetter) }}"
                                                 target="_blank"
+                                                rel="noopener noreferrer"
+                                                data-reply-letter-preview
+                                                data-participant-name="{{ $participant->name }}"
+                                                aria-haspopup="dialog"
+                                                aria-controls="reply-letter-preview"
                                                 class="inline-flex items-center gap-2 rounded-xl border border-border px-4 py-2.5 text-xs font-bold text-navy hover:bg-light"
                                             >
                                                 <i data-lucide="eye" class="h-4 w-4"></i>
@@ -257,5 +265,24 @@
     </div>
 
 </div>
+
+<dialog id="reply-letter-preview" data-reply-letter-dialog aria-labelledby="reply-letter-preview-title"
+        class="reply-letter-dialog fixed inset-0 m-auto w-[calc(100%-2rem)] max-w-5xl overflow-hidden rounded-2xl border border-border bg-white p-0 text-navy shadow-2xl">
+    <div class="flex items-center justify-between gap-4 border-b border-border px-5 py-4">
+        <div class="min-w-0">
+            <h2 id="reply-letter-preview-title" class="text-lg font-bold">Surat balasan</h2>
+            <p data-reply-letter-participant class="mt-1 truncate text-sm text-muted-foreground"></p>
+        </div>
+        <button type="button" data-reply-letter-close aria-label="Tutup pratinjau surat"
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocean">
+            <span aria-hidden="true" class="text-2xl leading-none">×</span>
+        </button>
+    </div>
+    <iframe data-reply-letter-frame title="Pratinjau PDF surat balasan" class="block h-[65dvh] w-full border-0 bg-light"></iframe>
+    <div class="flex flex-wrap items-center justify-between gap-2 border-t border-border px-5 py-3 text-xs text-muted-foreground">
+        <p>Jika PDF tidak tampil, buka pratinjau di tab baru.</p>
+        <a data-reply-letter-new-tab target="_blank" rel="noopener noreferrer" class="font-semibold text-ocean underline underline-offset-4">Buka di tab baru ↗</a>
+    </div>
+</dialog>
 
 @endsection

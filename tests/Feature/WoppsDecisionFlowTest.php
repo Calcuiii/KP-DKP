@@ -20,7 +20,7 @@ final class WoppsDecisionFlowTest extends TestCase
 
     public function test_an_accepted_wopps_moves_from_reply_letter_to_contact_and_completion(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
         Notification::fake();
 
         $admin = User::factory()->create(['role' => 'superadmin', 'status' => 'Aktif']);
@@ -84,7 +84,7 @@ final class WoppsDecisionFlowTest extends TestCase
 
     public function test_a_rejected_wopps_is_closed_without_dates_and_can_start_a_new_application(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
         Notification::fake();
 
         $admin = User::factory()->create(['role' => 'superadmin', 'status' => 'Aktif']);
@@ -109,6 +109,61 @@ final class WoppsDecisionFlowTest extends TestCase
         ])->assertRedirect(route('peserta.dashboard'));
 
         $this->assertSame(2, $participant->applications()->count());
+    }
+
+    public function test_participant_can_confirm_contact_and_return_to_services_without_admin_action(): void
+    {
+        [$participant, $application] = $this->woppsApplication();
+        $application->update(['decision' => 'accepted', 'status' => 'wopps_waiting_contact']);
+        $url = route('peserta.wopps.confirm-contact', $application);
+
+        $this->actingAs($participant, 'peserta')->get(route('peserta.dashboard'))
+            ->assertOk()->assertSee('Konfirmasi sudah dihubungi')->assertSee($url, false);
+        $this->post($url)->assertRedirect(route('peserta.dashboard').'#penyelesaian-wopps')
+            ->assertSessionHas('participant_active_application_id', $application->id);
+        $application->refresh();
+        $this->assertSame('wopps_contacted', $application->status);
+        $this->assertNotNull($application->pic_contacted_at);
+        $this->assertNull($application->completed_at);
+        $this->assertSame('accepted', $application->decision);
+        $contactedAt = $application->pic_contacted_at;
+        $this->get(route('peserta.dashboard'))->assertOk()->assertSee('Anda sudah dihubungi petugas Dinas')
+            ->assertSee(route('peserta.services').'#persiapan', false)->assertDontSee('action="'.$url.'"', false)
+            ->assertDontSee('Status selesai akan diperbarui oleh Dinas');
+        $this->travel(5)->minutes();
+        $this->post($url)->assertRedirect();
+        $this->assertTrue($contactedAt->equalTo($application->fresh()->pic_contacted_at));
+        $this->get(route('peserta.services'))->assertOk()->assertSee('Pilih layanan yang akan dipersiapkan');
+        $this->assertSame(1, $participant->applications()->count());
+    }
+
+    public function test_contact_confirmation_requires_verified_owner(): void
+    {
+        [$participant, $application] = $this->woppsApplication();
+        $application->update(['decision' => 'accepted', 'status' => 'wopps_waiting_contact']);
+        $url = route('peserta.wopps.confirm-contact', $application);
+        $this->post($url)->assertRedirect(route('peserta.login'));
+        $other = Participant::factory()->create(['email_verified_at' => now()]);
+        $this->actingAs($other, 'peserta')->post($url)->assertForbidden();
+        $participant->forceFill(['email_verified_at' => null])->save();
+        $this->actingAs($participant, 'peserta')->post($url)->assertRedirect(route('verification.notice'));
+        $this->assertNull($application->fresh()->pic_contacted_at);
+        $this->assertSame('wopps_waiting_contact', $application->fresh()->status);
+    }
+
+    public function test_contact_confirmation_rejects_undecided_rejected_completed_and_internship_applications(): void
+    {
+        [$participant, $application] = $this->woppsApplication();
+        $this->actingAs($participant, 'peserta');
+        $url = route('peserta.wopps.confirm-contact', $application);
+        $this->post($url)->assertUnprocessable();
+        $application->update(['decision' => 'rejected', 'status' => 'rejected']);
+        $this->post($url)->assertUnprocessable();
+        $application->update(['decision' => 'accepted', 'completed_at' => now(), 'status' => 'completed']);
+        $this->post($url)->assertUnprocessable();
+        $application->update(['service_type' => ParticipantApplication::SERVICE_MAGANG_PKL, 'completed_at' => null]);
+        $this->post($url)->assertNotFound();
+        $this->assertNull($application->fresh()->pic_contacted_at);
     }
 
     /** @return array{Participant, ParticipantApplication} */

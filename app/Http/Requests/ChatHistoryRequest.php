@@ -19,4 +19,11 @@ final class ChatHistoryRequest extends FormRequest
             'session_key' => ['required', 'uuid'],
         ];
     }
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->hasHeader('X-Chat-Session')) {
+            $this->merge(['session_key' => $this->header('X-Chat-Session')]);
+        }
+    }
 }

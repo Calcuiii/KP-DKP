@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Peserta;
 
 use App\Http\Controllers\Controller;
 use App\Models\ParticipantApplication;
+use App\Services\ParticipantEvidenceStorage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,14 +18,7 @@ class PresentationController extends Controller
             'presentation_date' => ['required', 'date_format:Y-m-d', 'before_or_equal:today'],
             'presentation_photo' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:5120'],
         ]);
-        $path = $request->file('presentation_photo')->store('presentation-proofs/'.$application->id, 'local');
-        abort_unless(is_string($path), 500);
-        try {
-            $application->update(['presentation_date' => $data['presentation_date'], 'presentation_photo_path' => $path, 'presentation_submitted_at' => now()]);
-        } catch (\Throwable $exception) {
-            Storage::disk('local')->delete($path);
-            throw $exception;
-        }
+        app(ParticipantEvidenceStorage::class)->store($application, $request->file('presentation_photo'), 'presentation', ['presentation_date' => $data['presentation_date']]);
 
         return redirect(route('peserta.dashboard').'#penyelesaian')->with('status', 'Bukti presentasi tersimpan. Tahap 7 telah terbuka.');
     }

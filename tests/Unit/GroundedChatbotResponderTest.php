@@ -6,11 +6,14 @@ namespace Tests\Unit;
 
 use App\KnowledgeBase\KnowledgeBaseGroundedContextBuilder;
 use App\Services\GroundedChatbotResponder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 final class GroundedChatbotResponderTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_it_returns_a_bounded_grounded_answer_without_markdown_headings(): void
     {
         $result = app(GroundedChatbotResponder::class)->answer(
@@ -385,11 +388,11 @@ final class GroundedChatbotResponderTest extends TestCase
 
         self::assertSame(GroundedChatbotResponder::STATUS_SUCCESS, $result['status']);
         self::assertSame(
-            ['KB-004'],
+            ['KB-004', 'KB-007'],
             array_values(array_unique(array_column($result['sources'], 'document_id'))),
         );
-        self::assertStringContainsString('Nama Lengkap pemohon', $result['answer']);
-        self::assertStringContainsString('NIS atau NIM wajib ditulis', $result['answer']);
+        self::assertStringContainsString('nama lengkap;', $result['answer']);
+        self::assertStringContainsString('NIS atau NIM tiap peserta', $result['answer']);
         self::assertStringContainsString('nomor WhatsApp perwakilan', $result['answer']);
         self::assertStringNotContainsString('Isi Buku Tamu Magang', $result['answer']);
         self::assertStringNotContainsString('Isi Form Pelaksanaan Magang', $result['answer']);
@@ -457,6 +460,10 @@ final class GroundedChatbotResponderTest extends TestCase
         config([
             'services.groq.enabled' => true,
             'services.groq.api_key' => 'test-groq-key',
+            'services.groq.model' => 'openai/gpt-oss-20b',
+            'chatbot.ai.account_owner' => 'dkp',
+            'chatbot.ai.free_plan_confirmed' => true,
+            'chatbot.ai.verified_key_hash' => hash('sha256', 'test-groq-key'),
         ]);
         Http::fake([
             'https://api.groq.com/openai/v1/chat/completions' => Http::response([

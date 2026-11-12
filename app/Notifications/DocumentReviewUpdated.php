@@ -27,24 +27,21 @@ final class DocumentReviewUpdated extends Notification
         $isApproved = $this->decision === ParticipantApplicationDocument::REVIEW_APPROVED;
         $isEthics = $this->document->type === ParticipantApplicationDocument::TYPE_ETHICS_APPROVAL;
         $documentName = $isEthics ? 'Ethics Approval Statement Letter' : 'surat permohonan';
-        $noCertificate = $isApproved && $this->document->certificate_eligible === false;
 
         return [
             'title' => match (true) {
-                $noCertificate => 'Diterima (tanpa sertifikat)',
                 $isApproved => 'Dokumen disetujui',
                 default => 'Perbaikan dokumen diperlukan',
             },
             'message' => match (true) {
-                $noCertificate => 'Surat disetujui, namun Anda tidak mendapatkan sertifikat karena '.$documentName.' Anda tidak menyertakan permintaan sertifikat. Jika Anda menginginkan sertifikat, silakan unggah surat permohonan baru yang mencantumkan permintaan tersebut.',
                 $isApproved => ucfirst($documentName).' Anda telah disetujui admin. Silakan lanjutkan ke tahap berikutnya.',
                 default => 'Admin meminta perbaikan pada '.$documentName.' Anda.',
             },
             'review_notes' => $this->document->review_notes,
-            'status' => $isApproved ? ($noCertificate ? 'approved_no_certificate' : 'approved') : 'revision_required',
+            'status' => $isApproved ? 'approved' : 'revision_required',
             'document_type' => $this->document->type,
             'application_id' => $this->document->participant_application_id,
-            'action_url' => route('peserta.document.view', $this->document),
+            'action_url' => route('peserta.dashboard').($isEthics ? '#ethics-approval' : '#surat-permohonan'),
         ];
     }
 }

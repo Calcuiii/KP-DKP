@@ -24,8 +24,8 @@ class ActivityLogDisplayTest extends TestCase
             'ip_address' => '203.0.113.42',
         ]);
         $log->forceFill([
-            'created_at' => CarbonImmutable::parse('2026-08-04 12:28:00', 'UTC'),
-            'updated_at' => CarbonImmutable::parse('2026-08-04 12:28:00', 'UTC'),
+            'created_at' => CarbonImmutable::parse('2026-08-04 12:28:00', 'UTC')->setTimezone('Asia/Jakarta'),
+            'updated_at' => CarbonImmutable::parse('2026-08-04 12:28:00', 'UTC')->setTimezone('Asia/Jakarta'),
         ])->save();
 
         $this->actingAs($admin)

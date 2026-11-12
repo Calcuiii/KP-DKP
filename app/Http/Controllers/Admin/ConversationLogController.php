@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ChatMessage;
 use App\Support\KnowledgeBaseCategoryResolver;
+use App\Support\SafeCsv;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Http\Request;
@@ -59,7 +60,7 @@ class ConversationLogController extends Controller
         foreach ($messages as $m) {
             $answer = $this->answerFor($m);
             $csv .= implode(',', [
-                '"'.str_replace('"', '""', $m->content).'"',
+                SafeCsv::cell($m->content),
                 $this->displayStatus($answer),
                 '"'.$this->formatForSurabaya($m->created_at).' WIB"',
             ])."\n";
